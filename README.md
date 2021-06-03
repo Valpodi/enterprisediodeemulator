@@ -21,14 +21,12 @@ You will also have to set the mtu to 9000 on the host's 10G network interface(s)
 
 
 ### Configuring the port-destination mapping:
-Inside the config folder you will find a file named portConfig.yaml. In this file, in the streamToPortMap block,
+Inside the config folder you will find a file named portConfig.yaml. In this file, in the routingTable block,
 are the mappings of the source ports to destination IP addresses.
 
-    streamToPortMap:
-    - stream: 100
-      srcPort: {{ Source Port }}
-      destPort: {{ Destination Port }}
-      destIP: {{ Destination IP address }}
+    routingTable:
+        - {{ Source port }}:{{ Destination IP address }}:{{ Destination port }}
+        - {{ Source port }}:{{ Destination IP address }}:{{ Destination port }}
 
 Please note that while the emulator can use DNS name resolution for the destination IP address,
 the diode will only support ip addresses.
@@ -38,9 +36,9 @@ Build the emulator docker container with:
 
 `docker build -f Dockerfile -t emulator .`
 
-Ensure you have the port config file in `config/portConfig.yaml`, and run the python launch script:
+Run the python launch script:
 
-`python3 launchEmulator.py`
+`python3 launchEmulator.py -p [PATH_TO_CONFIG_FILE]`
 
 You can test the emulator by listening on a destination ip address and sending udp at the mapped source port:
 
