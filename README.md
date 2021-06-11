@@ -1,5 +1,7 @@
 # 10G Diode Emulator
-
+The emulator includes 2 variants of the 10G diode:
+  - Basic: provides 1 way transfer
+  - Import: provides 1 way transfer, any data that is not valid SISL or a bitmap will be wrapped and given a Cloaked Dagger header
 ### Requirements:
 In order to launch the emulator you will need to install docker & python3, and pip install pyyaml.
 
@@ -36,9 +38,16 @@ Build the emulator docker container with:
 
 `docker build -f Dockerfile -t emulator .`
 
+#### Basic Diode ####
 Run the python launch script:
 
 `python3 launchEmulator.py -p [PATH_TO_CONFIG_FILE]`
+
+#### Import Diode ####
+Run the python launch script:
+
+`python3 launchEmulator.py -p [PATH_TO_CONFIG_FILE] --importDiode`
+
 
 You can test the emulator by listening on a destination ip address and sending udp at the mapped source port:
 

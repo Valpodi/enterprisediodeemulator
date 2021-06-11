@@ -4,6 +4,9 @@
 import yaml
 import argparse
 import asyncio
+import os
+import pysisl
+from pysisl import parser_error
 
 
 class ProxyEndpoint(asyncio.DatagramProtocol):
@@ -11,6 +14,7 @@ class ProxyEndpoint(asyncio.DatagramProtocol):
     def __init__(self, remote_address):
         self.remote_address = remote_address
         self.remotes = {}
+        self.import_diode = os.environ.get("IMPORTDIODE")
         super().__init__()
 
     def connection_made(self, transport):
@@ -21,8 +25,12 @@ class ProxyEndpoint(asyncio.DatagramProtocol):
             self.remotes[addr].transport.sendto(data)
             return
         loop = asyncio.get_event_loop()
-        coroutine = loop.create_datagram_endpoint(
-            lambda: DestinationEndpoint(self, addr, data), remote_addr=self.remote_address)
+        if self.import_diode == "True":
+            coroutine = loop.create_datagram_endpoint(
+                lambda: ImportDestinationEndpoint(self, addr, data), remote_addr=self.remote_address)
+        else:
+            coroutine = loop.create_datagram_endpoint(
+                lambda: DestinationEndpoint(self, addr, data), remote_addr=self.remote_address)
         asyncio.ensure_future(coroutine)
 
 
@@ -37,6 +45,70 @@ class DestinationEndpoint(asyncio.DatagramProtocol):
     def connection_made(self, transport):
         self.transport = transport
         self.transport.sendto(self.data)
+
+
+class ImportDestinationEndpoint(asyncio.DatagramProtocol):
+
+    def __init__(self, proxy, addr, data):
+        self.proxy = proxy
+        self.addr = addr
+        self.data = data
+
+        super().__init__()
+
+    def connection_made(self, transport):
+        self.transport = transport
+        if not self.check_for_valid_control_header(self.data):
+            print("Control header invalid, frame dropped")
+            return
+        header, data = self.extract_control_header(self.data)
+
+        if not self.check_for_bitmap(data):
+            data = self.wrap_non_sisl_data(data)
+
+        if self.check_for_wrapped_data(data):
+            to_send = header + data
+        else:
+            to_send = header + (48 * b"\x00") + data
+        self.transport.sendto(to_send)
+
+    @staticmethod
+    def check_for_valid_control_header(data):
+        if not len(data) >= 112:
+            print(f"Failed on size: {len(data)} \n {data}")
+            return False
+        if data[8] > 1:
+            print(f"Failed on EOF: {data[8]}")
+            return False
+        if not int.from_bytes(data[3:7], byteorder='little') >= 1:
+            print("Failed on frame count")
+            return False
+        if not data[9:112] == (103 * b"\x00"):
+            print(f"Failed on padding: {len(data[9:112])}")
+            return False
+        return True
+
+    def extract_control_header(self, data):
+        return data[:64], data[112:]
+
+    def check_for_wrapped_data(self, data):
+        return data[:4] == b"\xd1\xdf\x5f\xff"
+
+    def check_for_bitmap(self, data):
+        return data[:2] == b"BM"
+
+    def wrap_non_sisl_data(self, data):
+        data_string = data.decode('utf-8')
+        try:
+            pysisl.loads(data_string)
+        except parser_error.ParserError:
+            data = pysisl.wraps(data_string)
+        return self.encode_to_bytes(data)
+
+    def encode_to_bytes(self, data):
+        if type(data) == str:
+            data = bytes(data, 'utf-8')
+        return data
 
 
 async def start_proxy(bind, port, remote_host, remote_port):

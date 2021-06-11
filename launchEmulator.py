@@ -6,10 +6,7 @@ import subprocess
 import argparse
 
 
-def start_emulator():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-p', '--portConfig', help="path to portConfig file", default="config/portConfig.yaml")
-    port_config_path = parser.parse_args().portConfig
+def start_emulator(port_config_path, is_import=False):
     with open(port_config_path) as file:
         port_map = yaml.load(file, Loader=yaml.FullLoader)["routingTable"]
     ports_cmd = ""
@@ -19,9 +16,14 @@ def start_emulator():
         ports.append(port)
         ports_cmd += f"-p {port}:{port}/udp "
     subprocess.Popen(
-        f'docker run -v $(pwd)/{port_config_path}:/usr/src/app/portConfig.yaml {ports_cmd} -d emulator',
+        f'docker run -v $(pwd)/{port_config_path}:/usr/src/app/portConfig.yaml {ports_cmd} --env IMPORTDIODE={is_import} -d emulator',
         shell=True)
 
 
 if __name__ == "__main__":
-    start_emulator()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--portConfig', help="path to portConfig file", default="config/portConfig.yaml")
+    parser.add_argument('-i', '--importDiode', help="lauch the emulator as the import variant", action="store_true")
+    port_config = parser.parse_args().portConfig
+    import_flag = parser.parse_args().importDiode
+    start_emulator(port_config, import_flag)
