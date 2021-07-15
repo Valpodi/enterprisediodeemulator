@@ -3,10 +3,10 @@ The emulator includes 2 variants of the 10G diode:
   - Basic: provides 1 way transfer
   - Import: provides 1 way transfer, any data that is not valid SISL or a bitmap will be wrapped and given a Cloaked Dagger header
 ### Requirements:
-In order to launch the emulator you will need to install docker & python3, and pip install pyyaml.
+In order to launch the emulator you will need to install docker & python3, and pip install json.
 
 You will need to build emulator docker image, which uses the public python:3.8-slim-buster image
-and needs to pip install pyyaml.
+and needs to pip install json.
 
 To enable such installs using repository mirrors the `rootfs_template` folder is copied onto the root folder.
 
@@ -23,15 +23,18 @@ You will also have to set the mtu to 9000 on the host's 10G network interface(s)
 
 
 ### Configuring the port-destination mapping:
-Inside the config folder you will find a file named portConfig.yaml. In this file, in the routingTable block,
+Inside the config folder you will find a file named [portConfig.json](config/portConfig.json). In this file, in the routingTable block,
 are the mappings of the source ports to destination IP addresses.
 
-    routingTable:
-        - {{ Source port }}:{{ Destination IP address }}:{{ Destination port }}
-        - {{ Source port }}:{{ Destination IP address }}:{{ Destination port }}
+    "routingTable": [{
+            "ingressPort": {{ Ingress Port }},
+            "egressIpAddress": {{ Egress Destination IP Address }},
+            "egressSrcPort": {{ Egress Source Port }},
+            "egressDestPort": {{ Egress Destination Port }}
+        }]
 
 Please note that while the emulator can use DNS name resolution for the destination IP address,
-the diode will only support ip addresses.
+the diode will only support IP addresses.
 
 ### Running the emulator
 Build the emulator docker container with:

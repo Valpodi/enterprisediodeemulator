@@ -1,7 +1,7 @@
 # Copyright PA Knowledge Ltd 2021
 # For licence terms see LICENCE.md file
 
-import yaml
+import json
 import argparse
 import asyncio
 import os
@@ -120,16 +120,12 @@ async def start_proxy(bind, port, remote_host, remote_port):
 class Emulator:
     def run(self, port_map):
         loop = asyncio.get_event_loop()
-        ports = []
-        for i in range(len(port_map)):
-            port = port_map[i].split(":")[0]
-            ports.append(port)
-        if (int(max(ports)) - int(min(ports)) + 1) > 1024:
-            raise ValueError(f"Ingress portspan must be 1024 or smaller. Not {int(max(ports)) - int(min(ports)) + 1}")
-        for i in range(len(port_map)):
-            mapping = port_map[i].split(":")
-            print(f"Mapping input on {mapping[0]} to {mapping[1]}:{mapping[2]}")
-            coroutine = start_proxy("0.0.0.0", mapping[0], mapping[1], mapping[2])
+        ingress_ports = [port["ingressPort"] for port in port_map]
+        if (max(ingress_ports) - min(ingress_ports) + 1) > 1024:
+            raise ValueError(f"Ingress portspan must be 1024 or smaller. Not {max(ingress_ports) - min(ingress_ports) + 1}")
+        for route in port_map:
+            print(f"Mapping input on {route['ingressPort']} to {route['egressIpAddress']}:{route['egressDestPort']}")
+            coroutine = start_proxy("0.0.0.0", route['ingressPort'], route['egressIpAddress'], route['egressDestPort'])
             transport, _ = loop.run_until_complete(coroutine)
         try:
             loop.run_forever()
@@ -142,7 +138,7 @@ class Emulator:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--portConfig', help="path to portConfig file")
-    port_config_path = parser.parse_args().portConfig or "/usr/src/app/portConfig.yaml"
+    port_config_path = parser.parse_args().portConfig or "/usr/src/app/portConfig.json"
     with open(port_config_path) as file:
-        yaml_map = yaml.load(file, Loader=yaml.FullLoader)["routingTable"]
-    Emulator().run(yaml_map)
+        json_map = json.load(file)["routingTable"]
+    Emulator().run(json_map)
