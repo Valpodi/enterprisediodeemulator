@@ -1,19 +1,15 @@
-# 10G Diode Emulator
-The emulator includes 2 variants of the 10G diode:
-  - Basic: provides 1 way transfer
-  - Import: provides 1 way transfer, any data that is not valid SISL or a bitmap will be wrapped and given a Cloaked Dagger header
+# Oakdoor 10G Enterprise Diode Emulator
+The emulator mimics the UDP port forwarding and frame inspection capability of the Oakdoor 10G Enterprise Diode. At present, the Basic Diode and Import Diode variants are supported by the emulator.:
+  - Basic: 1 way transfer of UDP traffic with UDP port forwarding.
+  - Import: 1 way transfer of UDP traffic with UDP port forwarding and packet inspection. UDP packets must meet the Enterprise Diode frame format (header + SISL. Note bitmap inspection has not yet been implemented by the emulator). Non conformant frames are rendered inert with the Cloaked Dagger wrapping technique.
+
 ### Requirements:
-In order to launch the emulator you will need to install docker & python3, and pip install json.
+In order to launch the emulator you will need to install docker & python3, and the python json module. See section below for build and launch instructions.
 
-You will need to build emulator docker image, which uses the public python:3.8-slim-buster image
-and needs to pip install json.
+To build the docker containers behind a firewall, proxy information can be added to the docker container by adding the appropriate files to the `rootfs_template` folder. For example, to add a PyPI mirror, create a custom pip.conf file and place here: `rootfs_template/etc/pip.conf`.
 
-To enable such installs using repository mirrors the `rootfs_template` folder is copied onto the root folder.
-
-For example, to add a PyPI mirror, place your pip.conf file here: `rootfs_template/etc/pip.conf`.
-
-To match the Oakdoor Enterprise Diode, you will need to reconfigure the mtu for the docker daemon as follows:
-In `/etc/docker/daemon.json` add:
+The Oakdoor Enterprise Diode supports a maTo match the Oakdoor Enterprise Diode, you may need to reconfigure the mtu for the docker daemon as follows: 
+On your host machine, in `/etc/docker/daemon.json` add:
 
 `{"mtu": 9000}`
 
@@ -22,7 +18,7 @@ You will also have to set the mtu to 9000 on the host's 10G network interface(s)
 `ifconfig [INTERFACE_NAME] mtu 9000 up`
 
 
-### Configuring the port-destination mapping:
+### Configuring the UDP port forwarding mapping:
 Inside the config folder you will find a file named [portConfig.json](config/portConfig.json). In this file, in the routingTable block,
 are the mappings of the source ports to destination IP addresses.
 
@@ -36,7 +32,7 @@ are the mappings of the source ports to destination IP addresses.
 Please note that while the emulator can use DNS name resolution for the destination IP address,
 the diode will only support IP addresses.
 
-### Running the emulator
+### Building the emulator
 Build the emulator docker container with:
 
 `docker build -f Dockerfile -t emulator .`
