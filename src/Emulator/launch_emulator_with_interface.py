@@ -7,7 +7,6 @@ import subprocess
 def start_emulator_with_interface():
     subprocess.Popen(
         f'docker run -v /var/run/docker.sock:/var/run/docker.sock '
-        f'           -v $(pwd):$(pwd)'
         f'           -p 8081:8081 '
         f'           -d emulatorinterface',
         shell=True)

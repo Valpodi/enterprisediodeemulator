@@ -24,6 +24,4 @@ class Interface:
 
     @classmethod
     def _power_on_diode(cls):
-        lookup_dict = {0: "completed"}
-        subprocess.run("python3 launchEmulatory.py", shell=True)
-        return lookup_dict.get(subprocess.check_output("python3 launchEmulatory.py", shell=True).returncode, default="failed")
+        return {0: "completed"}.get(subprocess.check_output("python3 launchEmulatory.py", shell=True).returncode, default="failed")
