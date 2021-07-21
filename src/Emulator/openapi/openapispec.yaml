@@ -1,0 +1,52 @@
+openapi: 3.0.1
+info:
+  title: Oakdoor Enterprise Diode Management Interface API
+  description: The Oakdoor Enterprise Diode Management Interface API specification
+  version: 0.0.1
+servers:
+  - url: /api
+paths:
+  /config/diode:
+    get:
+      summary: download diode config
+      operationId: mgmt_interface.Interface.do_config_get
+      responses:
+        200:
+          description: diode config available
+          content:
+            application/json:
+              schema:
+                type: object
+    put:
+      summary: Upload diode config
+      operationId: mgmt_interface.Interface.do_config_update
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        200:
+          description: Diode config successfully uploaded. Power cycle the diode to
+            apply.
+          content: {}
+        500:
+          description: Diode config update failed.
+          content: {}
+  /command/diode/power/on:
+    post:
+      summary: Turn diode on
+      operationId: mgmt_interface.Interface.do_power_on_procedure
+      responses:
+        200:
+          description: ""
+          content: {}
+  /command/diode/power/off:
+    post:
+      summary: Turn diode off
+      operationId: mgmt_interface.Interface.do_power_off_procedure
+      responses:
+        200:
+          description: ""
+          content: {}
+
