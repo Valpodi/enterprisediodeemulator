@@ -33,3 +33,4 @@ if [[ "$OUTPUT" != "$EXPECTED" ]]; then
 fi
 popd
 
+./scripts/runInterfaceIntegrationTests.sh

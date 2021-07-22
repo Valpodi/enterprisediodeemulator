@@ -3,7 +3,7 @@
 
 import unittest
 import json
-from mgmt_interface import Interface
+from Emulator.mgmt_interface import Interface
 
 
 class MgmtInterfaceTests(unittest.TestCase):
