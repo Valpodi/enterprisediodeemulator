@@ -12,10 +12,10 @@ services:
     entrypoint: "python3 -m nose --with-xunit --xunit-file=/tmp/results/${RESULT_FILENAME} ${PYTHON_SCRIPT}"
   diode_emulator:
     build:
-      context: ./Emulator
+      context: ../Emulator
       dockerfile: Dockerfile
     environment:
       - IMPORTDIODE=${IMPORT_DIODE}
     volumes:
-      - ./Emulator/config/portConfig.json:/usr/src/app/portConfig.json
+      - ../Emulator/config/portConfig.json:/usr/src/app/portConfig.json
     entrypoint: "python3 -u /usr/src/app/emulator.py"

@@ -18,7 +18,7 @@ def start_emulator(port_config_path, is_import=False):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-p', '--portConfig', help="path to portConfig file", default="config/portConfig.json")
+    parser.add_argument('-p', '--portConfig', help="path to portConfig file", default="Emulator/config/portConfig.json")
     parser.add_argument('-i', '--importDiode', help="launch the emulator as the import variant", action="store_true")
     port_config = parser.parse_args().portConfig
     import_flag = parser.parse_args().importDiode
