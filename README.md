@@ -35,17 +35,17 @@ the diode will only support IP addresses.
 ### Building the emulator
 Build the emulator docker container with:
 
-`docker build -f src/Emulator/Dockerfile -t emulator src/Emulator`
+`docker build -f Emulator/Dockerfile -t emulator Emulator`
 
 #### Basic Diode ####
 Run the python launch script:
 
-`python3 src/Emulator/launchEmulator.py -p [PATH_TO_CONFIG_FILE]`
+`python3 launchEmulator.py -p [PATH_TO_CONFIG_FILE]`
 
 #### Import Diode ####
 Run the python launch script:
 
-`python3 src/Emulator/launchEmulator.py -p [PATH_TO_CONFIG_FILE] --importDiode`
+`python3 launchEmulator.py -p [PATH_TO_CONFIG_FILE] --importDiode`
 
 
 You can test the emulator by listening on a destination ip address and sending udp at the mapped source port:
