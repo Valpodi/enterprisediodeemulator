@@ -2,9 +2,7 @@ import unittest
 import subprocess
 import requests
 import json
-import os
 import time
-import mgmt_interface
 
 
 class MgmtInterfaceIntegrationTests(unittest.TestCase):
@@ -16,20 +14,25 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
     def start_server(cls):
         subprocess.run("docker build -f MgmtInterfaceDockerfile -t emulatorinterface .", shell=True)
         subprocess.Popen("python3 launch_emulator_with_interface.py", shell=True)
-        cls.wait_for_server()
+        cls.wait_for_port(8081)
 
     @classmethod
-    def wait_for_server(cls):
-        loop_counter = 10
-        api_active = False
-        while not api_active:
-            time.sleep(2)
-            loop_counter -= 1
-            if requests.get("http://localhost:8081/api/config/diode").status_code == 200:
-                api_active = True
-            if loop_counter == 0:
-                raise Exception("FailedToStartServer")
-        print(f"Management interface started")
+    def wait_for_port(cls, port_to_check):
+        cls.wait_for_action(lambda: (subprocess.call(
+            f"nc -zv localhost {port_to_check} -w 1".split())), 0, f"port {port_to_check} should be open", delay=3)
+
+    @classmethod
+    def wait_for_action(cls, action, expected_result, message, delay=0, attempts=5):
+        condition_met = False
+        while not condition_met:
+            action_output = action()
+            condition_met = (action_output == expected_result)
+            attempts = attempts - 1
+            if attempts == 0:
+                raise TimeoutError("Failed waiting for: " + message)
+            time.sleep(delay)
+        if condition_met:
+            return action_output
 
     def test_get_config_endpoint(self):
         response = requests.get("http://localhost:8081/api/config/diode")
