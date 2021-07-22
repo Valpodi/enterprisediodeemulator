@@ -13,18 +13,18 @@ function cleanup()
 pushd test
 export IMPORT_DIODE=False
 export RESULT_FILENAME="emulator_test_results.xml"
-export PYTHON_SCRIPT="/tmp/emulatorTests.py"
+export PYTHON_SCRIPT="/tmp/emulator_tests.py"
 docker-compose -p emulator up --exit-code-from tester --build
 
 export IMPORT_DIODE=True
 export RESULT_FILENAME="import_emulator_test_results.xml"
-export PYTHON_SCRIPT="/tmp/importEmulatorTests.py"
+export PYTHON_SCRIPT="/tmp/import_emulator_tests.py"
 docker-compose -p emulator up --exit-code-from tester --build
 popd
 
 pushd Emulator
 docker build --no-cache -t emulator -f Dockerfile .
-CONTAINER_ID=$(python3 ../launchEmulator.py -p ../test/portSpanTooLarge.json)
+CONTAINER_ID=$(python3 ../launch_emulator.py -p ../test/portSpanTooLarge.json)
 sleep 1
 EXPECTED='            "ExitCode": 1,'
 OUTPUT=$(docker inspect "${CONTAINER_ID}" | grep ExitCode)

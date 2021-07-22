@@ -5,8 +5,8 @@ services:
       context: ./
       dockerfile: ./TesterDockerfile
     volumes:
-      - ./emulatorTests.py:/tmp/emulatorTests.py
-      - ./importEmulatorTests.py:/tmp/importEmulatorTests.py
+      - ./emulator_tests.py:/tmp/emulator_tests.py
+      - ./import_emulator_tests.py:/tmp/import_emulator_tests.py
       - ./test_helpers.py:/tmp/test_helpers.py
       - ./:/tmp/results/
     entrypoint: "python3 -m nose --with-xunit --xunit-file=/tmp/results/${RESULT_FILENAME} ${PYTHON_SCRIPT}"
