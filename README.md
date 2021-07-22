@@ -8,7 +8,7 @@ In order to launch the emulator you will need to install docker & python3, and t
 
 To build the docker containers behind a firewall, proxy information can be added to the docker container by adding the appropriate files to the `rootfs_template` folder. For example, to add a PyPI mirror, create a custom pip.conf file and place here: `rootfs_template/etc/pip.conf`.
 
-The Oakdoor Enterprise Diode supports a maTo match the Oakdoor Enterprise Diode, you may need to reconfigure the mtu for the docker daemon as follows: 
+The Oakdoor Enterprise Diode supports an mtu up to 9000 bytes. To match the Oakdoor Enterprise Diode, you may need to reconfigure the mtu for the docker daemon as follows: 
 On your host machine, in `/etc/docker/daemon.json` add:
 
 `{"mtu": 9000}`
