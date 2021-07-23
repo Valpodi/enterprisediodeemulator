@@ -40,8 +40,11 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
     def test_get_config_endpoint(self):
         response = requests.get("http://172.17.0.1:8081/api/config/diode")
 
+        with open('Emulator/config/portConfig.json', 'r') as config_file:
+            expected = json.loads(config_file.read())
+
+        self.assertEqual(expected, json.loads(response.text))
         self.assertEqual(200, response.status_code)
-        self.assertEqual("config file contents", json.loads(response.text)["config"])
 
 
 if __name__ == '__main__':

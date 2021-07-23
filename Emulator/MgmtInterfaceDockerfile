@@ -1,9 +1,11 @@
 FROM python:3.8-slim-buster
 
 WORKDIR /usr/src/app/
+
 COPY http_server.py .
 COPY mgmt_interface.py .
 COPY openapi/ ./openapi/
+COPY config/ ./config/
 
 RUN pip3 install connexion
 

@@ -9,7 +9,12 @@ import json
 class Interface:
     @classmethod
     def do_config_get(cls):
-        return Response(json.dumps({"config": "config file contents"}), 200)
+        return Response(json.dumps(cls._get_config_file()), 200)
+
+    @classmethod
+    def _get_config_file(cls):
+        with open('config/portConfig.json', 'r') as config_file:
+            return json.loads(config_file.read())
 
     @classmethod
     def do_config_update(cls):
