@@ -22,6 +22,7 @@ export PYTHON_SCRIPT="/tmp/import_emulator_tests.py"
 docker-compose -p emulator up --exit-code-from tester --build
 popd
 
+python3 -m nose --with-xunit --xunit-file=test/interface_unit_test_results.xml test/mgmt_interface_tests.py
 python3 -m nose --with-xunit --xunit-file=test/interface_integration_test_results.xml test/mgmt_interface_integration_tests.py
 
 pushd Emulator
