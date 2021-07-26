@@ -1,9 +1,9 @@
 # Copyright PA Knowledge Ltd 2021
 # For licence terms see LICENCE.md file
 
-import subprocess
 from flask import Response
 import json
+import launch_emulator
 
 
 class Interface:
@@ -31,4 +31,4 @@ class Interface:
 
     @classmethod
     def _power_on_diode(cls):
-        return {0: "completed"}.get(subprocess.check_output("python3 launchEmulatory.py", shell=True).returncode, default="failed")
+        launch_emulator.start_emulator("config/portConfig.json")
