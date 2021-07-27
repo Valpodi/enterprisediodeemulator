@@ -1,13 +1,10 @@
 FROM python:3.8-slim-buster
 
-WORKDIR /usr/src/app/
+RUN apt-get update && apt-get install -y docker.io
 
-COPY Emulator/http_server.py .
-COPY Emulator/mgmt_interface.py .
-COPY Emulator/openapi/ ./openapi/
-COPY Emulator/config/ ./config/
-COPY launch_emulator.py .
+COPY Emulator/http_server.py /usr/src/app/http_server.py
+COPY Emulator/mgmt_interface.py /usr/src/app/mgmt_interface.py
+COPY Emulator/openapi/ /usr/src/app/openapi/
+COPY launch_emulator.py /usr/src/app/launch_emulator.py
 
 RUN pip3 install connexion
-
-CMD ["python3", "http_server.py"]

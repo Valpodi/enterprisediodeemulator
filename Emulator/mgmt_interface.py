@@ -13,7 +13,7 @@ class Interface:
 
     @classmethod
     def _get_config_file(cls):
-        with open('config/portConfig.json', 'r') as config_file:
+        with open('Emulator/config/portConfig.json', 'r') as config_file:
             return json.loads(config_file.read())
 
     @classmethod
@@ -31,4 +31,4 @@ class Interface:
 
     @classmethod
     def _power_on_diode(cls):
-        launch_emulator.start_emulator("config/portConfig.json")
+        launch_emulator.start_emulator("Emulator/config/portConfig.json")
