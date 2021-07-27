@@ -39,8 +39,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        subprocess.run("docker stop $(docker container ls -f name=emulator -aq) && docker rm $(docker container ls -f name=emulator -aq)", shell=True)
-        subprocess.run("docker stop $(docker container ls -f name=interface -aq)  && docker rm $(docker container ls -f name=interface -aq)", shell=True)
+        subprocess.run("docker stop $(docker container ls -f ancestor=emulator -aq)", shell=True)
 
     def test_get_config_endpoint(self):
         response = requests.get("http://172.17.0.1:8081/api/config/diode")
@@ -55,12 +54,8 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         self.assertEqual(b"", subprocess.run("docker container ls -f name=^emulator$ -q", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout)
         response = requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
         self.assertEqual(200, response.status_code)
-        self.wait_for_emulator_container()
-
-    @classmethod
-    def wait_for_emulator_container(cls):
-        cls.wait_for_action(lambda: subprocess.run(
-            "docker container ls -f name=^emulator$ -q", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout != b"", True, f"emulator container should be running", delay=3)
+        time.sleep(5)
+        self.assertNotEqual(b"", subprocess.run("docker container ls -f name=^emulator$ -q", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
 
 if __name__ == '__main__':

@@ -12,7 +12,7 @@ def start_emulator(port_config_path, is_import=False):
     ingress_ports = [port["ingressPort"] for port in port_map]
     ports_cmd = "".join([f"-p {port}:{port}/udp " for port in ingress_ports])
     subprocess.Popen(
-        f'docker run -v $(pwd)/{port_config_path}:/usr/src/app/portConfig.json {ports_cmd} --env IMPORTDIODE={is_import} --name emulator -d emulator',
+        f'docker run -v $(pwd)/{port_config_path}:/usr/src/app/portConfig.json {ports_cmd} --env IMPORTDIODE={is_import} -d emulator',
         shell=True)
 
 
