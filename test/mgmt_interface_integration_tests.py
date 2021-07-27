@@ -51,9 +51,11 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_power_on_endpoint(self):
+        self.assertEqual(b"", subprocess.run("docker container ls -f name=^emulator$ -q", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout)
         response = requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
         self.assertEqual(200, response.status_code)
-        self.assertEqual("completed", json.loads(response.text)['status'])
+        time.sleep(5)
+        self.assertNotEqual(b"", subprocess.run("docker container ls -f name=^emulator$ -q", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
 
 if __name__ == '__main__':
