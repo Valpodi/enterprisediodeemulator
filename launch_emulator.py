@@ -11,9 +11,9 @@ def start_emulator(port_config_path, is_import=False):
         port_map = json.load(file)["routingTable"]
     ingress_ports = [port["ingressPort"] for port in port_map]
     ports_cmd = "".join([f"-p {port}:{port}/udp " for port in ingress_ports])
-    subprocess.Popen(
+    return subprocess.run(
         f'docker run -v $(pwd)/{port_config_path}:/usr/src/app/portConfig.json {ports_cmd} --env IMPORTDIODE={is_import} -d emulator',
-        shell=True)
+        shell=True).returncode
 
 
 if __name__ == "__main__":
