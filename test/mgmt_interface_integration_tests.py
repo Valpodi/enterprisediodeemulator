@@ -11,19 +11,23 @@ import time
 class MgmtInterfaceIntegrationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.start_server()
+        cls.start_interface_server()
+        cls.wait_for_port(8081)
+        cls.build_emulator()
 
     @classmethod
-    def start_server(cls):
+    def start_interface_server(cls):
         subprocess.run("docker build -f Emulator/MgmtInterfaceDockerfile -t emulatorinterface .", shell=True)
-        subprocess.run("cd Emulator && docker build --no-cache -t emulator -f Dockerfile . && cd ..", shell=True)
         subprocess.Popen("python3 Emulator/launch_emulator_with_interface.py", shell=True)
-        cls.wait_for_port(8081)
+
+    @classmethod
+    def build_emulator(cls):
+        subprocess.run("cd Emulator && docker build --no-cache -t emulator -f Dockerfile . && cd ..", shell=True)
 
     @classmethod
     def tearDownClass(cls):
-        subprocess.run("docker stop emulator && docker rm emulator", shell=True)
-        subprocess.run("docker stop interface && docker rm interface", shell=True)
+        subprocess.run("docker stop emulator interface", shell=True)
+        subprocess.run("docker rm emulator", shell=True)
 
     @classmethod
     def wait_for_port(cls, port_to_check):

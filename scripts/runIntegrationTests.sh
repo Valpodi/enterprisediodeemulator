@@ -36,4 +36,6 @@ OUTPUT=$(docker inspect "${CONTAINER_ID}" | grep ExitCode)
 if [[ "$OUTPUT" != "$EXPECTED" ]]; then
   exit 1
 fi
+docker stop emulator
+docker rm emulator
 popd

@@ -10,6 +10,7 @@ def start_emulator_with_interface():
         f'           -v "$(pwd)":"$(pwd)"'
         f'           -p 172.17.0.1:8081:8081 '
         f'           --name=interface '
+        f'           --rm '
         f'           -d emulatorinterface /bin/bash -c "pushd $(pwd) && python3 /usr/src/app/http_server.py"',
         shell=True)
 
