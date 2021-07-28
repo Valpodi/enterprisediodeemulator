@@ -66,6 +66,15 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         self.assertEqual("completed", json.loads(response.text)['status'])
         self.assertEqual(200, response.status_code)
 
+    def test_power_off_endpoint(self):
+        launch_emulator.start_emulator("Emulator/config/portConfig.json")
+        # self.assertTrue(subprocess.run("docker ps -a -f name=^emulator$ -q", shell=True) == 1)
+        self.wait_for_port(40001, "-zvu")
+
+        response = requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
+        self.assertEqual("completed", json.loads(response.text)['status'])
+        self.assertEqual(200, response.status_code)
+
 
 if __name__ == '__main__':
     SUITE = unittest.TestLoader().loadTestsFromTestCase(MgmtInterfaceIntegrationTests)

@@ -3,6 +3,7 @@
 
 from flask import Response
 import json
+import subprocess
 import launch_emulator
 
 
@@ -30,4 +31,8 @@ class Interface:
 
     @classmethod
     def do_power_off_procedure(cls):
-        return Response(json.dumps({"status": "completed"}), 200)
+        return Response(json.dumps(cls._power_off_diode()), 200)
+
+    @classmethod
+    def _power_off_diode(cls):
+        return {"status": {0: "completed"}.get(subprocess.run("docker stop emulator", shell=True).returncode, "failed")}

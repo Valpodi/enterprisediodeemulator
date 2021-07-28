@@ -32,6 +32,7 @@ class MgmtInterfaceTests(unittest.TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_diode_power_off_returns_status_completed(self):
+        Interface._power_off_diode = lambda: {"status": "completed"}
         response = Interface.do_power_off_procedure()
 
         self.assertEqual("completed", json.loads(response.get_data())["status"])
