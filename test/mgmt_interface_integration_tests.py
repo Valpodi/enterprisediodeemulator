@@ -6,6 +6,7 @@ import subprocess
 import requests
 import json
 import time
+from Emulator import launch_emulator_interface
 
 
 class MgmtInterfaceIntegrationTests(unittest.TestCase):
@@ -18,7 +19,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
     @classmethod
     def start_interface_server(cls):
         subprocess.run("docker build -f Emulator/MgmtInterfaceDockerfile -t emulatorinterface .", shell=True)
-        subprocess.Popen("python3 Emulator/launch_emulator_with_interface.py", shell=True)
+        launch_emulator_interface.start_emulator_with_interface()
 
     @classmethod
     def build_emulator(cls):
