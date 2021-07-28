@@ -25,9 +25,9 @@ class Interface:
         return Response(json.dumps(cls._power_on_diode()), 200)
 
     @classmethod
-    def do_power_off_procedure(cls):
-        return Response(json.dumps({"status": "completed"}), 200)
-
-    @classmethod
     def _power_on_diode(cls):
         return {"status": {0: "completed"}.get(launch_emulator.start_emulator("Emulator/config/portConfig.json"), "failed")}
+
+    @classmethod
+    def do_power_off_procedure(cls):
+        return Response(json.dumps({"status": "completed"}), 200)
