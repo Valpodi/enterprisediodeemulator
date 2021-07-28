@@ -22,7 +22,7 @@ class Interface:
 
     @classmethod
     def do_power_on_procedure(cls):
-        return Response(json.dumps({"status": cls._power_on_diode()}), 200)
+        return Response(json.dumps(cls._power_on_diode()), 200)
 
     @classmethod
     def do_power_off_procedure(cls):
