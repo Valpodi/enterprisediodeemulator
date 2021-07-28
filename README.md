@@ -32,6 +32,9 @@ are the mappings of the source ports to destination IP addresses.
 Please note that while the emulator can use DNS name resolution for the destination IP address,
 the diode will only support IP addresses.
 
+### Running the emulator locally
+To run the emulator on your local machine the egressIpAddress in the config file should be set to the docker bridge network gateway IP address 172.17.0.1. 
+
 ### Building the emulator
 Build the emulator docker container with:
 
@@ -48,10 +51,14 @@ Run the python launch script:
 `python3 launch_emulator.py -p [PATH_TO_CONFIG_FILE] --importDiode`
 
 
-You can test the emulator by listening on a destination ip address and sending udp at the mapped source port:
+You can test the emulator by listening on a destination ip address and sending udp at the mapped source port.
 
-`echo -n "test" | nc -4u localhost [MAPPED_PORT]`
+To listen:
+`nc -lvu [egressIpAddress] [egressDestPort]`
+
+To send:
+`echo -n "test" | nc -4u localhost [ingressPort]`
 
 or
 
-`echo -n "test" > /dev/udp/localhost/[MAPPED_PORT]`
+`echo -n "test" > /dev/udp/localhost/[ingressPort]`
