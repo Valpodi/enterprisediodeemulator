@@ -16,9 +16,13 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
     @classmethod
     def start_server(cls):
         subprocess.run("docker build -f Emulator/MgmtInterfaceDockerfile -t emulatorinterface .", shell=True)
-        subprocess.run("pushd Emulator && docker build --no-cache -t emulator -f Dockerfile . && popd", shell=True)
+        subprocess.run("cd Emulator && docker build --no-cache -t emulator -f Dockerfile . && cd ..", shell=True)
         subprocess.Popen("python3 Emulator/launch_emulator_with_interface.py", shell=True)
         cls.wait_for_port(8081)
+
+    @classmethod
+    def tearDownClass(cls):
+        subprocess.run("docker stop emulator && docker rm emulator", shell=True)
 
     @classmethod
     def wait_for_port(cls, port_to_check):
@@ -49,7 +53,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
 
     def test_power_on_endpoint(self):
         response = requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
-        self.assertEqual("0", json.loads(response.text)['message'])
+        self.assertEqual(0, json.loads(response.text)['message'])
         self.assertEqual("completed", json.loads(response.text)['status'])
         self.assertEqual(200, response.status_code)
 
