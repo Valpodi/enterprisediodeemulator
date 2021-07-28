@@ -15,11 +15,13 @@ export IMPORT_DIODE=False
 export RESULT_FILENAME="emulator_test_results.xml"
 export PYTHON_SCRIPT="/tmp/emulator_tests.py"
 docker-compose -p emulator up --exit-code-from tester --build
+docker-compose -p emulator down
 
 export IMPORT_DIODE=True
 export RESULT_FILENAME="import_emulator_test_results.xml"
 export PYTHON_SCRIPT="/tmp/import_emulator_tests.py"
 docker-compose -p emulator up --exit-code-from tester --build
+docker-compose -p emulator down
 popd
 
 python3 -m nose --with-xunit --xunit-file=test/interface_unit_test_results.xml test/mgmt_interface_tests.py
