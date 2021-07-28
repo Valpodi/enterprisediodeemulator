@@ -6,6 +6,8 @@ import subprocess
 import requests
 import json
 import time
+
+import launch_emulator
 from Emulator import launch_emulator_interface
 
 
@@ -22,18 +24,9 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         launch_emulator_interface.start_emulator_with_interface()
 
     @classmethod
-    def build_emulator(cls):
-        subprocess.run("cd Emulator && docker build --no-cache -t emulator -f Dockerfile . && cd ..", shell=True)
-
-    @classmethod
-    def tearDownClass(cls):
-        subprocess.run("docker stop emulator interface", shell=True)
-        subprocess.run("docker rm emulator", shell=True)
-
-    @classmethod
-    def wait_for_port(cls, port_to_check):
+    def wait_for_port(cls, port_to_check, parameters="-zv"):
         cls.wait_for_action(lambda: (subprocess.call(
-            f"nc -zv 172.17.0.1 {port_to_check} -w 1".split())), 0, f"port {port_to_check} should be open", delay=3)
+            f"nc {parameters} 172.17.0.1 {port_to_check} -w 1".split())), 0, f"port {port_to_check} should be open", delay=3)
 
     @classmethod
     def wait_for_action(cls, action, expected_result, message, delay=0, attempts=5):
@@ -47,6 +40,17 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
             time.sleep(delay)
         if condition_met:
             return action_output
+
+    @classmethod
+    def build_emulator(cls):
+        subprocess.run("cd Emulator && docker build --no-cache -t emulator -f Dockerfile . && cd ..", shell=True)
+
+    @classmethod
+    def tearDownClass(cls):
+        subprocess.run("docker stop interface", shell=True)
+
+    def tearDown(self):
+        subprocess.run("docker stop emulator && docker rm emulator", shell=True)
 
     def test_get_config_endpoint(self):
         response = requests.get("http://172.17.0.1:8081/api/config/diode")
