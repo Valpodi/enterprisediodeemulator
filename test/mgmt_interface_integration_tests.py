@@ -23,6 +23,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         subprocess.run("docker stop emulator && docker rm emulator", shell=True)
+        subprocess.run("docker stop interface && docker rm interface", shell=True)
 
     @classmethod
     def wait_for_port(cls, port_to_check):
