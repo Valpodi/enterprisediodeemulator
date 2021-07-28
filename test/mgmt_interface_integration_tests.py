@@ -38,10 +38,6 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         if condition_met:
             return action_output
 
-    @classmethod
-    def tearDownClass(cls):
-        subprocess.run("docker stop $(docker container ls -f ancestor=emulator -aq)", shell=True)
-
     def test_get_config_endpoint(self):
         response = requests.get("http://172.17.0.1:8081/api/config/diode")
 
