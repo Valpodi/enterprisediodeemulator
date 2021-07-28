@@ -16,6 +16,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
     @classmethod
     def start_server(cls):
         subprocess.run("docker build -f Emulator/MgmtInterfaceDockerfile -t emulatorinterface .", shell=True)
+        subprocess.run("pushd Emulator && docker build --no-cache -t emulator -f Dockerfile . && popd", shell=True)
         subprocess.Popen("python3 Emulator/launch_emulator_with_interface.py", shell=True)
         cls.wait_for_port(8081)
 
@@ -51,11 +52,9 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_power_on_endpoint(self):
-        self.assertEqual(b"", subprocess.run("docker container ls -f name=^emulator$ -q", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).stdout)
         response = requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
+        self.assertEqual("completed", json.loads(response.text)['status'])
         self.assertEqual(200, response.status_code)
-        time.sleep(5)
-        self.assertNotEqual(b"", subprocess.run("docker container ls -f name=^emulator$ -q", shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT))
 
 
 if __name__ == '__main__':
