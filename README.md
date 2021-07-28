@@ -19,7 +19,7 @@ You will also have to set the mtu to 9000 on the host's 10G network interface(s)
 
 
 ### Configuring the UDP port forwarding mapping:
-Inside the config folder you will find a file named [portConfig.json](config/portConfig.json). In this file, in the routingTable block,
+Inside the config folder you will find a file named [portConfig.json](Emulator/config/portConfig.json). In this file, in the routingTable block,
 are the mappings of the source ports to destination IP addresses.
 
     "routingTable": [{
