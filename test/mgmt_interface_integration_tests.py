@@ -21,7 +21,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
     @classmethod
     def start_interface_server(cls):
         subprocess.run("docker build -f Emulator/MgmtInterfaceDockerfile -t emulatorinterface .", shell=True)
-        launch_emulator_interface.start_emulator_with_interface()
+        launch_emulator_interface.start_interface()
 
     @classmethod
     def wait_for_port(cls, port_to_check, options="zv"):
