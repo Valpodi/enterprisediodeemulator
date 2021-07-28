@@ -49,6 +49,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
 
     def test_power_on_endpoint(self):
         response = requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
+        self.assertEqual("0", json.loads(response.text)['message'])
         self.assertEqual("completed", json.loads(response.text)['status'])
         self.assertEqual(200, response.status_code)
 

@@ -30,4 +30,5 @@ class Interface:
 
     @classmethod
     def _power_on_diode(cls):
-        return {0: "completed"}.get(launch_emulator.start_emulator("Emulator/config/portConfig.json"), "failed")
+        return_code = launch_emulator.start_emulator("Emulator/config/portConfig.json")
+        return {"status": {0: "completed"}.get(return_code, "failed"), "message": return_code}
