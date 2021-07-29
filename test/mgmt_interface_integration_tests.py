@@ -79,6 +79,14 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         self.assertEqual("completed", json.loads(response.text)['status'])
         self.assertEqual(200, response.status_code)
 
+    def test_power_off_removes_emulator_container(self):
+        requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
+        self.wait_for_port(40001, "zvu")
+        requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
+        self.assertRaises(TimeoutError, self.wait_for_port, 40001, "zvu")
+        requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
+        self.wait_for_port(40001, "zvu")
+
 
 if __name__ == '__main__':
     SUITE = unittest.TestLoader().loadTestsFromTestCase(MgmtInterfaceIntegrationTests)

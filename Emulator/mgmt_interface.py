@@ -44,4 +44,4 @@ class Interface:
 
     @classmethod
     def _power_off_diode(cls):
-        return {"status": {0: "completed"}.get(subprocess.run("docker stop emulator", shell=True).returncode, "failed")}
+        return {"status": {0: "completed"}.get(subprocess.run("docker stop emulator && docker rm emulator", shell=True).returncode, "failed")}
