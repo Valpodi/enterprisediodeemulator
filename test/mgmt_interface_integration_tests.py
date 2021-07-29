@@ -28,7 +28,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
     @classmethod
     def wait_for_port(cls, port_to_check, options="zv"):
         cls.wait_for_action(lambda: (subprocess.call(
-            f"nc -{options} localhost {port_to_check} -w 1".split())), 0, f"port {port_to_check} should be open", delay=3)
+            f"nc -{options} 172.17.0.1 {port_to_check} -w 1".split())), 0, f"port {port_to_check} should be open", delay=3)
 
     @classmethod
     def wait_for_action(cls, action, expected_result, message, delay=0, attempts=5):
@@ -53,7 +53,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         subprocess.run("docker stop emulator && docker rm emulator", shell=True)
 
     def test_get_config_endpoint(self):
-        response = requests.get("http://localhost:8081/api/config/diode")
+        response = requests.get("http://172.17.0.1:8081/api/config/diode")
 
         with open('Emulator/config/portConfig.json', 'r') as config_file:
             expected = json.loads(config_file.read())
@@ -62,7 +62,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_power_on_endpoint(self):
-        response = requests.post("http://localhost:8081/api/command/diode/power/on")
+        response = requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
         self.assertEqual("completed", json.loads(response.text)['status'])
         self.assertEqual(200, response.status_code)
 
@@ -70,7 +70,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         launch_emulator.start_emulator("Emulator/config/portConfig.json")
         self.wait_for_port(40001, "zvu")
 
-        response = requests.post("http://localhost:8081/api/command/diode/power/off")
+        response = requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
         self.assertRaises(TimeoutError, self.wait_for_port, 40001, "zvu")
 
         self.assertEqual("completed", json.loads(response.text)['status'])
