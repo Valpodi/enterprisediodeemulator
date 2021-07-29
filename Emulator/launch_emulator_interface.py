@@ -10,17 +10,16 @@ def shutdown_handler(signum, frame):
 
 
 def start_interface():
-    signal.signal(signal.SIGINT, shutdown_handler)
-
     subprocess.run(
         f'docker run -v /var/run/docker.sock:/var/run/docker.sock '
         f'           -v "$(pwd)":"$(pwd)"'
         f'           -p 8081:8081 '
         f'           --name=interface '
         f'           --rm '
-        f'           -d emulatorinterface /bin/bash -c "pushd $(pwd) && python3 /usr/src/app/http_server.py"',
+        f'           emulatorinterface /bin/bash -c "pushd $(pwd) && python3 /usr/src/app/http_server.py"',
         shell=True)
 
 
 if __name__ == "__main__":
+    signal.signal(signal.SIGINT, shutdown_handler)
     start_interface()

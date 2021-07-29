@@ -6,12 +6,15 @@ import subprocess
 import requests
 import json
 import time
+import threading
 
 import launch_emulator
 from Emulator import launch_emulator_interface
 
 
 class MgmtInterfaceIntegrationTests(unittest.TestCase):
+    interface_server_thread = None
+
     @classmethod
     def setUpClass(cls):
         cls.start_interface_server()
@@ -21,7 +24,8 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
     @classmethod
     def start_interface_server(cls):
         subprocess.run("docker build -f Emulator/MgmtInterfaceDockerfile -t emulatorinterface .", shell=True)
-        launch_emulator_interface.start_interface()
+        cls.interface_server_thread = threading.Thread(target=launch_emulator_interface.start_interface)
+        cls.interface_server_thread.start()
 
     @classmethod
     def wait_for_port(cls, port_to_check, options="zv"):
@@ -48,6 +52,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         subprocess.run("docker stop interface", shell=True)
+        cls.interface_server_thread.join()
 
     @classmethod
     def tearDown(cls):
