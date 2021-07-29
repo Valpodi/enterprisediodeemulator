@@ -18,8 +18,17 @@ class Interface:
             return json.loads(config_file.read())
 
     @classmethod
-    def do_config_update(cls):
+    def do_config_update(cls, config):
+        cls._power_off_diode()
+        cls._update_config(config)
+        cls._power_on_diode()
         return Response(json.dumps({"status": "completed"}), 200)
+
+    @classmethod
+    def _update_config(cls, new_config):
+        with open('Emulator/config/portConfig.json', 'w') as config_file:
+            config_file.write(new_config)
+        return {"status": "completed"}
 
     @classmethod
     def do_power_on_procedure(cls):
