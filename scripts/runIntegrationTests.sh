@@ -10,6 +10,8 @@ function cleanup()
   docker run -v "$(pwd)":"$(pwd)" "centos:7" /bin/bash -c "chown -R $HOSTUID $(pwd)"
 }
 
+./scripts/buildInterfaceAndEmulator.sh
+
 pushd test
 export IMPORT_DIODE=False
 export RESULT_FILENAME="emulator_test_results.xml"

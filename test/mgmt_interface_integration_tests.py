@@ -19,11 +19,9 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
     def setUpClass(cls):
         cls.start_interface_server()
         cls.wait_for_port(8081)
-        cls.build_emulator()
 
     @classmethod
     def start_interface_server(cls):
-        subprocess.run("docker build -f Emulator/MgmtInterfaceDockerfile -t emulatorinterface .", shell=True)
         cls.interface_server_thread = threading.Thread(target=launch_emulator_interface.start_interface)
         cls.interface_server_thread.start()
 
@@ -44,10 +42,6 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
             time.sleep(delay)
         if condition_met:
             return action_output
-
-    @classmethod
-    def build_emulator(cls):
-        subprocess.run("cd Emulator && docker build --no-cache -t emulator -f Dockerfile . && cd ..", shell=True)
 
     @classmethod
     def tearDownClass(cls):
