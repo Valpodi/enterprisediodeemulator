@@ -62,7 +62,10 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_power_on_endpoint(self):
+        self.assertRaises(TimeoutError, self.wait_for_port, 40001, "zvu")
         response = requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
+        self.wait_for_port(40001, "zvu")
+
         self.assertEqual("completed", json.loads(response.text)['status'])
         self.assertEqual(200, response.status_code)
 
