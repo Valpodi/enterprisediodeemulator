@@ -102,7 +102,7 @@ class ImportDestinationEndpoint(asyncio.DatagramProtocol):
         try:
             pysisl.loads(data_string)
         except parser_error.ParserError:
-            data = pysisl.wraps(data_string)
+            data = pysisl.wraps(data)
         return self.encode_to_bytes(data)
 
     def encode_to_bytes(self, data):
