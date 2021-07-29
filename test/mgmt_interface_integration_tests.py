@@ -18,7 +18,12 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.start_interface_server()
-        cls.wait_for_port(8081)
+        try:
+            cls.wait_for_port(8081)
+        except TimeoutError as ex:
+            print(f"Exception during setUpClass: {ex}")
+            cls.clean_up_class()
+            raise
 
     @classmethod
     def start_interface_server(cls):
@@ -44,9 +49,13 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
             return action_output
 
     @classmethod
-    def tearDownClass(cls):
+    def clean_up_class(cls):
         subprocess.run("docker stop interface", shell=True)
         cls.interface_server_thread.join()
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.clean_up_class()
 
     @classmethod
     def tearDown(cls):
@@ -86,6 +95,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         self.assertRaises(TimeoutError, self.wait_for_port, 40001, "zvu")
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
         self.wait_for_port(40001, "zvu")
+
 
 
 if __name__ == '__main__':
