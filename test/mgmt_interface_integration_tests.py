@@ -33,7 +33,8 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
     @classmethod
     def wait_for_port(cls, port_to_check, options="zv"):
         cls.wait_for_action(lambda: (subprocess.call(
-            f"nc -{options} 172.17.0.1 {port_to_check} -w 1".split())), 0, f"port {port_to_check} should be open", delay=3)
+            f"nc -{options} 172.17.0.1 {port_to_check} -w 1".split())), 0, f"port {port_to_check} should be open",
+                            delay=3)
 
     @classmethod
     def wait_for_action(cls, action, expected_result, message, delay=0, attempts=5):
@@ -96,6 +97,21 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
         self.wait_for_port(40001, "zvu")
 
+    def test_update_config_endpoint(self):
+        with open('Emulator/config/portConfig.json', 'r') as config_file:
+            new_config = json.loads(config_file.read())
+
+        new_config["routingTable"][0]["ingressPort"] = 40002
+
+        launch_emulator.start_emulator("Emulator/config/portConfig.json")
+        self.wait_for_port(40001, "zvu")
+
+        response = requests.put("http://172.17.0.1:8081/api/config/diode",
+                                json=new_config,
+                                headers={"Content-Type": "application/json"})
+        self.assertEqual("completed", json.loads(response.text)['status'])
+
+        self.wait_for_port(40002, "zvu")
 
 
 if __name__ == '__main__':

@@ -20,10 +20,10 @@ class MgmtInterfaceTests(unittest.TestCase):
 
     def test_do_config_update_returns_status_completed(self):
         Interface._power_off_diode = lambda: {"status": "completed"}
-        Interface._update_config = lambda config: None
+        Interface._update_config = lambda: None
         Interface._power_on_diode = lambda: {"status": "completed"}
 
-        response = Interface.do_config_update("ignore")
+        response = Interface.do_config_update()
 
         self.assertEqual("completed", json.loads(response.get_data())["status"])
         self.assertEqual(200, response.status_code)
