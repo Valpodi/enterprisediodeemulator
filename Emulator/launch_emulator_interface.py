@@ -2,6 +2,7 @@
 # For licence terms see LICENCE.md file
 import signal
 import subprocess
+import argparse
 
 
 def shutdown_handler(signum, frame):
@@ -9,11 +10,11 @@ def shutdown_handler(signum, frame):
     raise Exception("shutdown")
 
 
-def start_interface():
+def start_interface(port):
     subprocess.run(
         f'docker run -v /var/run/docker.sock:/var/run/docker.sock '
         f'           -v "$(pwd)":"$(pwd)"'
-        f'           -p 8081:8081 '
+        f'           -p {port}:8081 '
         f'           --name=interface '
         f'           --rm '
         f'           emulatorinterface /bin/bash -c "pushd $(pwd) && python3 /usr/src/app/http_server.py"',
@@ -22,4 +23,7 @@ def start_interface():
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, shutdown_handler)
-    start_interface()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--interfacePort', help="port to run interface server", default="8081")
+    interface_port = parser.parse_args().interfacePort
+    start_interface(interface_port)

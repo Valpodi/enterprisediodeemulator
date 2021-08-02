@@ -34,7 +34,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
 
     @classmethod
     def start_interface_server(cls):
-        cls.interface_server_thread = threading.Thread(target=launch_emulator_interface.start_interface)
+        cls.interface_server_thread = threading.Thread(target=launch_emulator_interface.start_interface, args=(8081,))
         cls.interface_server_thread.start()
 
     @classmethod
