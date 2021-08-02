@@ -20,7 +20,7 @@
             }
         ]
     },
-    "egress" : {
+    "egress": {
         "useDhcp": "false",
         "ping": "true",
         "mtu": 9000,
@@ -43,17 +43,16 @@
     },
     "routingTable": [
         {
-            "ingressPort":40001,
-            "egressIpAddress":"emulator_tester_1",
-            "egressSrcPort":50001,
-            "egressDestPort":50001
+            "ingressPort": 40001,
+            "egressIpAddress": "emulator_tester_1",
+            "egressSrcPort": 50001,
+            "egressDestPort": 50001
         },
         {
-            "ingressPort":41024,
-            "egressIpAddress":"emulator_tester_1",
-            "egressSrcPort":51024,
-            "egressDestPort":51024
+            "ingressPort": 41024,
+            "egressIpAddress": "emulator_tester_1",
+            "egressSrcPort": 51024,
+            "egressDestPort": 51024
         }
     ]
 }
-

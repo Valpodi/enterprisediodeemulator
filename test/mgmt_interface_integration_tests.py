@@ -14,16 +14,23 @@ from Emulator import launch_emulator_interface
 
 class MgmtInterfaceIntegrationTests(unittest.TestCase):
     interface_server_thread = None
+    valid_port_config = None
 
     @classmethod
     def setUpClass(cls):
         cls.start_interface_server()
+        cls.save_port_config()
         try:
             cls.wait_for_port(8081)
         except TimeoutError as ex:
             print(f"Exception during setUpClass: {ex}")
             cls.clean_up_class()
             raise
+
+    @classmethod
+    def save_port_config(cls):
+        with open('Emulator/config/portConfig.json', 'r') as config_file:
+            cls.valid_port_config = json.loads(config_file.read())
 
     @classmethod
     def start_interface_server(cls):
@@ -53,6 +60,12 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
     def clean_up_class(cls):
         subprocess.run("docker stop interface", shell=True)
         cls.interface_server_thread.join()
+        cls.reset_port_config_file()
+
+    @classmethod
+    def reset_port_config_file(cls):
+        with open('Emulator/config/portConfig.json', 'w') as config_file:
+            json.dump(cls.valid_port_config, config_file, indent=4)
 
     @classmethod
     def tearDownClass(cls):
