@@ -116,7 +116,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
 
         new_config["routingTable"][0]["ingressPort"] = 40002
 
-        launch_emulator.start_emulator("Emulator/config/portConfig.json")
+        requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
         self.wait_for_port(40001, "zvu")
 
         response = requests.put("http://172.17.0.1:8081/api/config/diode",
