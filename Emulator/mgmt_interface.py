@@ -29,7 +29,7 @@ class Interface:
     @classmethod
     def _update_config(cls):
         with open('Emulator/config/portConfig.json', 'w') as config_file:
-            json.dump(json.loads(connexion.request.get_data().decode('utf-8')), config_file)
+            json.dump(connexion.request.get_json(), config_file)
 
     @classmethod
     def do_power_on_procedure(cls):
