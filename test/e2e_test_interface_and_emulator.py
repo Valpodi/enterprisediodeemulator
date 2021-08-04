@@ -1,6 +1,7 @@
 # Copyright PA Knowledge Ltd 2021
 # For licence terms see LICENCE.md file
 import copy
+import time
 import unittest
 import subprocess
 import threading
@@ -13,7 +14,6 @@ from test_helpers import TestHelpers
 class TestSender:
     def __init__(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.data = b""
 
     def send(self, data, ip, port):
         self.sock.sendto(data, (ip, port))
@@ -26,8 +26,7 @@ class TestReceiver:
     def __init__(self, ip, port):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.bind((ip, port))
-        self.sock.settimeout(5)
-        self.data = b""
+        self.sock.settimeout(1)
 
     def recv(self):
         data, addr = self.sock.recvfrom(9000)
@@ -83,15 +82,16 @@ class EndToEndEmulatorTests(unittest.TestCase):
 
     def setUp(self):
         self.test_udp_sender = TestSender()
-        self.test_udp_listener = TestReceiver("172.17.0.1", 50001)
+        self.test_udp_listener = TestReceiver("0.0.0.0", 50001)
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 50001, "zvu")
 
     def test_data_received_matches_data_sent(self):
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
         TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
         self.test_udp_listener.recv()  # clear netcat bytes
-        self.test_udp_sender.send(b"1234", "0.0.0.0", 40001)
+        self.test_udp_sender.send(b"1234", "172.17.0.1", 40001)
 
-        self.assertEqual(self.test_udp_listener.recv(), b"1234")
+        TestHelpers.wait_for_action(lambda: (self.test_udp_listener.recv() == b"1234", 0), "error", delay=1, attempts=10)
         requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
         self.assertRaises(TimeoutError, TestHelpers.wait_for_open_comms_ports, "172.17.0.1", 40001, "zvu")
 

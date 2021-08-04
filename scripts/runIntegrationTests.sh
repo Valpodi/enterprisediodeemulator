@@ -41,3 +41,5 @@ fi
 docker stop emulator
 docker rm emulator
 popd
+
+python3 -m nose --with-xunit --xunit-file=test/e2e_test_results.xml test/e2e_test_interface_and_emulator.py
