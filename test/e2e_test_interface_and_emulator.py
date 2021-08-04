@@ -1,14 +1,13 @@
 # Copyright PA Knowledge Ltd 2021
 # For licence terms see LICENCE.md file
 import copy
-import signal
 import unittest
 import subprocess
-import time
 import threading
 import requests
 import socket
 import json
+from test_helpers import TestHelpers
 
 
 class TestSender:
@@ -48,7 +47,7 @@ class EndToEndEmulatorTests(unittest.TestCase):
         cls.save_port_config()
         cls.update_port_config()
         try:
-            cls.wait_for_port(8081)
+            TestHelpers.wait_for_open_comms_ports("172.17.0.1", 8081, "zv")
         except TimeoutError as ex:
             print(f"Exception during setUpClass: {ex}")
             cls.tearDownClass()
@@ -92,38 +91,19 @@ class EndToEndEmulatorTests(unittest.TestCase):
         with open('Emulator/config/portConfig.json', 'w') as config_file:
             json.dump(cls.valid_port_config, config_file, indent=4)
 
-    @classmethod
-    def wait_for_port(cls, port_to_check, options="zv"):
-        cls.wait_for_action(lambda: (subprocess.call(
-            f"nc -{options} 172.17.0.1 {port_to_check} -w 1".split())), 0, f"port {port_to_check} should be open",
-                            delay=3)
-
-    @classmethod
-    def wait_for_action(cls, action, expected_result, message, delay=0, attempts=5):
-        condition_met = False
-        while not condition_met:
-            action_output = action()
-            condition_met = (action_output == expected_result)
-            attempts = attempts - 1
-            if attempts == 0:
-                raise TimeoutError("Failed waiting for: " + message)
-            time.sleep(delay)
-        if condition_met:
-            return action_output
-
     def setUp(self):
         self.test_udp_sender = TestSender()
         self.test_udp_listener = TestReceiver("172.17.0.1", 50001)
 
     def test_data_received_matches_data_sent(self):
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
-        self.wait_for_port(40001, "zvu")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
         self.test_udp_listener.recv()  # clear netcat bytes
         self.test_udp_sender.send(b"1234", "0.0.0.0", 40001)
 
         self.assertEqual(self.test_udp_listener.recv(), b"1234")
         requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
-        self.assertRaises(TimeoutError, self.wait_for_port, 40001, "zvu")
+        self.assertRaises(TimeoutError, TestHelpers.wait_for_open_comms_ports, "172.17.0.1", 40001, "zvu")
 
 
 if __name__ == '__main__':
