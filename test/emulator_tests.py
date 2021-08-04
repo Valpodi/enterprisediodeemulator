@@ -35,7 +35,7 @@ class TestReceiver:
 class EmulatorTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        TestHelpers.wait_for_open_comms_ports()
+        TestHelpers.wait_for_open_comms_ports("emulator_diode_emulator_1", 41024, "zvu")
 
     def setUp(self):
         self.test_udp_sender = TestSender()

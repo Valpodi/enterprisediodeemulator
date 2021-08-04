@@ -11,25 +11,25 @@ class TestHelpers:
         return expected_output in rx_msg, rx_msg
 
     @staticmethod
-    def wait_for_action(action, message, delay=2, attempts=20):
+    def wait_for_action(action, message, delay=2, attempts=5):
         for i in range(attempts):
             success, msg = action()
             if not success:
                 print("waiting for action..")
-                if i == attempts-1:
-                    raise Exception("Expected action not performed: " + message)
+                if i == attempts - 1:
+                    raise TimeoutError("Failed waiting for: " + message)
                 time.sleep(delay)
             else:
                 return msg
 
     @staticmethod
-    def wait_for_open_comms_ports(low_address="emulator_diode_emulator_1"):
-        return TestHelpers.wait_for_action(lambda: TestHelpers.ping_port(low_address),
-                                      f"port 514 should be open", attempts=30)
+    def wait_for_open_comms_ports(address, port, options):
+        return TestHelpers.wait_for_action(lambda: TestHelpers.ping_port(address, port, options),
+                                           f"port {port} should be open")
 
     @staticmethod
-    def ping_port(addr):
-        return (subprocess.call(f"nc -zvu {addr} 41024 -w 1".split()) == 0), 0
+    def ping_port(addr, port, options):
+        return (subprocess.call(f"nc -{options} {addr} {port} -w 1".split()) == 0), 0
 
     @staticmethod
     def get_example_control_header():
@@ -38,4 +38,3 @@ class TestHelpers:
     @staticmethod
     def get_bad_example_control_header():
         return b'\xd6\xb7\x79\x3e\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
-
