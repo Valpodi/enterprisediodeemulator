@@ -44,7 +44,7 @@ class EndToEndEmulatorTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.start_interface_server_in_thread()
-        cls.save_port_config()
+        cls.valid_port_config = TestHelpers.save_port_config()
         cls.update_port_config()
         try:
             TestHelpers.wait_for_open_comms_ports("172.17.0.1", 8081, "zv")
@@ -63,11 +63,6 @@ class EndToEndEmulatorTests(unittest.TestCase):
         subprocess.Popen('python3 Emulator/launch_emulator_interface.py --interfacePort 8081', shell=True)
 
     @classmethod
-    def save_port_config(cls):
-        with open('Emulator/config/portConfig.json', 'r') as config_file:
-            cls.valid_port_config = json.loads(config_file.read())
-
-    @classmethod
     def update_port_config(cls):
         new_port_config = copy.deepcopy(cls.valid_port_config)
         new_port_config["routingTable"][0]["egressIpAddress"] = "172.17.0.1"
@@ -82,14 +77,9 @@ class EndToEndEmulatorTests(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.reset_port_config_file()
+        TestHelpers.reset_port_config_file(cls.valid_port_config)
         subprocess.run("docker stop interface", shell=True)
         cls.interface_server_thread.join()
-
-    @classmethod
-    def reset_port_config_file(cls):
-        with open('Emulator/config/portConfig.json', 'w') as config_file:
-            json.dump(cls.valid_port_config, config_file, indent=4)
 
     def setUp(self):
         self.test_udp_sender = TestSender()

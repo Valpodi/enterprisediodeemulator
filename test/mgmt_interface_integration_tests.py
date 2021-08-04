@@ -23,7 +23,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
             TestHelpers.wait_for_open_comms_ports("172.17.0.1", 8081, "zv")
         except TimeoutError as ex:
             print(f"Exception during setUpClass: {ex}")
-            cls.clean_up_class()
+            cls.tearDownClass()
             raise
 
     @classmethod
@@ -32,14 +32,10 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         cls.interface_server_thread.start()
 
     @classmethod
-    def clean_up_class(cls):
+    def tearDownClass(cls):
         subprocess.run("docker stop interface", shell=True)
         cls.interface_server_thread.join()
         TestHelpers.reset_port_config_file(cls.valid_port_config)
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.clean_up_class()
 
     @classmethod
     def tearDown(cls):
