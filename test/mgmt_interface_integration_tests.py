@@ -1,6 +1,6 @@
 # Copyright PA Knowledge Ltd 2021
 # For licence terms see LICENCE.md file
-
+import os
 import unittest
 import subprocess
 import requests
@@ -39,6 +39,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
 
     @classmethod
     def tearDown(cls):
+        TestHelpers.reset_port_config_file(cls.valid_port_config)
         subprocess.run("docker stop emulator && docker rm emulator", shell=True)
 
     def test_get_config_endpoint(self):
@@ -78,6 +79,16 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
                      json=new_config,
                      headers={"Content-Type": "application/json"})
         TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40002, "zvu")
+
+    def test_missing_config_file_with_get_config_endpoint(self):
+        os.remove('Emulator/config/portConfig.json')
+        response = requests.get("http://172.17.0.1:8081/api/config/diode")
+        self.assertEqual("Config file does not exist", json.loads(response.text)["status"])
+
+    def test_missing_config_file_with_power_on_endpoint(self):
+        os.remove('Emulator/config/portConfig.json')
+        response = requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
+        self.assertEqual("Config file could not be found to power on diode", json.loads(response.text)["status"])
 
 
 if __name__ == '__main__':

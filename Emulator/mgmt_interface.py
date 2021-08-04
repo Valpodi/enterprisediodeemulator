@@ -1,7 +1,7 @@
 # Copyright PA Knowledge Ltd 2021
 # For licence terms see LICENCE.md file
+import os
 import connexion
-import requests
 from flask import Response
 import json
 import subprocess
@@ -11,7 +11,10 @@ import launch_emulator
 class Interface:
     @classmethod
     def do_config_get(cls):
-        return Response(json.dumps(cls._get_config_file()), 200)
+        if os.path.exists('Emulator/config/portConfig.json'):
+            return Response(json.dumps(cls._get_config_file()), 200)
+        else:
+            return Response(json.dumps({"status": "Config file does not exist"}), 200)
 
     @classmethod
     def _get_config_file(cls):
@@ -33,7 +36,10 @@ class Interface:
 
     @classmethod
     def do_power_on_procedure(cls):
-        return Response(json.dumps(cls._power_on_diode()), 200)
+        if os.path.exists('Emulator/config/portConfig.json'):
+            return Response(json.dumps(cls._power_on_diode()), 200)
+        else:
+            return Response(json.dumps({"status": "Config file could not be found to power on diode"}), 200)
 
     @classmethod
     def _power_on_diode(cls):
