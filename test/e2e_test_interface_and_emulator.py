@@ -88,10 +88,10 @@ class EndToEndEmulatorTests(unittest.TestCase):
     def test_data_received_matches_data_sent(self):
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
         TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
-        self.test_udp_listener.recv()  # clear netcat bytes
+        self.assertRaises(socket.timeout, TestHelpers.wait_for_action, lambda: (self.test_udp_listener.recv() != b"\x00", 0), "Non-empty packets received exceeded maximum")
         self.test_udp_sender.send(b"1234", "172.17.0.1", 40001)
 
-        TestHelpers.wait_for_action(lambda: (self.test_udp_listener.recv() == b"1234", 0), "error", delay=1, attempts=10)
+        self.assertEqual(self.test_udp_listener.recv(), b"1234")
         requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
         self.assertRaises(TimeoutError, TestHelpers.wait_for_open_comms_ports, "172.17.0.1", 40001, "zvu")
 
