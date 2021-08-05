@@ -26,6 +26,7 @@ docker-compose -p emulator up --exit-code-from tester --build
 docker-compose -p emulator down
 popd
 
+python3 -m nose --with-xunit --xunit-file=test/verify_config_unit_test_results.xml test/verify_config_tests.py
 python3 -m nose --with-xunit --xunit-file=test/interface_unit_test_results.xml test/mgmt_interface_tests.py
 python3 -m nose --with-xunit --xunit-file=test/interface_integration_test_results.xml test/mgmt_interface_integration_tests.py
 
