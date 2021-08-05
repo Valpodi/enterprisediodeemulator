@@ -4,6 +4,7 @@
 from jsonschema import validate as json_schema_validate
 from jsonschema import ValidationError, FormatChecker
 import json
+from config_schema import ConfigSchema
 
 
 class VerifyConfig:
@@ -25,34 +26,8 @@ class VerifyConfig:
             raise ConfigErrorFileSizeTooLarge("Provided config file size too large")
 
     def _verify_config_with_schema(self):
-        interface = {
-            "type": "object",
-            "properties": {
-                "useDHCP": {
-                    "type": "boolean"
-                },
-                "ping": {
-                    "type": "boolean"
-                },
-                "mtu": {
-                    "type": "integer"
-                }
-            },
-            "required": ["useDHCP", "ping", "mtu"]
-        }
-
-        schema = {
-            "properties": {
-                "egress": interface,
-                "ingress": interface,
-                "routingTable": {
-                    "type": "array"
-                },
-            },
-            "required": ["egress", "ingress", "routingTable"]
-        }
         try:
-            json_schema_validate(self.config, schema=schema, format_checker=FormatChecker())
+            json_schema_validate(self.config, schema=ConfigSchema.get_schema(), format_checker=FormatChecker())
         except ValidationError as err:
             raise ConfigErrorFailedSchemaVerification
 
