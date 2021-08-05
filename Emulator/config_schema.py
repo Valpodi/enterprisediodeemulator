@@ -1,5 +1,3 @@
-
-
 class ConfigSchema:
     @staticmethod
     def get_schema():
@@ -37,7 +35,20 @@ class ConfigSchema:
     def _ethernet_ports():
         return {
             "type": "array",
-            "items": {"type": "object"},
+            "items": ConfigSchema._adapter(),
             "minItems": 2,
             "maxItems": 2
+        }
+
+    @staticmethod
+    def _adapter():
+        return {
+            "type": "object",
+            "properties": {
+                "ip": {"type": "string", "format": "ipv4"},
+                "nm": {"type": "string", "format": "ipv4"},
+                "gw": {"type": "string", "format": "ipv4"},
+                "ntp": {"type": "string", "format": "ipv4"},
+                "log": {"type": "string", "format": "ipv4"}},
+            "required": ["ip", "nm"]
         }
