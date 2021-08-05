@@ -22,7 +22,9 @@ class ConfigSchema:
                     "type": "boolean"
                 },
                 "mtu": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 576,
+                    "maximum": 9000
                 },
                 "ethernetPorts": ConfigSchema._ethernet_ports()
             },
