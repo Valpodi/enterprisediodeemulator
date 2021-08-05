@@ -1,7 +1,7 @@
 # Copyright PA Knowledge Ltd 2021
 # For licence terms see LICENCE.md file
+
 import copy
-import time
 import unittest
 import subprocess
 import threading

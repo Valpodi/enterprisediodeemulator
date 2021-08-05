@@ -1,3 +1,6 @@
+# Copyright PA Knowledge Ltd 2021
+# For licence terms see LICENCE.md file
+
 class ConfigSchema:
     @staticmethod
     def get_schema():

@@ -1,7 +1,9 @@
+# Copyright PA Knowledge Ltd 2021
+# For licence terms see LICENCE.md file
+
 import unittest
 import socket
 from test_helpers import TestHelpers
-import time
 
 
 class TestSender:

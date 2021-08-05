@@ -1,5 +1,6 @@
 # Copyright PA Knowledge Ltd 2021
 # For licence terms see LICENCE.md file
+
 import copy
 import unittest
 from verify_config import VerifyConfig, ConfigErrorEmptyFile, ConfigErrorFileSizeTooLarge, \
