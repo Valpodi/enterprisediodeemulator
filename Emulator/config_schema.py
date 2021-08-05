@@ -3,6 +3,13 @@
 class ConfigSchema:
     @staticmethod
     def get_schema():
+        ethernet_ports = {
+            "type": "array",
+            "items": {"type": "object"},
+            "minItems": 2,
+            "maxItems": 2
+        }
+
         interface = {
             "type": "object",
             "properties": {
@@ -14,7 +21,8 @@ class ConfigSchema:
                 },
                 "mtu": {
                     "type": "integer"
-                }
+                },
+                "ethernetPorts": ethernet_ports
             },
             "required": ["useDHCP", "ping", "mtu"]
         }
