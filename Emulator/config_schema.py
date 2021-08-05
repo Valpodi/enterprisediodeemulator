@@ -3,14 +3,20 @@
 class ConfigSchema:
     @staticmethod
     def get_schema():
-        ethernet_ports = {
-            "type": "array",
-            "items": {"type": "object"},
-            "minItems": 2,
-            "maxItems": 2
+        return {
+            "properties": {
+                "egress": ConfigSchema._interface(),
+                "ingress": ConfigSchema._interface(),
+                "routingTable": {
+                    "type": "array"
+                },
+            },
+            "required": ["egress", "ingress", "routingTable"]
         }
 
-        interface = {
+    @staticmethod
+    def _interface():
+        return {
             "type": "object",
             "properties": {
                 "useDHCP": {
@@ -22,18 +28,16 @@ class ConfigSchema:
                 "mtu": {
                     "type": "integer"
                 },
-                "ethernetPorts": ethernet_ports
+                "ethernetPorts": ConfigSchema._ethernet_ports()
             },
             "required": ["useDHCP", "ping", "mtu"]
         }
 
+    @staticmethod
+    def _ethernet_ports():
         return {
-            "properties": {
-                "egress": interface,
-                "ingress": interface,
-                "routingTable": {
-                    "type": "array"
-                },
-            },
-            "required": ["egress", "ingress", "routingTable"]
+            "type": "array",
+            "items": {"type": "object"},
+            "minItems": 2,
+            "maxItems": 2
         }
