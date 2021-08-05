@@ -6,9 +6,12 @@ from flask import Response
 import json
 import subprocess
 import launch_emulator
+from verify_config import VerifyConfig
 
 
 class Interface:
+    config_file = None
+
     @classmethod
     def do_config_get(cls):
         if os.path.exists('Emulator/config/portConfig.json'):
@@ -23,6 +26,8 @@ class Interface:
 
     @classmethod
     def do_config_update(cls):
+        cls.config_file = connexion.request.get_json()
+        VerifyConfig(cls.config_file).validate()
         cls._power_off_diode()
         cls._update_config()
         cls._power_on_diode()
@@ -32,7 +37,7 @@ class Interface:
     @classmethod
     def _update_config(cls):
         with open('Emulator/config/portConfig.json', 'w') as config_file:
-            json.dump(connexion.request.get_json(), config_file)
+            json.dump(cls.config_file, config_file)
 
     @classmethod
     def do_power_on_procedure(cls):

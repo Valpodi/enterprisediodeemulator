@@ -3,7 +3,7 @@
 
 import unittest
 import json
-from Emulator.mgmt_interface import Interface
+from mgmt_interface import Interface
 
 
 class MgmtInterfaceTests(unittest.TestCase):
@@ -16,16 +16,6 @@ class MgmtInterfaceTests(unittest.TestCase):
         response = Interface.do_config_get()
 
         self.assertEqual({"ingress": {}, "egress": {}, "routingTable": []}, json.loads(response.get_data()))
-        self.assertEqual(200, response.status_code)
-
-    def test_do_config_update_returns_status_completed(self):
-        Interface._power_off_diode = lambda: {"status": "completed"}
-        Interface._update_config = lambda: None
-        Interface._power_on_diode = lambda: {"status": "completed"}
-
-        response = Interface.do_config_update()
-
-        self.assertEqual("completed", json.loads(response.get_data())["status"])
         self.assertEqual(200, response.status_code)
 
     def test_diode_power_on_returns_status_completed(self):

@@ -1,7 +1,7 @@
 # Copyright PA Knowledge Ltd 2021
 # For licence terms see LICENCE.md file
 import unittest
-from Emulator.verify_config import VerifyConfig, ConfigErrorEmptyFile, ConfigErrorFileSizeTooLarge
+from verify_config import VerifyConfig, ConfigErrorEmptyFile, ConfigErrorFileSizeTooLarge
 
 
 class VerifyConfigTests(unittest.TestCase):
