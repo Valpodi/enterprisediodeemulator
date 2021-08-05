@@ -2,15 +2,26 @@
 # For licence terms see LICENCE.md file
 
 class VerifyConfig:
-    @staticmethod
-    def validate(config):
-        return VerifyConfig.verify_non_empty_config_file(config)
+    def __init__(self, config, max_length=100):
+        self.config = config
+        self._max_length = max_length
 
-    @staticmethod
-    def verify_non_empty_config_file(config):
-        if len(config) == 0:
+    def validate(self):
+        self._verify_non_empty_config_file()
+        self._verify_config_less_than_max_length()
+
+    def _verify_non_empty_config_file(self):
+        if len(self.config) == 0:
             raise ConfigErrorEmptyFile("Provided config file is empty")
+
+    def _verify_config_less_than_max_length(self):
+        if len(self.config) > self._max_length:
+            raise ConfigErrorFileSizeTooLarge("Provided config file size too large")
 
 
 class ConfigErrorEmptyFile(Exception):
+    pass
+
+
+class ConfigErrorFileSizeTooLarge(Exception):
     pass
