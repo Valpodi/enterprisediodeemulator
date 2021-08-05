@@ -5,9 +5,7 @@ class ConfigSchema:
             "properties": {
                 "egress": ConfigSchema._interface(),
                 "ingress": ConfigSchema._interface(),
-                "routingTable": {
-                    "type": "array"
-                },
+                "routingTable": ConfigSchema._route_table(),
             },
             "required": ["egress", "ingress", "routingTable"]
         }
@@ -51,4 +49,26 @@ class ConfigSchema:
                 "ntp": {"type": "string", "format": "ipv4"},
                 "log": {"type": "string", "format": "ipv4"}},
             "required": ["ip", "nm"]
+        }
+
+    @staticmethod
+    def _route_table():
+        return {
+            "type": "array",
+            "items": ConfigSchema._route(),
+            "minItems": 1,
+            "maxItems": 1024,
+            "additionalItems": False
+        }
+
+    @staticmethod
+    def _route():
+        return {
+            "type": "object",
+            "properties": {
+                "ingressPort": {"type": "integer"},
+                "egressIpAddress": {"type": "string", "format": "ipv4"},
+                "egressSrcPort": {"type": "integer"},
+                "egressDestPort": {"type": "integer"}},
+            "required": ["ingressPort", "egressIpAddress", "egressSrcPort", "egressDestPort"]
         }

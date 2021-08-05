@@ -25,7 +25,24 @@ class VerifyConfigTests(unittest.TestCase):
                 {"ip": "192.168.0.12", "nm": "255.255.255.0"}
             ]
         }
-        VerifyConfig({"ingress": interface, "egress": interface, "routingTable": []}).validate()
+
+        VerifyConfig({"ingress": interface,
+                      "egress": interface,
+                      "routingTable": [
+                          {
+                              "ingressPort": 50000,
+                              "egressIpAddress": "192.168.0.20",
+                              "egressSrcPort": 60000,
+                              "egressDestPort": 60600
+                          },
+                          {
+                              "ingressPort": 50500,
+                              "egressIpAddress": "192.168.0.21",
+                              "egressSrcPort": 60004,
+                              "egressDestPort": 61004
+                          }
+                      ]
+                      }).validate()
 
     def test_config_file_that_does_not_match_schema_throws_error(self):
         verify_config = VerifyConfig({"ingress": {}})
