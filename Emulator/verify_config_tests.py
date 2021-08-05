@@ -1,30 +1,21 @@
 # Copyright PA Knowledge Ltd 2021
 # For licence terms see LICENCE.md file
-
+import copy
 import unittest
 from verify_config import VerifyConfig, ConfigErrorEmptyFile, ConfigErrorFileSizeTooLarge, \
     ConfigErrorFailedSchemaVerification
-import jsonschema
 
 
 class VerifyConfigTests(unittest.TestCase):
-    def test_empty_config_throws_error(self):
-        verify_config = VerifyConfig({})
-        self.assertRaises(ConfigErrorEmptyFile, verify_config.validate)
-
-    def test_config_file_longer_than_max_length_throws_error(self):
-        verify_config = VerifyConfig({"ingress": {}, "egress": {}, "routingTable": []}, max_length=10)
-        self.assertRaises(ConfigErrorFileSizeTooLarge,
-                          verify_config.validate)
-
-    def test_config_file_matches_schema(self):
+    @classmethod
+    def setUpClass(cls):
         interface = {
             "useDHCP": False,
             "ping": True,
             "mtu": 9000
         }
 
-        VerifyConfig({"ingress": interface,
+        cls.config = {"ingress": interface,
                       "egress": interface,
                       "routingTable": [
                           {
@@ -40,39 +31,30 @@ class VerifyConfigTests(unittest.TestCase):
                               "egressDestPort": 61004
                           }
                       ]
-                      }).validate()
+                      }
+
+    def test_empty_config_throws_error(self):
+        verify_config = VerifyConfig({})
+        self.assertRaises(ConfigErrorEmptyFile, verify_config.validate)
+
+    def test_config_file_longer_than_max_length_throws_error(self):
+        verify_config = VerifyConfig({"ingress": {}, "egress": {}, "routingTable": []}, max_length=10)
+        self.assertRaises(ConfigErrorFileSizeTooLarge,
+                          verify_config.validate)
+
+    def test_config_file_matches_schema(self):
+        VerifyConfig(self.config).validate()
 
     def test_config_file_that_does_not_match_schema_throws_error(self):
         verify_config = VerifyConfig({"ingress": {}})
         self.assertRaises(ConfigErrorFailedSchemaVerification, verify_config.validate)
 
     def test_ethernet_ports_is_provided_when_use_dhcp_is_true(self):
-        interface = {
-            "useDHCP": True,
-            "ping": True,
-            "mtu": 9000
-        }
-        config = {"ingress": interface,
-                  "egress": interface,
-                  "routingTable": [
-                      {
-                          "ingressPort": 50000,
-                          "egressIpAddress": "192.168.0.20",
-                          "egressSrcPort": 60000,
-                          "egressDestPort": 60600
-                      },
-                      {
-                          "ingressPort": 50500,
-                          "egressIpAddress": "192.168.0.21",
-                          "egressSrcPort": 60004,
-                          "egressDestPort": 61004
-                      }
-                  ]
-                  }
-
+        config_with_dhcp_true = copy.deepcopy(self.config)
+        config_with_dhcp_true["ingress"]["useDHCP"] = True
         self.assertRaisesRegex(ConfigErrorFailedSchemaVerification,
                                "'ethernetPorts' is a required property",
-                               VerifyConfig(config).validate)
+                               VerifyConfig(config_with_dhcp_true).validate)
 
 
 if __name__ == '__main__':
