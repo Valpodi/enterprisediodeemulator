@@ -26,8 +26,10 @@ class ConfigSchema:
                 },
                 "ethernetPorts": ConfigSchema._ethernet_ports()
             },
-            "required": ["useDHCP", "ping", "mtu"]
-        }
+            "required": ["useDHCP", "ping", "mtu"],
+            "if": {"properties": {"useDHCP": {"const": True}}, "required": ["useDHCP"]},
+            "then": {"required": ["ping", "useDHCP", "mtu", "ethernetPorts"]},
+            "else": {"required": ["ping", "useDHCP", "mtu"]}}
 
     @staticmethod
     def _ethernet_ports():

@@ -1,8 +1,10 @@
 # Copyright PA Knowledge Ltd 2021
 # For licence terms see LICENCE.md file
+
 import unittest
 from verify_config import VerifyConfig, ConfigErrorEmptyFile, ConfigErrorFileSizeTooLarge, \
     ConfigErrorFailedSchemaVerification
+import jsonschema
 
 
 class VerifyConfigTests(unittest.TestCase):
@@ -19,11 +21,7 @@ class VerifyConfigTests(unittest.TestCase):
         interface = {
             "useDHCP": False,
             "ping": True,
-            "mtu": 9000,
-            "ethernetPorts": [
-                {"ip": "192.168.0.12", "nm": "255.255.255.0"},
-                {"ip": "192.168.0.12", "nm": "255.255.255.0"}
-            ]
+            "mtu": 9000
         }
 
         VerifyConfig({"ingress": interface,
@@ -47,6 +45,34 @@ class VerifyConfigTests(unittest.TestCase):
     def test_config_file_that_does_not_match_schema_throws_error(self):
         verify_config = VerifyConfig({"ingress": {}})
         self.assertRaises(ConfigErrorFailedSchemaVerification, verify_config.validate)
+
+    def test_ethernet_ports_is_provided_when_use_dhcp_is_true(self):
+        interface = {
+            "useDHCP": True,
+            "ping": True,
+            "mtu": 9000
+        }
+        config = {"ingress": interface,
+                  "egress": interface,
+                  "routingTable": [
+                      {
+                          "ingressPort": 50000,
+                          "egressIpAddress": "192.168.0.20",
+                          "egressSrcPort": 60000,
+                          "egressDestPort": 60600
+                      },
+                      {
+                          "ingressPort": 50500,
+                          "egressIpAddress": "192.168.0.21",
+                          "egressSrcPort": 60004,
+                          "egressDestPort": 61004
+                      }
+                  ]
+                  }
+
+        self.assertRaisesRegex(ConfigErrorFailedSchemaVerification,
+                               "'ethernetPorts' is a required property",
+                               VerifyConfig(config).validate)
 
 
 if __name__ == '__main__':

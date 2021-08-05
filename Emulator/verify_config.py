@@ -29,7 +29,7 @@ class VerifyConfig:
         try:
             json_schema_validate(self.config, schema=ConfigSchema.get_schema(), format_checker=FormatChecker())
         except ValidationError as err:
-            raise ConfigErrorFailedSchemaVerification
+            raise ConfigErrorFailedSchemaVerification(err.message)
 
 
 class ConfigErrorEmptyFile(Exception):
