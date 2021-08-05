@@ -6,5 +6,6 @@ RUN pip3 install connexion
 COPY Emulator/http_server.py /usr/src/app/http_server.py
 COPY Emulator/mgmt_interface.py /usr/src/app/mgmt_interface.py
 COPY Emulator/verify_config.py /usr/src/app/verify_config.py
+COPY Emulator/config_schema.py /usr/src/app/config_schema.py
 COPY Emulator/openapi/ /usr/src/app/openapi/
 COPY launch_emulator.py /usr/src/app/launch_emulator.py
