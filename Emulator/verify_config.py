@@ -5,6 +5,7 @@ from jsonschema import validate as json_schema_validate
 from jsonschema import ValidationError, FormatChecker
 import json
 
+
 class VerifyConfig:
     def __init__(self, config, max_length=1048576):
         self.config = config
@@ -24,14 +25,26 @@ class VerifyConfig:
             raise ConfigErrorFileSizeTooLarge("Provided config file size too large")
 
     def _verify_config_with_schema(self):
+        interface = {
+            "type": "object",
+            "properties": {
+                "useDHCP": {
+                    "type": "boolean"
+                },
+                "ping": {
+                    "type": "boolean"
+                },
+                "mtu": {
+                    "type": "integer"
+                }
+            },
+            "required": ["useDHCP", "ping", "mtu"]
+        }
+
         schema = {
             "properties": {
-                "egress": {
-                    "type": "object"
-                },
-                "ingress": {
-                    "type": "object"
-                },
+                "egress": interface,
+                "ingress": interface,
                 "routingTable": {
                     "type": "array"
                 },

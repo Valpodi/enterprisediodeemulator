@@ -16,7 +16,8 @@ class VerifyConfigTests(unittest.TestCase):
                           verify_config.validate)
 
     def test_config_file_matches_schema(self):
-        VerifyConfig({"ingress": {}, "egress": {}, "routingTable": []}).validate()
+        interface = {"useDHCP": False, "ping": True, "mtu": 9000}
+        VerifyConfig({"ingress": interface, "egress": interface, "routingTable": []}).validate()
 
     def test_config_file_that_does_not_match_schema_throws_error(self):
         verify_config = VerifyConfig({"ingress": {}})
