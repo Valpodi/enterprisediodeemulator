@@ -36,9 +36,14 @@ the diode will only support IP addresses.
 To run the emulator on your local machine the egressIpAddress in the config file should be set to the docker bridge network gateway IP address 172.17.0.1. 
 
 ### Building the emulator
-Build the emulator docker container with:
+Build the emulator and interface docker containers with:
 
-`docker build -f Emulator/Dockerfile -t emulator Emulator`
+`./scripts/buildInterfaceAndEmulator.sh`
+
+### Launching the management interface
+Run the launch interface script:
+
+`python3 Emulator/launch_emulator_interface.py -p [INTERFACE_PORT]`
 
 #### Basic Diode ####
 Run the python launch script:
@@ -49,7 +54,6 @@ Run the python launch script:
 Run the python launch script:
 
 `python3 launch_emulator.py -p [PATH_TO_CONFIG_FILE] --importDiode`
-
 
 You can test the emulator by listening on a destination ip address and sending udp at the mapped source port.
 
