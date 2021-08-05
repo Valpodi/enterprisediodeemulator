@@ -67,7 +67,7 @@ class ConfigSchema:
             "type": "object",
             "properties": {
                 "ingressPort": {"type": "integer"},
-                "egressIpAddress": {"type": "string", "format": "ipv4"},
+                "egressIpAddress": {"type": "string"},
                 "egressSrcPort": {"type": "integer"},
                 "egressDestPort": {"type": "integer"}},
             "required": ["ingressPort", "egressIpAddress", "egressSrcPort", "egressDestPort"]
