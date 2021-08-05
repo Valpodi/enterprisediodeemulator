@@ -27,12 +27,16 @@ class Interface:
     @classmethod
     def do_config_update(cls):
         cls.config_file = connexion.request.get_json()
-        VerifyConfig(cls.config_file).validate()
+        cls._validate_config()
         cls._power_off_diode()
         cls._update_config()
         cls._power_on_diode()
 
         return Response(json.dumps({"status": "completed"}), 200)
+
+    @classmethod
+    def _validate_config(cls):
+        return VerifyConfig(cls.config_file).validate()
 
     @classmethod
     def _update_config(cls):

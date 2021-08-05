@@ -1,6 +1,10 @@
 # Copyright PA Knowledge Ltd 2021
 # For licence terms see LICENCE.md file
 
+from jsonschema import validate as json_schema_validate
+from jsonschema import ValidationError, FormatChecker
+import json
+
 class VerifyConfig:
     def __init__(self, config, max_length=1048576):
         self.config = config
@@ -9,14 +13,35 @@ class VerifyConfig:
     def validate(self):
         self._verify_non_empty_config_file()
         self._verify_config_less_than_max_length()
+        self._verify_config_with_schema()
 
     def _verify_non_empty_config_file(self):
         if len(self.config) == 0:
             raise ConfigErrorEmptyFile("Provided config file is empty")
 
     def _verify_config_less_than_max_length(self):
-        if len(self.config) > self.max_length:
+        if len(json.dumps(self.config)) > self.max_length:
             raise ConfigErrorFileSizeTooLarge("Provided config file size too large")
+
+    def _verify_config_with_schema(self):
+        schema = {
+            "properties": {
+                "egress": {
+                    "type": "object"
+                },
+                "ingress": {
+                    "type": "object"
+                },
+                "routingTable": {
+                    "type": "array"
+                },
+            },
+            "required": ["egress", "ingress", "routingTable"]
+        }
+        try:
+            json_schema_validate(self.config, schema=schema, format_checker=FormatChecker())
+        except ValidationError as err:
+            raise ConfigErrorFailedSchemaVerification
 
 
 class ConfigErrorEmptyFile(Exception):
@@ -24,4 +49,8 @@ class ConfigErrorEmptyFile(Exception):
 
 
 class ConfigErrorFileSizeTooLarge(Exception):
+    pass
+
+
+class ConfigErrorFailedSchemaVerification(Exception):
     pass
