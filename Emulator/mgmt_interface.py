@@ -37,7 +37,7 @@ class Interface:
 
     @classmethod
     def _validate_config(cls):
-        return VerifyConfig(cls.config_file).validate()
+        return VerifyConfig.validate(cls.config_file)
 
     @classmethod
     def _update_config(cls):

@@ -36,25 +36,29 @@ class VerifyConfigTests(unittest.TestCase):
     def test_empty_config_throws_error(self):
 
         self.assertRaises(verify_config.ConfigErrorEmptyFile,
-                          verify_config.VerifyConfig({}).validate)
+                          verify_config.VerifyConfig.validate,
+                          {})
 
     def test_config_file_longer_than_max_length_throws_error(self):
         self.assertRaises(verify_config.ConfigErrorFileSizeTooLarge,
-                          verify_config.VerifyConfig({"ingress": {}, "egress": {}, "routingTable": []}, max_length=10).validate)
+                          verify_config.VerifyConfig.validate,
+                          config={"ingress": {}, "egress": {}, "routingTable": []}, max_length=10)
 
     def test_config_file_matches_schema(self):
-        verify_config.VerifyConfig(self.config).validate()
+        verify_config.VerifyConfig.validate(self.config)
 
     def test_config_file_that_does_not_match_schema_throws_error(self):
         self.assertRaises(verify_config.ConfigErrorFailedSchemaVerification,
-                          verify_config.VerifyConfig({"ingress": {}}).validate)
+                          verify_config.VerifyConfig.validate,
+                          {"ingress": {}})
 
     def test_ethernet_ports_is_provided_when_use_dhcp_is_true(self):
         config_with_dhcp_true = copy.deepcopy(self.config)
         config_with_dhcp_true["ingress"]["useDHCP"] = True
         self.assertRaisesRegex(verify_config.ConfigErrorFailedSchemaVerification,
                                "'ethernetPorts' is a required property",
-                               verify_config.VerifyConfig(config_with_dhcp_true).validate)
+                               verify_config.VerifyConfig.validate,
+                               config_with_dhcp_true)
 
     def test_port_span_exceeds_1024_throws_error(self):
         config_port_span_too_large = copy.deepcopy(self.config)
@@ -74,7 +78,8 @@ class VerifyConfigTests(unittest.TestCase):
         ]
         self.assertRaisesRegex(verify_config.ConfigErrorInvalidPortSpan,
                                "Config validation failed: Ingress portSpan must be less than 1024.",
-                               verify_config.VerifyConfig(config_port_span_too_large).validate)
+                               verify_config.VerifyConfig.validate,
+                               config_port_span_too_large)
 
     def test_ingress_ports_not_unique_throws_error(self):
         config_ports_not_unique = copy.deepcopy(self.config)
@@ -94,7 +99,8 @@ class VerifyConfigTests(unittest.TestCase):
         ]
         self.assertRaisesRegex(verify_config.ConfigErrorIngressPortsNotUnique,
                                "Config validation failed: Ingress ports must be unique.",
-                               verify_config.VerifyConfig(config_ports_not_unique).validate)
+                               verify_config.VerifyConfig.validate,
+                               config_ports_not_unique)
 
 
 if __name__ == '__main__':

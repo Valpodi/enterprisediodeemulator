@@ -8,40 +8,43 @@ from config_schema import ConfigSchema
 
 
 class VerifyConfig:
-    def __init__(self, config, max_length=1048576):
-        self.config = config
-        self.max_length = max_length
 
-    def validate(self):
-        self._verify_non_empty_config_file()
-        self._verify_config_less_than_max_length()
-        self._verify_config_with_schema()
-        self._verify_port_span()
-        self._verify_unique_ports()
+    @staticmethod
+    def validate(config, max_length=1048576):
+        VerifyConfig._verify_non_empty_config_file(config)
+        VerifyConfig._verify_config_less_than_max_length(config, max_length)
+        VerifyConfig._verify_config_with_schema(config)
+        VerifyConfig._verify_port_span(config)
+        VerifyConfig._verify_unique_ports(config)
 
-    def _verify_non_empty_config_file(self):
-        if len(self.config) == 0:
+    @staticmethod
+    def _verify_non_empty_config_file(config):
+        if len(config) == 0:
             raise ConfigErrorEmptyFile("Provided config file is empty")
 
-    def _verify_config_less_than_max_length(self):
-        if len(json.dumps(self.config)) > self.max_length:
+    @staticmethod
+    def _verify_config_less_than_max_length(config, max_length):
+        if len(json.dumps(config)) > max_length:
             raise ConfigErrorFileSizeTooLarge("Provided config file size too large")
 
-    def _verify_config_with_schema(self):
+    @staticmethod
+    def _verify_config_with_schema(config):
         try:
-            json_schema_validate(self.config, schema=ConfigSchema.get_schema(), format_checker=FormatChecker())
+            json_schema_validate(config, schema=ConfigSchema.get_schema(), format_checker=FormatChecker())
         except ValidationError as err:
             raise ConfigErrorFailedSchemaVerification(err.message)
 
-    def _verify_port_span(self):
-        route_table = self.config["routingTable"]
+    @staticmethod
+    def _verify_port_span(config):
+        route_table = config["routingTable"]
         ingress_ports = [route["ingressPort"] for route in route_table]
 
         if (max(ingress_ports) - min(ingress_ports) + 1) > 1024:
             raise ConfigErrorInvalidPortSpan("Config validation failed: Ingress portSpan must be less than 1024.")
 
-    def _verify_unique_ports(self):
-        route_table = self.config["routingTable"]
+    @staticmethod
+    def _verify_unique_ports(config):
+        route_table = config["routingTable"]
         ingress_ports = [route["ingressPort"] for route in route_table]
 
         if len(set(ingress_ports)) < len(ingress_ports):
