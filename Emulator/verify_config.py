@@ -30,6 +30,14 @@ class VerifyConfig:
             json_schema_validate(self.config, schema=ConfigSchema.get_schema(), format_checker=FormatChecker())
         except ValidationError as err:
             raise ConfigErrorFailedSchemaVerification(err.message)
+        self._verify_port_span()
+
+    def _verify_port_span(self):
+        route_table = self.config["routingTable"]
+        ingress_ports = [route["ingressPort"] for route in route_table]
+
+        if (max(ingress_ports) - min(ingress_ports) + 1) > 1024:
+            raise ConfigErrorInvalidPortSpan("Config validation failed: Ingress portSpan must be less than 1024.")
 
 
 class ConfigErrorEmptyFile(Exception):
@@ -41,4 +49,8 @@ class ConfigErrorFileSizeTooLarge(Exception):
 
 
 class ConfigErrorFailedSchemaVerification(Exception):
+    pass
+
+
+class ConfigErrorInvalidPortSpan(Exception):
     pass
