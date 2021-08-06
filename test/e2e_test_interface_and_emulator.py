@@ -59,7 +59,7 @@ class EndToEndEmulatorTests(unittest.TestCase):
 
     @classmethod
     def start_interface_server(cls):
-        subprocess.Popen('python3 Emulator/launch_emulator_interface.py --interfacePort 8081', shell=True)
+        subprocess.Popen('python3 Emulator/launch_management_interface.py --interfacePort 8081', shell=True)
 
     @classmethod
     def update_port_config(cls):
@@ -77,7 +77,7 @@ class EndToEndEmulatorTests(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         TestHelpers.reset_port_config_file(cls.valid_port_config)
-        subprocess.run("docker stop interface", shell=True)
+        subprocess.run("docker stop management_interface", shell=True)
         cls.interface_server_thread.join()
 
     def setUp(self):

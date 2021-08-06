@@ -9,7 +9,7 @@ import json
 import threading
 from test_helpers import TestHelpers
 import launch_emulator
-from Emulator import launch_emulator_interface
+from Emulator import launch_management_interface
 
 
 class MgmtInterfaceIntegrationTests(unittest.TestCase):
@@ -29,12 +29,12 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
 
     @classmethod
     def start_interface_server(cls):
-        cls.interface_server_thread = threading.Thread(target=launch_emulator_interface.start_interface, args=(8081,))
+        cls.interface_server_thread = threading.Thread(target=launch_management_interface.start_interface, args=(8081,))
         cls.interface_server_thread.start()
 
     @classmethod
     def tearDownClass(cls):
-        subprocess.run("docker stop interface", shell=True)
+        subprocess.run("docker stop management_interface", shell=True)
         cls.interface_server_thread.join()
         TestHelpers.reset_port_config_file(cls.valid_port_config)
 

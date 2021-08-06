@@ -16,7 +16,7 @@ def start_interface(port):
         f'docker run -v /var/run/docker.sock:/var/run/docker.sock '
         f'           -v "$(pwd)":"$(pwd)"'
         f'           -p {port}:8081 '
-        f'           --name=interface '
+        f'           --name=management_interface '
         f'           --rm '
         f'           emulatorinterface /bin/bash -c "pushd $(pwd) && python3 /usr/src/app/http_server.py"',
         shell=True)

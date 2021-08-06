@@ -41,7 +41,7 @@ Build the emulator and interface docker containers with:
 The management interface uses a REST API to interact with the diode emulator. 
 To launch the interface, run the script:
 
-`python3 Emulator/launch_emulator_interface.py -p [INTERFACE_PORT]`
+`python3 Emulator/launch_management_interface.py -p [INTERFACE_PORT]`
 
 #### Management interface endpoints ####
 The /api/command/diode/power/on and /api/command/diode/power/off endpoints can be used to control the diode emulator power.
