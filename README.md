@@ -32,18 +32,24 @@ are the mappings of the source ports to destination IP addresses.
 Please note that while the emulator can use DNS name resolution for the destination IP address,
 the diode will only support IP addresses.
 
-### Running the emulator locally
-To run the emulator on your local machine the egressIpAddress in the config file should be set to the docker bridge network gateway IP address 172.17.0.1. 
-
 ### Building the emulator
 Build the emulator and interface docker containers with:
 
 `./scripts/buildInterfaceAndEmulator.sh`
 
-### Launching the management interface
-Run the launch interface script:
+### Management interface
+The management interface uses a REST API to interact with the diode emulator. 
+To launch the interface, run the script:
 
 `python3 Emulator/launch_emulator_interface.py -p [INTERFACE_PORT]`
+
+#### Management interface endpoints ####
+The /api/command/diode/power/on and /api/command/diode/power/off endpoints can be used to control the diode emulator power.
+
+The /api/config/diode endpoint can be used with GET and PUT requests to retrieve or update the portConfig the emulator uses. 
+
+### Running the emulator locally
+To run the emulator on your local machine the egressIpAddress in the config file should be set to the docker bridge network gateway IP address 172.17.0.1.
 
 #### Basic Diode ####
 Run the python launch script:
