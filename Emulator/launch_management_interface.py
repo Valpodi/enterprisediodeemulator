@@ -7,7 +7,9 @@ import argparse
 
 
 def shutdown_handler(signum, frame):
+    print("\nINFO: Shutting down interface server...")
     subprocess.run("docker stop emulator".split())
+    subprocess.run("docker rm emulator".split())
     raise Exception("shutdown")
 
 
