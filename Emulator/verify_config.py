@@ -16,6 +16,8 @@ class VerifyConfig:
         self._verify_non_empty_config_file()
         self._verify_config_less_than_max_length()
         self._verify_config_with_schema()
+        self._verify_port_span()
+        self._verify_unique_ports()
 
     def _verify_non_empty_config_file(self):
         if len(self.config) == 0:
@@ -30,7 +32,6 @@ class VerifyConfig:
             json_schema_validate(self.config, schema=ConfigSchema.get_schema(), format_checker=FormatChecker())
         except ValidationError as err:
             raise ConfigErrorFailedSchemaVerification(err.message)
-        self._verify_port_span()
 
     def _verify_port_span(self):
         route_table = self.config["routingTable"]
@@ -38,6 +39,13 @@ class VerifyConfig:
 
         if (max(ingress_ports) - min(ingress_ports) + 1) > 1024:
             raise ConfigErrorInvalidPortSpan("Config validation failed: Ingress portSpan must be less than 1024.")
+
+    def _verify_unique_ports(self):
+        route_table = self.config["routingTable"]
+        ingress_ports = [route["ingressPort"] for route in route_table]
+
+        if len(set(ingress_ports)) < len(ingress_ports):
+            raise ConfigErrorIngressPortsNotUnique("Config validation failed: Ingress ports must be unique.")
 
 
 class ConfigErrorEmptyFile(Exception):
@@ -53,4 +61,8 @@ class ConfigErrorFailedSchemaVerification(Exception):
 
 
 class ConfigErrorInvalidPortSpan(Exception):
+    pass
+
+
+class ConfigErrorIngressPortsNotUnique(Exception):
     pass
