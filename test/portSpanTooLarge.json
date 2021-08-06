@@ -49,7 +49,7 @@
             "egressDestPort":50001
         },
         {
-            "ingressPort":41024,
+            "ingressPort":42048,
             "egressIpAddress":"emulator_tester_1",
             "egressSrcPort":51024,
             "egressDestPort":51024

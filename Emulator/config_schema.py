@@ -64,7 +64,7 @@ class ConfigSchema:
             "type": "array",
             "items": ConfigSchema._route(),
             "minItems": 1,
-            "maxItems": 1024,
+            "maxItems": 2048,
             "additionalItems": False
         }
 

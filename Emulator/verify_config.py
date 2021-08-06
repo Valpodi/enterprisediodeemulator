@@ -39,8 +39,8 @@ class VerifyConfig:
         route_table = config["routingTable"]
         ingress_ports = [route["ingressPort"] for route in route_table]
 
-        if (max(ingress_ports) - min(ingress_ports) + 1) > 1024:
-            raise ConfigErrorInvalidPortSpan("Config validation failed: Ingress portSpan must be less than 1024.")
+        if (max(ingress_ports) - min(ingress_ports) + 1) > 2048:
+            raise ConfigErrorInvalidPortSpan("Config validation failed: Ingress portSpan must be less than 2048.")
 
     @staticmethod
     def _verify_unique_ports(config):

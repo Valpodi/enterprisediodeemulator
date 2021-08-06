@@ -121,8 +121,8 @@ class Emulator:
     def run(self, port_map):
         loop = asyncio.get_event_loop()
         ingress_ports = [port["ingressPort"] for port in port_map]
-        if (max(ingress_ports) - min(ingress_ports) + 1) > 1024:
-            raise ValueError(f"Ingress portspan must be 1024 or smaller. Not {max(ingress_ports) - min(ingress_ports) + 1}")
+        if (max(ingress_ports) - min(ingress_ports) + 1) > 2048:
+            raise ValueError(f"Ingress portspan must be 2048 or smaller. Not {max(ingress_ports) - min(ingress_ports) + 1}")
         for route in port_map:
             print(f"Mapping input on {route['ingressPort']} to {route['egressIpAddress']}:{route['egressDestPort']}")
             coroutine = start_proxy("0.0.0.0", route['ingressPort'], route['egressIpAddress'], route['egressDestPort'])

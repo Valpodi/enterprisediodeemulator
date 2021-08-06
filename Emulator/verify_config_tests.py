@@ -60,7 +60,7 @@ class VerifyConfigTests(unittest.TestCase):
                                verify_config.VerifyConfig.validate,
                                config_with_dhcp_true)
 
-    def test_port_span_exceeds_1024_throws_error(self):
+    def test_port_span_exceeds_2048_throws_error(self):
         config_port_span_too_large = copy.deepcopy(self.config)
         config_port_span_too_large["routingTable"] = [
             {
@@ -70,14 +70,14 @@ class VerifyConfigTests(unittest.TestCase):
                 "egressDestPort": 50001
             },
             {
-                "ingressPort": 41024,
+                "ingressPort": 42048,
                 "egressIpAddress": "192.168.0.21",
                 "egressSrcPort": 51024,
                 "egressDestPort": 51024
             }
         ]
         self.assertRaisesRegex(verify_config.ConfigErrorInvalidPortSpan,
-                               "Config validation failed: Ingress portSpan must be less than 1024.",
+                               "Config validation failed: Ingress portSpan must be less than 2048.",
                                verify_config.VerifyConfig.validate,
                                config_port_span_too_large)
 
