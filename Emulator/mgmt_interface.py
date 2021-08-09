@@ -17,16 +17,17 @@ class Interface:
 
     @classmethod
     def do_config_get(cls):
-        return cls._check_file_and_action(cls.config_filepath,
+        return Response(cls._check_file_and_action(cls.config_filepath,
                                           cls._get_config_file,
-                                          "Config file does not exist")
+                                          "Config file does not exist"),
+                        200)
 
     @classmethod
     def _check_file_and_action(cls, file, action, error_message):
         if cls._file_exists(file):
-            return Response(json.dumps(action()), 200)
+            return json.dumps(action())
         else:
-            return Response(json.dumps({"status": error_message}), 200)
+            return json.dumps({"status": error_message})
 
     @staticmethod
     def _file_exists(filepath):
@@ -39,9 +40,10 @@ class Interface:
 
     @classmethod
     def get_config_schema(cls):
-        return cls._check_file_and_action(cls.schema_filepath,
+        return Response(cls._check_file_and_action(cls.schema_filepath,
                                           cls._get_schema_file,
-                                          "Schema file does not exist")
+                                          "Schema file does not exist"),
+                        200)
 
     @classmethod
     def _get_schema_file(cls):
@@ -69,9 +71,10 @@ class Interface:
 
     @classmethod
     def do_power_on_procedure(cls):
-        return cls._check_file_and_action('Emulator/config/portConfig.json',
+        return Response(cls._check_file_and_action('Emulator/config/portConfig.json',
                                           cls._power_on_diode,
-                                          "Config file could not be found to power on diode")
+                                          "Config file could not be found to power on diode"),
+                        200)
 
     @classmethod
     def _power_on_diode(cls):
