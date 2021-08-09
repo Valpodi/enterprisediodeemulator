@@ -1,10 +1,10 @@
 # Copyright PA Knowledge Ltd 2021
 # For licence terms see LICENCE.md file
 
-from jsonschema import validate as json_schema_validate
-from jsonschema import ValidationError, FormatChecker
 import json
-from config_schema import ConfigSchema
+import os
+from jsonschema import ValidationError, FormatChecker
+from jsonschema import validate as json_schema_validate
 
 
 class VerifyConfig:
@@ -30,9 +30,14 @@ class VerifyConfig:
     @staticmethod
     def _verify_config_with_schema(config):
         try:
-            json_schema_validate(config, schema=ConfigSchema.get_schema(), format_checker=FormatChecker())
+            json_schema_validate(config, schema=VerifyConfig._get_schema(), format_checker=FormatChecker())
         except ValidationError as err:
             raise ConfigErrorFailedSchemaVerification(err.message)
+
+    @staticmethod
+    def _get_schema():
+        with open('Emulator/openapi/schema.json', 'r') as schema:
+            return json.loads(schema.read())
 
     @staticmethod
     def _verify_port_span(config):

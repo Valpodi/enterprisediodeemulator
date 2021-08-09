@@ -81,6 +81,19 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
                      headers={"Content-Type": "application/json"})
         TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40002, "zvu")
 
+    def test_config_endpoint_schema_check_raises_error(self):
+        with open('Emulator/config/portConfig.json', 'r') as config_file:
+            new_config = json.loads(config_file.read())
+            del new_config["routingTable"]
+
+        requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
+
+        response = requests.put("http://172.17.0.1:8081/api/config/diode",
+                     json=new_config,
+                     headers={"Content-Type": "application/json"})
+        self.assertEqual(500, response.status_code)
+
     def test_missing_config_file_with_get_config_endpoint(self):
         os.remove('Emulator/config/portConfig.json')
         response = requests.get("http://172.17.0.1:8081/api/config/diode")
