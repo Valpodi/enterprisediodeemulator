@@ -45,8 +45,8 @@ class VerifyConfigTests(unittest.TestCase):
 
     def test_config_file_longer_than_max_length_throws_error(self):
         self.assertRaises(verify_config.ConfigErrorFileSizeTooLarge,
-                          verify_config.VerifyConfig({}).validate,
-                          config={"ingress": {}, "egress": {}, "routingTable": []}, max_length=10)
+                          verify_config.VerifyConfig(schema={}, max_config_bytes=10).validate,
+                          config={"ingress": {}, "egress": {}, "routingTable": []})
 
     def test_config_file_matches_schema(self):
         verify_config.VerifyConfig(self.schema).validate(self.config)
