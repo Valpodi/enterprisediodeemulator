@@ -18,30 +18,27 @@ class Interface:
     @classmethod
     def do_config_get(cls):
         if cls._file_exists(cls.config_filepath):
-            return Response(json.dumps(cls._get_file_content(cls.config_filepath)), 200)
+            data = cls._get_file_content(cls.config_filepath)
         else:
-            return Response(json.dumps({"status": "Config file does not exist"}), 200)
+            data = {"status": "Config file does not exist"}
+        return Response(json.dumps(data), 200)
+
+    @staticmethod
+    def _file_exists(filepath):
+        return os.path.exists(filepath)
 
     @staticmethod
     def _get_file_content(filepath):
         with open(filepath, 'r') as file:
             return json.loads(file.read())
 
-    @staticmethod
-    def _file_exists(filepath):
-        return os.path.exists(filepath)
-
     @classmethod
     def get_config_schema(cls):
         if cls._file_exists(cls.schema_filepath):
-            return Response(json.dumps(cls._get_file_content(cls.schema_filepath)), 200)
+            data = cls._get_file_content(cls.schema_filepath)
         else:
-            return Response(json.dumps({"status": "Schema file does not exist"}), 200)
-
-    @classmethod
-    def _get_schema_file(cls):
-        with open(cls.schema_filepath, 'r') as schema_file:
-            return json.loads(schema_file.read())
+            data = {"status": "Schema file does not exist"}
+        return Response(json.dumps(data), 200)
 
     @classmethod
     def do_config_update(cls):
@@ -65,9 +62,10 @@ class Interface:
     @classmethod
     def do_power_on_procedure(cls):
         if cls._file_exists(cls.config_filepath):
-            return Response(json.dumps(cls._power_on_diode()), 200)
+            data = cls._power_on_diode()
         else:
-            return Response(json.dumps({"status": "Config file could not be found to power on diode"}), 200)
+            data = {"status": "Config file could not be found to power on diode"}
+        return Response(json.dumps(data), 200)
 
     @classmethod
     def _power_on_diode(cls):
@@ -81,5 +79,3 @@ class Interface:
     def _power_off_diode(cls):
         return {"status": {0: "completed"}.get(
             subprocess.run("docker stop emulator && docker rm emulator", shell=True).returncode, "failed")}
-
-
