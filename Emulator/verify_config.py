@@ -8,12 +8,13 @@ from jsonschema import validate as json_schema_validate
 
 
 class VerifyConfig:
+    def __init__(self, schema_reader=None):
+        self.schema_reader = VerifyConfig._get_schema() if schema_reader is None else schema_reader
 
-    @staticmethod
-    def validate(config, max_length=1048576):
+    def validate(self, config, max_length=1048576):
         VerifyConfig._verify_non_empty_config_file(config)
         VerifyConfig._verify_config_less_than_max_length(config, max_length)
-        VerifyConfig._verify_config_with_schema(config)
+        self._verify_config_with_schema(config)
         VerifyConfig._verify_port_span(config)
         VerifyConfig._verify_unique_ports(config)
 
@@ -27,10 +28,9 @@ class VerifyConfig:
         if len(json.dumps(config)) > max_length:
             raise ConfigErrorFileSizeTooLarge("Provided config file size too large")
 
-    @staticmethod
-    def _verify_config_with_schema(config):
+    def _verify_config_with_schema(self, config):
         try:
-            json_schema_validate(config, schema=VerifyConfig._get_schema(), format_checker=FormatChecker())
+            json_schema_validate(config, schema=self.schema_reader, format_checker=FormatChecker())
         except ValidationError as err:
             raise ConfigErrorFailedSchemaVerification(err.message)
 

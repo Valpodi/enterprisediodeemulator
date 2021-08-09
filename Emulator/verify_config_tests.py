@@ -7,6 +7,57 @@ import verify_config
 
 
 class VerifyConfigTests(unittest.TestCase):
+    interface = {
+        "properties": {
+            "mtu": {
+                "maximum": 9000,
+                "minimum": 576,
+                "type": "integer"
+            },
+            "ping": {"type": "boolean"},
+            "useDHCP": {"type": "boolean"}
+        },
+        "required": [
+            "useDHCP",
+            "ping",
+            "mtu"
+        ],
+        "type": "object"
+    }
+    routing_table = {
+        "additionalItems": False,
+        "items": {
+            "properties": {
+                "egressDestPort": {"type": "integer"},
+                "egressIpAddress": {"type": "string"},
+                "egressSrcPort": {"type": "integer"},
+                "ingressPort": {"type": "integer"}
+            },
+            "required": [
+                "ingressPort",
+                "egressIpAddress",
+                "egressSrcPort",
+                "egressDestPort"
+            ],
+            "type": "object"
+        },
+        "maxItems": 1024,
+        "minItems": 1,
+        "type": "array"
+    }
+    schema = {
+        "properties": {
+            "egress": interface,
+            "ingress": interface,
+            "routingTable": routing_table
+        },
+        "required": [
+            "egress",
+            "ingress",
+            "routingTable"
+        ]
+    }
+
     @classmethod
     def setUpClass(cls):
         interface = {
@@ -34,20 +85,67 @@ class VerifyConfigTests(unittest.TestCase):
                       }
 
     def test_empty_config_throws_error(self):
-        verify_config.VerifyConfig._verify_config_with_schema = lambda: None
         self.assertRaises(verify_config.ConfigErrorEmptyFile,
-                          verify_config.VerifyConfig.validate,
+                          verify_config.VerifyConfig({}).validate,
                           {})
 
     def test_config_file_longer_than_max_length_throws_error(self):
-        verify_config.VerifyConfig._verify_config_with_schema = lambda config: None
         self.assertRaises(verify_config.ConfigErrorFileSizeTooLarge,
-                          verify_config.VerifyConfig.validate,
+                          verify_config.VerifyConfig({}).validate,
                           config={"ingress": {}, "egress": {}, "routingTable": []}, max_length=10)
 
-    # def test_config_file_matches_schema(self):
-    #     verify_config.VerifyConfig._verify_config_with_schema = lambda config: None
-    #     verify_config.VerifyConfig.validate(self.config)
+    def test_config_file_matches_schema(self):
+        interface = {
+            "properties": {
+                "mtu": {
+                    "maximum": 9000,
+                    "minimum": 576,
+                    "type": "integer"
+                },
+                "ping": {"type": "boolean"},
+                "useDHCP": {"type": "boolean"}
+            },
+            "required": [
+                "useDHCP",
+                "ping",
+                "mtu"
+            ],
+            "type": "object"
+        }
+        routing_table = {
+            "additionalItems": False,
+            "items": {
+                "properties": {
+                    "egressDestPort": {"type": "integer"},
+                    "egressIpAddress": {"type": "string"},
+                    "egressSrcPort": {"type": "integer"},
+                    "ingressPort": {"type": "integer"}
+                },
+                "required": [
+                    "ingressPort",
+                    "egressIpAddress",
+                    "egressSrcPort",
+                    "egressDestPort"
+                ],
+                "type": "object"
+            },
+            "maxItems": 1024,
+            "minItems": 1,
+            "type": "array"
+        }
+        schema = {
+            "properties": {
+                "egress": interface,
+                "ingress": interface,
+                "routingTable": routing_table
+            },
+            "required": [
+                "egress",
+                "ingress",
+                "routingTable"
+            ]
+        }
+        verify_config.VerifyConfig(self.schema).validate(self.config)
     #
     # def test_config_file_that_does_not_match_schema_throws_error(self):
     #     verify_config.VerifyConfig._verify_config_with_schema = lambda: None
@@ -65,7 +163,6 @@ class VerifyConfigTests(unittest.TestCase):
     #                            config_with_dhcp_true)
 
     def test_port_span_exceeds_2048_throws_error(self):
-        verify_config.VerifyConfig._verify_config_with_schema = lambda config: None
         config_port_span_too_large = copy.deepcopy(self.config)
         config_port_span_too_large["routingTable"] = [
             {
@@ -83,11 +180,10 @@ class VerifyConfigTests(unittest.TestCase):
         ]
         self.assertRaisesRegex(verify_config.ConfigErrorInvalidPortSpan,
                                "Config validation failed: Ingress portSpan must be less than 2048.",
-                               verify_config.VerifyConfig.validate,
+                               verify_config.VerifyConfig(self.schema).validate,
                                config_port_span_too_large)
 
     def test_ingress_ports_not_unique_throws_error(self):
-        verify_config.VerifyConfig._verify_config_with_schema = lambda config: None
         config_ports_not_unique = copy.deepcopy(self.config)
         config_ports_not_unique["routingTable"] = [
             {
@@ -105,7 +201,7 @@ class VerifyConfigTests(unittest.TestCase):
         ]
         self.assertRaisesRegex(verify_config.ConfigErrorIngressPortsNotUnique,
                                "Config validation failed: Ingress ports must be unique.",
-                               verify_config.VerifyConfig.validate,
+                               verify_config.VerifyConfig(self.schema).validate,
                                config_ports_not_unique)
 
 
