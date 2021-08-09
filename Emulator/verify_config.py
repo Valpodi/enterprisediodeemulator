@@ -2,7 +2,6 @@
 # For licence terms see LICENCE.md file
 
 import json
-import os
 from jsonschema import ValidationError, FormatChecker
 from jsonschema import validate as json_schema_validate
 
