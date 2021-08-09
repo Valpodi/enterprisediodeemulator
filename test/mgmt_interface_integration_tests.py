@@ -90,8 +90,8 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
 
         response = requests.put("http://172.17.0.1:8081/api/config/diode",
-                     json=new_config,
-                     headers={"Content-Type": "application/json"})
+                                json=new_config,
+                                headers={"Content-Type": "application/json"})
         self.assertEqual(500, response.status_code)
 
     def test_missing_config_file_with_get_config_endpoint(self):
