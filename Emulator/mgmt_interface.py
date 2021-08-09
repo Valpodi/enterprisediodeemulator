@@ -12,10 +12,12 @@ from verify_config import VerifyConfig
 
 class Interface:
     config_file = None
+    config_filepath = 'Emulator/config/portConfig.json'
+    schema_filepath = 'Emulator/openapi/schema.json'
 
     @classmethod
     def do_config_get(cls):
-        return cls._check_file_and_action('Emulator/config/portConfig.json',
+        return cls._check_file_and_action(cls.config_filepath,
                                           cls._get_config_file,
                                           "Config file does not exist")
 
@@ -32,18 +34,18 @@ class Interface:
 
     @classmethod
     def _get_config_file(cls):
-        with open('Emulator/config/portConfig.json', 'r') as config_file:
+        with open(cls.config_filepath, 'r') as config_file:
             return json.loads(config_file.read())
 
     @classmethod
     def get_config_schema(cls):
-        return cls._check_file_and_action('Emulator/openapi/schema.json',
+        return cls._check_file_and_action(cls.schema_filepath,
                                           cls._get_schema_file,
                                           "Schema file does not exist")
 
     @classmethod
     def _get_schema_file(cls):
-        with open('Emulator/openapi/schema.json', 'r') as schema_file:
+        with open(cls.schema_filepath, 'r') as schema_file:
             return json.loads(schema_file.read())
 
     @classmethod
