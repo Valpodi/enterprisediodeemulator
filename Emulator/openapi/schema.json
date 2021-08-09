@@ -6,81 +6,81 @@
           "useDHCP": {
             "const": true
           }
-        } ,
+        },
         "required": [
           "useDHCP"
         ]
-      } ,
+      },
       "then": {
         "required": [
-          "ping" ,
-          "useDHCP" ,
-          "mtu" ,
+          "ping",
+          "useDHCP",
+          "mtu",
           "ethernetPorts"
         ]
-      } ,
+      },
       "else": {
         "required": [
-          "ping" ,
-          "useDHCP" ,
+          "ping",
+          "useDHCP",
           "mtu"
         ]
-      } ,
+      },
       "properties": {
         "ethernetPorts": {
           "items": {
             "properties": {
               "gw": {
-                "format": "ipv4" ,
+                "format": "ipv4",
                 "type": "string"
-              } ,
+              },
               "ip": {
-                "format": "ipv4" ,
+                "format": "ipv4",
                 "type": "string"
-              } ,
+              },
               "log": {
-                "format": "ipv4" ,
+                "format": "ipv4",
                 "type": "string"
-              } ,
+              },
               "nm": {
-                "format": "ipv4" ,
+                "format": "ipv4",
                 "type": "string"
-              } ,
+              },
               "ntp": {
-                "format": "ipv4" ,
+                "format": "ipv4",
                 "type": "string"
               }
-            } ,
+            },
             "required": [
-              "ip" ,
+              "ip",
               "nm"
-            ] ,
+            ],
             "type": "object"
-          } ,
-          "maxItems": 2 ,
-          "minItems": 2 ,
+          },
+          "maxItems": 2,
+          "minItems": 2,
           "type": "array"
-        } ,
+        },
         "mtu": {
-          "maximum": 9000 ,
-          "minimum": 576 ,
+          "maximum": 9000,
+          "minimum": 576,
           "type": "integer"
-        } ,
+        },
         "ping": {
           "type": "boolean"
-        } ,
+        },
         "useDHCP": {
           "type": "boolean"
         }
-      } ,
+      },
       "required": [
-        "useDHCP" ,
-        "ping" ,
+        "useDHCP",
+        "ping",
         "mtu"
-      ] ,
+      ],
 
       "type": "object"
-    } ,
+    },
     "ingress": {
 
       "if": {
@@ -88,114 +88,114 @@
           "useDHCP": {
             "const": true
           }
-        } ,
+        },
         "required": [
           "useDHCP"
         ]
-      } ,
+      },
       "then": {
         "required": [
-          "ping" ,
-          "useDHCP" ,
-          "mtu" ,
+          "ping",
+          "useDHCP",
+          "mtu",
           "ethernetPorts"
         ]
-      } ,
+      },
       "else": {
         "required": [
-          "ping" ,
-          "useDHCP" ,
+          "ping",
+          "useDHCP",
           "mtu"
         ]
-      } ,
+      },
       "properties": {
         "ethernetPorts": {
           "items": {
             "properties": {
               "gw": {
-                "format": "ipv4" ,
+                "format": "ipv4",
                 "type": "string"
-              } ,
+              },
               "ip": {
-                "format": "ipv4" ,
+                "format": "ipv4",
                 "type": "string"
-              } ,
+              },
               "log": {
-                "format": "ipv4" ,
+                "format": "ipv4",
                 "type": "string"
-              } ,
+              },
               "nm": {
-                "format": "ipv4" ,
+                "format": "ipv4",
                 "type": "string"
-              } ,
+              },
               "ntp": {
-                "format": "ipv4" ,
+                "format": "ipv4",
                 "type": "string"
               }
-            } ,
+            },
             "required": [
-              "ip" ,
+              "ip",
               "nm"
-            ] ,
+            ],
             "type": "object"
-          } ,
-          "maxItems": 2 ,
-          "minItems": 2 ,
+          },
+          "maxItems": 2,
+          "minItems": 2,
           "type": "array"
-        } ,
+        },
         "mtu": {
-          "maximum": 9000 ,
-          "minimum": 576 ,
+          "maximum": 9000,
+          "minimum": 576,
           "type": "integer"
-        } ,
+        },
         "ping": {
           "type": "boolean"
-        } ,
+        },
         "useDHCP": {
           "type": "boolean"
         }
-      } ,
+      },
       "required": [
-        "useDHCP" ,
-        "ping" ,
+        "useDHCP",
+        "ping",
         "mtu"
-      ] ,
+      ],
 
       "type": "object"
-    } ,
+    },
     "routingTable": {
-      "additionalItems": false ,
+      "additionalItems": false,
       "items": {
         "properties": {
           "egressDestPort": {
             "type": "integer"
-          } ,
+          },
           "egressIpAddress": {
             "type": "string"
-          } ,
+          },
           "egressSrcPort": {
             "type": "integer"
-          } ,
+          },
           "ingressPort": {
             "type": "integer"
           }
-        } ,
+        },
         "required": [
-          "ingressPort" ,
-          "egressIpAddress" ,
-          "egressSrcPort" ,
+          "ingressPort",
+          "egressIpAddress",
+          "egressSrcPort",
           "egressDestPort"
-        ] ,
+        ],
         "type": "object"
-      } ,
-      "maxItems": 1024 ,
-      "minItems": 1 ,
+      },
+      "maxItems": 1024,
+      "minItems": 1,
       "type": "array"
     }
-  } ,
+  },
   "required": [
-    "egress" ,
-    "ingress" ,
+    "egress",
+    "ingress",
     "routingTable"
   ]
 }
