@@ -8,8 +8,8 @@ from mgmt_interface import Interface
 
 class MgmtInterfaceTests(unittest.TestCase):
     def test_do_config_get_returns_config_file(self):
-        Interface._file_exists = lambda file: True
-        Interface._get_config_file = lambda: {
+        Interface._file_exists = lambda filepath: True
+        Interface._get_file_content = lambda filepath: {
             "ingress": {},
             "egress": {},
             "routingTable": []
@@ -34,12 +34,12 @@ class MgmtInterfaceTests(unittest.TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_diode_get_schema_returns_config_schema(self):
-        Interface._file_exists = lambda file: True
+        Interface._file_exists = lambda filepath: True
         schema = {"properties": {"ingress": {"type": "object"},
                                  "egress": {"type": "object"},
                                  "routingTable": {"type": "array"}},
                   "required": ["ingress", "egress", "routingTable"]}
-        Interface._get_schema_file = lambda: schema
+        Interface._get_file_content = lambda filepath: schema
         response = Interface.get_config_schema()
 
         self.assertEqual(schema, json.loads(response.get_data()))
