@@ -105,6 +105,12 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         response = requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
         self.assertEqual("Config file could not be found to power on diode", json.loads(response.text)["status"])
 
+    def test_get_schema_endpoint(self):
+        response = requests.get("http://172.17.0.1:8081/api/config/diode/schema")
+        with open('Emulator/openapi/schema.json', 'r') as schema_file:
+            expected = json.loads(schema_file.read())
+        self.assertEqual(expected, json.loads(response.text))
+
 
 if __name__ == '__main__':
     SUITE = unittest.TestLoader().loadTestsFromTestCase(MgmtInterfaceIntegrationTests)

@@ -62,3 +62,15 @@ class Interface:
     @classmethod
     def _power_off_diode(cls):
         return {"status": {0: "completed"}.get(subprocess.run("docker stop emulator && docker rm emulator", shell=True).returncode, "failed")}
+
+    @classmethod
+    def get_config_schema(cls):
+        if os.path.exists('Emulator/openapi/schema.json'):
+            return Response(json.dumps(cls._get_schema_file()), 200)
+        else:
+            return Response(json.dumps({"status": "Schema file does not exist"}), 200)
+
+    @classmethod
+    def _get_schema_file(cls):
+        with open('Emulator/openapi/schema.json', 'r') as schema_file:
+            return json.loads(schema_file.read())

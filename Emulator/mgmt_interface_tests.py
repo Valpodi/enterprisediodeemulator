@@ -32,6 +32,17 @@ class MgmtInterfaceTests(unittest.TestCase):
         self.assertEqual("completed", json.loads(response.get_data())["status"])
         self.assertEqual(200, response.status_code)
 
+    def test_diode_get_schema_returns_config_schema(self):
+        schema = {"properties": {"ingress": {"type": "object"},
+                                 "egress": {"type": "object"},
+                                 "routingTable": {"type": "array"}},
+                  "required": ["ingress", "egress", "routingTable"]}
+        Interface._get_schema_file = lambda: schema
+        response = Interface.get_config_schema()
+
+        self.assertEqual(schema, json.loads(response.get_data()))
+        self.assertEqual(200, response.status_code)
+
 
 if __name__ == '__main__':
     SUITE = unittest.TestLoader().loadTestsFromTestCase(MgmtInterfaceTests)

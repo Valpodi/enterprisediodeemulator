@@ -33,6 +33,17 @@ paths:
         500:
           description: Diode config update failed.
           content: {}
+  /config/diode/schema:
+    get:
+      summary: download diode config schema
+      operationId: mgmt_interface.Interface.get_config_schema
+      responses:
+        200:
+          description: diode config schema available
+          content:
+            application/json:
+              schema:
+                type: object
   /command/diode/power/on:
     post:
       summary: Turn diode on
