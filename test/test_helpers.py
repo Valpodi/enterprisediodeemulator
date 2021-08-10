@@ -32,8 +32,13 @@ class TestHelpers:
                                            f"port {port} should be open", attempts=attempts)
 
     @staticmethod
-    def ping_port(addr, port, options):
-        return (subprocess.call(f"nc -{options} {addr} {port} -w 1".split()) == 0), 0
+    def wait_for_closed_comms_ports(address, port, options, attempts=5):
+        return TestHelpers.wait_for_action(lambda: TestHelpers.ping_port(address, port, options, 1),
+                                           f"port {port} should be closed", attempts=attempts)
+
+    @staticmethod
+    def ping_port(addr, port, options, expected_outcome=0):
+        return (subprocess.call(f"nc -{options} {addr} {port} -w 1".split()) == expected_outcome), 0
 
     @staticmethod
     def get_example_control_header():
