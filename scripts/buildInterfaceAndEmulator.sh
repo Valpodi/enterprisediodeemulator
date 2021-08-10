@@ -5,7 +5,6 @@ function cleanup()
 {
 echo "cleanup! reset all file permissions to host owned"
 HOSTUID=`id -u`
-pushd src || true
 docker-compose -p emulator down
 docker run -v "$(pwd)":"$(pwd)" "centos:7" /bin/bash -c "chown -R $HOSTUID $(pwd)"
 }
