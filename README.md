@@ -39,14 +39,45 @@ Build the emulator and interface docker containers with:
 
 ### Management interface
 The management interface uses a REST API to interact with the diode emulator. 
+The interface server host will be localhost by default.
 To launch the interface, run the script:
 
 `python3 Emulator/launch_management_interface.py -p [INTERFACE_PORT]`
 
-#### Management interface endpoints ####
-The /api/command/diode/power/on and /api/command/diode/power/off endpoints can be used to control the diode emulator power.
+#### Power On ####
+Power on the diode emulator
 
-The /api/config/diode endpoint can be used with GET and PUT requests to retrieve or update the portConfig the emulator uses. 
+`POST /api/command/diode/power/on`
+
+Example Usage: `curl -X POST http://[INTERFACE_SERVER_HOST]:[INTERFACE_PORT]/api/command/diode/power/on`
+
+#### Power Off ####
+Power off the diode emulator
+
+`POST /api/command/diode/power/off` 
+
+Example Usage:`curl -X POST http://[INTERFACE_SERVER_HOST]:[INTERFACE_PORT]/api/command/diode/power/off`
+
+#### Update Diode Config ####
+Update the JSON config used by the diode for port configuration. JSON config required in the payload.
+
+`PUT /api/config/diode`
+
+Example Usage:`curl -H "Content-Type:application/json" -T [PATH_TO_CONFIG_FILE] http://[INTERFACE_SERVER_HOST]:[INTERFACE_PORT]/api/config/diode` 
+
+#### Get Diode Config ####
+Get the JSON config used by the diode for port configuration
+
+`GET /api/config/diode`
+
+Example Usage:`curl http://[INTERFACE_SERVER_HOST]:[INTERFACE_PORT]/api/config/diode`
+
+#### Get Config Schema ####
+Get the JSON schema used to validate the config file used by the diode
+
+`GET /api/config/diode/schema` 
+
+Example Usage:`curl http://[INTERFACE_SERVER_HOST]:[INTERFACE_PORT]/api/config/diode/schema`
 
 ### Running the emulator locally
 To run the emulator on your local machine the egressIpAddress in the config file should be set to the docker bridge network gateway IP address 172.17.0.1.
@@ -64,11 +95,11 @@ Run the python launch script:
 You can test the emulator by listening on a destination ip address and sending udp at the mapped source port.
 
 To listen:
-`nc -lvu [egressIpAddress] [egressDestPort]`
+`nc -lvu [EGRESS_IP_ADDRESS] [EGRESS_DEST_PORT]`
 
 To send:
-`echo -n "test" | nc -4u localhost [ingressPort]`
+`echo -n "test" | nc -4u localhost [INGRESS_PORT]`
 
 or
 
-`echo -n "test" > /dev/udp/localhost/[ingressPort]`
+`echo -n "test" > /dev/udp/localhost/[INGRESS_PORT]`
