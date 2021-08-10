@@ -27,9 +27,9 @@ class TestHelpers:
                 return msg
 
     @staticmethod
-    def wait_for_open_comms_ports(address, port, options):
+    def wait_for_open_comms_ports(address, port, options, attempts=5):
         return TestHelpers.wait_for_action(lambda: TestHelpers.ping_port(address, port, options),
-                                           f"port {port} should be open")
+                                           f"port {port} should be open", attempts=attempts)
 
     @staticmethod
     def ping_port(addr, port, options):

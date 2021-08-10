@@ -50,7 +50,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         self.assertEqual(expected, json.loads(response.text))
 
     def test_power_on_endpoint(self):
-        self.assertRaises(TimeoutError, TestHelpers.wait_for_open_comms_ports, "172.17.0.1", 40001, "zvu")
+        self.assertRaises(TimeoutError, TestHelpers.wait_for_open_comms_ports, "172.17.0.1", 40001, "zvu", attempts=3)
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
         TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
 
@@ -58,13 +58,13 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         launch_emulator.start_emulator("Emulator/config/portConfig.json")
         TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
         requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
-        self.assertRaises(TimeoutError, TestHelpers.wait_for_open_comms_ports, "172.17.0.1", 40001, "zvu")
+        self.assertRaises(TimeoutError, TestHelpers.wait_for_open_comms_ports, "172.17.0.1", 40001, "zvu", 3)
 
     def test_power_off_removes_emulator_container(self):
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
         TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
         requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
-        self.assertRaises(TimeoutError, TestHelpers.wait_for_open_comms_ports, "172.17.0.1", 40001, "zvu")
+        self.assertRaises(TimeoutError, TestHelpers.wait_for_open_comms_ports, "172.17.0.1", 40001, "zvu", 3)
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
         TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
 
