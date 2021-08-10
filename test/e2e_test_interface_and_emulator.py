@@ -94,7 +94,7 @@ class EndToEndEmulatorTests(unittest.TestCase):
 
         self.assertEqual(self.test_udp_listener.recv(), b"1234")
         requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
-        self.assertRaises(TimeoutError, TestHelpers.wait_for_open_comms_ports, "172.17.0.1", 40001, "zvu", attempts=3)
+        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", 40001, "zvu")
 
 
 if __name__ == '__main__':
