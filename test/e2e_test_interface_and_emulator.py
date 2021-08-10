@@ -39,6 +39,7 @@ class TestReceiver:
 class EndToEndEmulatorTests(unittest.TestCase):
     interface_server_thread = None
     valid_port_config = None
+    config_filepath = 'Emulator/config/portConfig.json'
 
     @classmethod
     def setUpClass(cls):
@@ -66,7 +67,7 @@ class EndToEndEmulatorTests(unittest.TestCase):
         new_port_config = copy.deepcopy(cls.valid_port_config)
         new_port_config["routingTable"][0]["egressIpAddress"] = "172.17.0.1"
         new_port_config["routingTable"][1]["egressIpAddress"] = "172.17.0.1"
-        with open('Emulator/config/portConfig.json', 'w') as config_file:
+        with open(cls.config_filepath, 'w') as config_file:
             json.dump(new_port_config, config_file, indent=4)
 
     def tearDown(self):

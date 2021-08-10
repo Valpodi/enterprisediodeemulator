@@ -15,6 +15,7 @@ from Emulator import launch_management_interface
 class MgmtInterfaceIntegrationTests(unittest.TestCase):
     interface_server_thread = None
     valid_port_config = None
+    config_filepath = 'Emulator/config/portConfig.json'
 
     @classmethod
     def setUpClass(cls):
@@ -45,7 +46,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
 
     def test_get_config_endpoint(self):
         response = requests.get("http://172.17.0.1:8081/api/config/diode")
-        with open('Emulator/config/portConfig.json', 'r') as config_file:
+        with open(self.config_filepath, 'r') as config_file:
             expected = json.loads(config_file.read())
         self.assertEqual(expected, json.loads(response.text))
 
@@ -55,7 +56,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
 
     def test_power_off_endpoint(self):
-        launch_emulator.start_emulator("Emulator/config/portConfig.json")
+        launch_emulator.start_emulator(self.config_filepath)
         TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
         requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
         self.assertRaises(TimeoutError, TestHelpers.wait_for_open_comms_ports, "172.17.0.1", 40001, "zvu", 3)
@@ -69,7 +70,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
 
     def test_update_config_endpoint(self):
-        with open('Emulator/config/portConfig.json', 'r') as config_file:
+        with open(self.config_filepath, 'r') as config_file:
             new_config = json.loads(config_file.read())
             new_config["routingTable"][0]["ingressPort"] = 40002
 
@@ -82,7 +83,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40002, "zvu")
 
     def test_update_config_endpoint_returns_500_when_schema_check_fails(self):
-        with open('Emulator/config/portConfig.json', 'r') as config_file:
+        with open(self.config_filepath, 'r') as config_file:
             new_config = json.loads(config_file.read())
             new_config["ingress"]["useDHCP"] = True
             del new_config["ingress"]["ethernetPorts"]
@@ -96,12 +97,12 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         self.assertEqual(500, response.status_code)
 
     def test_missing_config_file_with_get_config_endpoint(self):
-        os.remove('Emulator/config/portConfig.json')
+        os.remove(self.config_filepath)
         response = requests.get("http://172.17.0.1:8081/api/config/diode")
         self.assertEqual("Config file does not exist", json.loads(response.text)["status"])
 
     def test_missing_config_file_with_power_on_endpoint(self):
-        os.remove('Emulator/config/portConfig.json')
+        os.remove(self.config_filepath)
         response = requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
         self.assertEqual("Config file could not be found to power on diode", json.loads(response.text)["status"])
 
