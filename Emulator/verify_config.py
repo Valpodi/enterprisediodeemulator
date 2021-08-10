@@ -8,7 +8,8 @@ from jsonschema import validate as json_schema_validate
 
 class VerifyConfig:
     def __init__(self, schema=None, max_config_bytes=1048576):
-        self.schema = VerifyConfig._get_schema() if schema is None else schema
+        self.schema_filepath = '/usr/src/app/openapi/schema.json'
+        self.schema = self._get_schema() if schema is None else schema
         self.max_config_bytes = max_config_bytes
 
     def validate(self, config,):
@@ -33,9 +34,8 @@ class VerifyConfig:
         except ValidationError as err:
             raise ConfigErrorFailedSchemaVerification(err.message)
 
-    @staticmethod
-    def _get_schema():
-        with open('Emulator/openapi/schema.json', 'r') as schema:
+    def _get_schema(self):
+        with open(self.schema_filepath, 'r') as schema:
             return json.loads(schema.read())
 
     @staticmethod

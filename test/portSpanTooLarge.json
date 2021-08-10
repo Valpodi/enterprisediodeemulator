@@ -1,7 +1,7 @@
 {
     "ingress": {
-        "useDhcp": "false",
-        "ping": "true",
+        "useDHCP": false,
+        "ping": true,
         "mtu": 9000,
         "ethernetPorts": [
             {
@@ -21,8 +21,8 @@
         ]
     },
     "egress" : {
-        "useDhcp": "false",
-        "ping": "true",
+        "useDHCP": false,
+        "ping": true,
         "mtu": 9000,
         "ethernetPorts": [
             {

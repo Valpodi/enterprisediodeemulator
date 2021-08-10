@@ -13,7 +13,7 @@ from verify_config import VerifyConfig
 class Interface:
     config_file = None
     config_filepath = 'Emulator/config/portConfig.json'
-    schema_filepath = 'Emulator/openapi/schema.json'
+    schema_filepath = '/usr/src/app/openapi/schema.json'
 
     @classmethod
     def do_config_get(cls):
@@ -56,7 +56,7 @@ class Interface:
 
     @classmethod
     def _update_config(cls):
-        with open('Emulator/config/portConfig.json', 'w') as config_file:
+        with open(cls.config_filepath, 'w') as config_file:
             json.dump(cls.config_file, config_file)
 
     @classmethod
@@ -69,7 +69,7 @@ class Interface:
 
     @classmethod
     def _power_on_diode(cls):
-        return {"status": {0: "completed"}.get(launch_emulator.start_emulator("Emulator/config/portConfig.json"), "failed")}
+        return {"status": {0: "completed"}.get(launch_emulator.start_emulator(cls.config_filepath), "failed")}
 
     @classmethod
     def do_power_off_procedure(cls):

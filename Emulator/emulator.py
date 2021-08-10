@@ -7,7 +7,7 @@ import asyncio
 import os
 import pysisl
 from pysisl import parser_error
-
+from verify_config import VerifyConfig
 
 class ProxyEndpoint(asyncio.DatagramProtocol):
 
@@ -118,12 +118,10 @@ async def start_proxy(bind, port, remote_host, remote_port):
 
 
 class Emulator:
-    def run(self, port_map):
+    def run(self, diode_config):
         loop = asyncio.get_event_loop()
-        ingress_ports = [port["ingressPort"] for port in port_map]
-        if (max(ingress_ports) - min(ingress_ports) + 1) > 2048:
-            raise ValueError(f"Ingress portspan must be 2048 or smaller. Not {max(ingress_ports) - min(ingress_ports) + 1}")
-        for route in port_map:
+        VerifyConfig().validate(diode_config)
+        for route in diode_config["routingTable"]:
             print(f"Mapping input on {route['ingressPort']} to {route['egressIpAddress']}:{route['egressDestPort']}")
             coroutine = start_proxy("0.0.0.0", route['ingressPort'], route['egressIpAddress'], route['egressDestPort'])
             transport, _ = loop.run_until_complete(coroutine)
@@ -140,5 +138,5 @@ if __name__ == "__main__":
     parser.add_argument('-p', '--portConfig', help="path to portConfig file")
     port_config_path = parser.parse_args().portConfig or "/usr/src/app/portConfig.json"
     with open(port_config_path) as file:
-        json_map = json.load(file)["routingTable"]
+        json_map = json.load(file)
     Emulator().run(json_map)
