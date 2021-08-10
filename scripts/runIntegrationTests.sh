@@ -28,5 +28,5 @@ python3 -m nose --with-xunit --xunit-file=test/verify_config_unit_test_results.x
 python3 -m nose --with-xunit --xunit-file=test/interface_unit_test_results.xml Emulator/mgmt_interface_tests.py
 python3 -m nose --with-xunit --xunit-file=test/interface_integration_test_results.xml test/mgmt_interface_integration_tests.py
 
-python3 -m nose --with-xunit --xunit-file=test/emulator_port_span_test_results.xml test/emulator_port_span_test.py
+#python3 -m nose --with-xunit --xunit-file=test/emulator_port_span_test_results.xml test/emulator_port_span_test.py
 python3 -m nose --with-xunit --xunit-file=test/e2e_test_results.xml test/e2e_test_interface_and_emulator.py

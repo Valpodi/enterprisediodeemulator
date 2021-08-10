@@ -120,7 +120,6 @@ async def start_proxy(bind, port, remote_host, remote_port):
 class Emulator:
     def run(self, diode_config):
         loop = asyncio.get_event_loop()
-        VerifyConfig().validate(diode_config)
         for route in diode_config["routingTable"]:
             print(f"Mapping input on {route['ingressPort']} to {route['egressIpAddress']}:{route['egressDestPort']}")
             coroutine = start_proxy("0.0.0.0", route['ingressPort'], route['egressIpAddress'], route['egressDestPort'])
