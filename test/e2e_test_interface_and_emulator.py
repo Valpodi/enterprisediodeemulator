@@ -70,6 +70,11 @@ class EndToEndEmulatorTests(unittest.TestCase):
         with open(cls.config_filepath, 'w') as config_file:
             json.dump(new_port_config, config_file, indent=4)
 
+    def setUp(self):
+        self.test_udp_sender = TestSender()
+        self.test_udp_listener = TestReceiver("0.0.0.0", 50001)
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 50001, "zvu")
+
     def tearDown(self):
         self.test_udp_sender.close()
         self.test_udp_listener.close()
@@ -82,10 +87,6 @@ class EndToEndEmulatorTests(unittest.TestCase):
         subprocess.run("docker stop management_interface".split())
         cls.interface_server_thread.join()
 
-    def setUp(self):
-        self.test_udp_sender = TestSender()
-        self.test_udp_listener = TestReceiver("0.0.0.0", 50001)
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 50001, "zvu")
 
     def test_data_received_matches_data_sent(self):
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")

@@ -10,10 +10,16 @@ import os
 def start_emulator(port_config_path, is_import=False):
     with open(port_config_path) as file:
         port_map = json.load(file)["routingTable"]
+    with open("Emulator/config/diode_type.json", "w") as diode_type_file:
+        if is_import:
+            diode_type = "import"
+        else:
+            diode_type = "basic"
+        diode_type_file.write(json.dumps({"f2 type": diode_type}))
     ingress_ports = [port["ingressPort"] for port in port_map]
     ports_cmd = "".join([f"-p {port}:{port}/udp " for port in ingress_ports])
     return subprocess.run(
-        f'docker run --name=emulator -v {os.getcwd()}/{port_config_path}:/usr/src/app/portConfig.json {ports_cmd} --env IMPORTDIODE={is_import} -d emulator'.split()).returncode
+        f'docker run --name=emulator -v {os.getcwd()}/{port_config_path}:/usr/src/app/config/portConfig.json {ports_cmd} -d emulator'.split()).returncode
 
 
 if __name__ == "__main__":

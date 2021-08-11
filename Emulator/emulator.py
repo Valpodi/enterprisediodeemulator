@@ -7,15 +7,19 @@ import asyncio
 import os
 import pysisl
 from pysisl import parser_error
-from verify_config import VerifyConfig
 
 class ProxyEndpoint(asyncio.DatagramProtocol):
 
     def __init__(self, remote_address):
         self.remote_address = remote_address
         self.remotes = {}
-        self.import_diode = os.environ.get("IMPORTDIODE")
+        self.diode_type_filepath = "/usr/src/app/config/diode_type.json"
+        self.diode_type = self.get_diode_type()
         super().__init__()
+
+    def get_diode_type(self):
+        with open(self.diode_type_filepath) as diode_type_file:
+            return json.load(diode_type_file)["f2 type"]
 
     def connection_made(self, transport):
         self.transport = transport
@@ -25,7 +29,7 @@ class ProxyEndpoint(asyncio.DatagramProtocol):
             self.remotes[addr].transport.sendto(data)
             return
         loop = asyncio.get_event_loop()
-        if self.import_diode == "True":
+        if self.diode_type == "import":
             coroutine = loop.create_datagram_endpoint(
                 lambda: ImportDestinationEndpoint(self, addr, data), remote_addr=self.remote_address)
         else:
@@ -135,7 +139,7 @@ class Emulator:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--portConfig', help="path to portConfig file")
-    port_config_path = parser.parse_args().portConfig or "/usr/src/app/portConfig.json"
+    port_config_path = parser.parse_args().portConfig or "/usr/src/app/config/portConfig.json"
     with open(port_config_path) as file:
         json_map = json.load(file)
     Emulator().run(json_map)
