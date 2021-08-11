@@ -48,7 +48,7 @@ class Interface:
         cls._update_config()
         cls._power_on_diode()
 
-        return Response(json.dumps({"Status": "completed"}), 200)
+        return Response("", 200)
 
     @classmethod
     def _validate_config(cls):
@@ -72,15 +72,16 @@ class Interface:
 
     @classmethod
     def _power_on_diode(cls):
-        return {"Status": {0: "Diode powered on"}.get(launch_emulator.start_emulator(cls.config_filepath), "failed")}
+        return {"Status": {0: "Diode powered on"}.get(launch_emulator.start_emulator(cls.config_filepath))}
 
     @classmethod
     def do_power_off_procedure(cls):
-        return Response(json.dumps(cls._power_off_diode()), 200)
+        cls._power_off_diode()
+        return Response("", 200)
 
     @classmethod
     def _power_off_diode(cls):
-        return {"Status": {True: "completed"}.get(cls._remove_container(), "failed")}
+        cls._remove_container()
 
     @classmethod
     def _remove_container(cls):
