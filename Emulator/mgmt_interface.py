@@ -61,6 +61,9 @@ class Interface:
 
     @classmethod
     def do_power_on_procedure(cls):
+        if not cls._remove_container():
+            return Response("Server Error", 500)
+
         if cls._file_exists(cls.config_filepath):
             data = cls._power_on_diode()
         else:
@@ -69,7 +72,7 @@ class Interface:
 
     @classmethod
     def _power_on_diode(cls):
-        return {"status": {0: "completed"}.get(launch_emulator.start_emulator(cls.config_filepath), "failed")}
+        return {"status": {0: "Diode powered on"}.get(launch_emulator.start_emulator(cls.config_filepath), "failed")}
 
     @classmethod
     def do_power_off_procedure(cls):

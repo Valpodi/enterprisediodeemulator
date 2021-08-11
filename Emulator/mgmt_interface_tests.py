@@ -20,11 +20,20 @@ class MgmtInterfaceTests(unittest.TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_diode_power_on_returns_status_completed(self):
-        Interface._power_on_diode = lambda: {"status": "completed"}
+        Interface._file_exists = lambda filepath: True
+        Interface._power_on_diode = lambda: {"status": "Diode powered on"}
+        Interface._remove_container = lambda: True
         response = Interface.do_power_on_procedure()
 
-        self.assertEqual("completed", json.loads(response.get_data())["status"])
+        self.assertEqual("Diode powered on", json.loads(response.get_data())["status"])
         self.assertEqual(200, response.status_code)
+
+    def test_diode_power_on_returns_500_when_emulator_cannot_be_powercyled(self):
+        Interface._remove_container = lambda: False
+        response = Interface.do_power_on_procedure()
+
+        self.assertEqual(b"Server Error", response.get_data())
+        self.assertEqual(500, response.status_code)
 
     def test_diode_power_off_returns_status_completed(self):
         Interface._power_off_diode = lambda: {"status": "completed"}

@@ -55,6 +55,14 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
         TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
 
+    def test_power_on_endpoint_when_emulator_on_returns_200(self):
+        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", 40001, "zvu")
+        requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
+        response = requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
+        self.assertEqual("Diode powered on", json.loads(response.text)["status"])
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
+
     def test_power_off_endpoint(self):
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
         TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
