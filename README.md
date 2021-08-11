@@ -88,12 +88,12 @@ To run the emulator on your local machine the egressIpAddress in the config file
 #### Basic Diode ####
 Run the python launch script:
 
-`python3 launch_emulator.py -p [PATH_TO_CONFIG_FILE]`
+`python3 Emulator/launch_emulator.py -p [PATH_TO_CONFIG_FILE]`
 
 #### Import Diode ####
 Run the python launch script:
 
-`python3 launch_emulator.py -p [PATH_TO_CONFIG_FILE] --importDiode`
+`python3 Emulator/launch_emulator.py -p [PATH_TO_CONFIG_FILE] --importDiode`
 
 You can test the emulator by listening on a destination ip address and sending udp at the mapped source port.
 
