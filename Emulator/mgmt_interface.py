@@ -20,7 +20,7 @@ class Interface:
         if cls._file_exists(cls.config_filepath):
             data = cls._get_file_content(cls.config_filepath)
         else:
-            data = {"status": "Config file does not exist"}
+            data = {"Status": "Config file does not exist"}
         return Response(json.dumps(data), 200)
 
     @staticmethod
@@ -37,7 +37,7 @@ class Interface:
         if cls._file_exists(cls.schema_filepath):
             data = cls._get_file_content(cls.schema_filepath)
         else:
-            data = {"status": "Schema file does not exist"}
+            data = {"Status": "Schema file does not exist"}
         return Response(json.dumps(data), 200)
 
     @classmethod
@@ -48,7 +48,7 @@ class Interface:
         cls._update_config()
         cls._power_on_diode()
 
-        return Response(json.dumps({"status": "completed"}), 200)
+        return Response(json.dumps({"Status": "completed"}), 200)
 
     @classmethod
     def _validate_config(cls):
@@ -67,12 +67,12 @@ class Interface:
         if cls._file_exists(cls.config_filepath):
             data = cls._power_on_diode()
         else:
-            data = {"status": "Config file could not be found to power on diode"}
+            data = {"Status": "Config file could not be found to power on diode"}
         return Response(json.dumps(data), 200)
 
     @classmethod
     def _power_on_diode(cls):
-        return {"status": {0: "Diode powered on"}.get(launch_emulator.start_emulator(cls.config_filepath), "failed")}
+        return {"Status": {0: "Diode powered on"}.get(launch_emulator.start_emulator(cls.config_filepath), "failed")}
 
     @classmethod
     def do_power_off_procedure(cls):
@@ -80,7 +80,7 @@ class Interface:
 
     @classmethod
     def _power_off_diode(cls):
-        return {"status": {True: "completed"}.get(cls._remove_container(), "failed")}
+        return {"Status": {True: "completed"}.get(cls._remove_container(), "failed")}
 
     @classmethod
     def _remove_container(cls):

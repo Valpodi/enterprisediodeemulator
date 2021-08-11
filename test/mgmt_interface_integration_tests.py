@@ -60,7 +60,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
         TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
         response = requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
-        self.assertEqual("Diode powered on", json.loads(response.text)["status"])
+        self.assertEqual("Diode powered on", json.loads(response.text)["Status"])
         TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
 
     def test_power_off_endpoint(self):
@@ -112,12 +112,12 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
     def test_missing_config_file_with_get_config_endpoint(self):
         os.remove(self.config_filepath)
         response = requests.get("http://172.17.0.1:8081/api/config/diode")
-        self.assertEqual("Config file does not exist", json.loads(response.text)["status"])
+        self.assertEqual("Config file does not exist", json.loads(response.text)["Status"])
 
     def test_missing_config_file_with_power_on_endpoint(self):
         os.remove(self.config_filepath)
         response = requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
-        self.assertEqual("Config file could not be found to power on diode", json.loads(response.text)["status"])
+        self.assertEqual("Config file could not be found to power on diode", json.loads(response.text)["Status"])
 
     def test_get_schema_endpoint(self):
         response = requests.get("http://172.17.0.1:8081/api/config/diode/schema")

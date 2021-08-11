@@ -21,11 +21,11 @@ class MgmtInterfaceTests(unittest.TestCase):
 
     def test_diode_power_on_returns_status_completed(self):
         Interface._file_exists = lambda filepath: True
-        Interface._power_on_diode = lambda: {"status": "Diode powered on"}
+        Interface._power_on_diode = lambda: {"Status": "Diode powered on"}
         Interface._remove_container = lambda: True
         response = Interface.do_power_on_procedure()
 
-        self.assertEqual("Diode powered on", json.loads(response.get_data())["status"])
+        self.assertEqual("Diode powered on", json.loads(response.get_data())["Status"])
         self.assertEqual(200, response.status_code)
 
     def test_diode_power_on_raises_error_when_emulator_cannot_be_powercyled(self):
@@ -33,10 +33,10 @@ class MgmtInterfaceTests(unittest.TestCase):
         self.assertRaises(DiodePowerCycleError, Interface.do_power_on_procedure)
 
     def test_diode_power_off_returns_status_completed(self):
-        Interface._power_off_diode = lambda: {"status": "completed"}
+        Interface._power_off_diode = lambda: {"Status": "completed"}
         response = Interface.do_power_off_procedure()
 
-        self.assertEqual("completed", json.loads(response.get_data())["status"])
+        self.assertEqual("completed", json.loads(response.get_data())["Status"])
         self.assertEqual(200, response.status_code)
 
     def test_diode_get_schema_returns_config_schema(self):
