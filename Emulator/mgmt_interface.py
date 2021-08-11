@@ -62,7 +62,7 @@ class Interface:
     @classmethod
     def do_power_on_procedure(cls):
         if not cls._remove_container():
-            return Response("Server Error", 500)
+            raise DiodePowerCycleError("ERROR: unable to power on the diode.")
 
         if cls._file_exists(cls.config_filepath):
             data = cls._power_on_diode()
@@ -90,3 +90,6 @@ class Interface:
         remove_process_success = (b"No such container: emulator" in stop_process.stdout) or (remove_process.returncode == 0)
         return stop_process_success & remove_process_success
 
+
+class DiodePowerCycleError(Exception):
+    pass

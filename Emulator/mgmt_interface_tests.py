@@ -3,7 +3,7 @@
 
 import unittest
 import json
-from mgmt_interface import Interface
+from mgmt_interface import Interface, DiodePowerCycleError
 
 
 class MgmtInterfaceTests(unittest.TestCase):
@@ -28,12 +28,9 @@ class MgmtInterfaceTests(unittest.TestCase):
         self.assertEqual("Diode powered on", json.loads(response.get_data())["status"])
         self.assertEqual(200, response.status_code)
 
-    def test_diode_power_on_returns_500_when_emulator_cannot_be_powercyled(self):
+    def test_diode_power_on_raises_error_when_emulator_cannot_be_powercyled(self):
         Interface._remove_container = lambda: False
-        response = Interface.do_power_on_procedure()
-
-        self.assertEqual(b"Server Error", response.get_data())
-        self.assertEqual(500, response.status_code)
+        self.assertRaises(DiodePowerCycleError, Interface.do_power_on_procedure)
 
     def test_diode_power_off_returns_status_completed(self):
         Interface._power_off_diode = lambda: {"status": "completed"}
