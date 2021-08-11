@@ -80,6 +80,9 @@ Get the JSON schema used to validate the config file used by the diode
 Example Usage:`curl http://[INTERFACE_SERVER_HOST]:[INTERFACE_PORT]/api/config/diode/schema`
 
 ### Running the emulator locally
+Note: It is not advised to run the emulator directly, but rather through API calls to the management interface. 
+In particular, updating the config file should be performed through the appropriate API call, so that it is validated against the config schema.  
+
 To run the emulator on your local machine the egressIpAddress in the config file should be set to the docker bridge network gateway IP address 172.17.0.1.
 
 #### Basic Diode ####
