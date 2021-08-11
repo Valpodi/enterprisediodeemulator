@@ -60,7 +60,7 @@ class EndToEndEmulatorTests(unittest.TestCase):
 
     @classmethod
     def start_interface_server(cls):
-        subprocess.Popen('python3 Emulator/launch_management_interface.py --interfacePort 8081', shell=True)
+        subprocess.Popen('python3 Emulator/launch_management_interface.py --interfacePort 8081'.split())
 
     @classmethod
     def update_port_config(cls):
@@ -73,12 +73,13 @@ class EndToEndEmulatorTests(unittest.TestCase):
     def tearDown(self):
         self.test_udp_sender.close()
         self.test_udp_listener.close()
-        subprocess.run("docker stop emulator && docker rm emulator", shell=True)
+        subprocess.run("docker stop emulator".split())
+        subprocess.run("docker rm emulator".split())
 
     @classmethod
     def tearDownClass(cls):
         TestHelpers.reset_port_config_file(cls.valid_port_config)
-        subprocess.run("docker stop management_interface", shell=True)
+        subprocess.run("docker stop management_interface".split())
         cls.interface_server_thread.join()
 
     def setUp(self):

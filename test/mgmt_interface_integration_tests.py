@@ -35,14 +35,15 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        subprocess.run("docker stop management_interface", shell=True)
+        subprocess.run("docker stop management_interface".split())
         cls.interface_server_thread.join()
         TestHelpers.reset_port_config_file(cls.valid_port_config)
 
     @classmethod
     def tearDown(cls):
         TestHelpers.reset_port_config_file(cls.valid_port_config)
-        subprocess.run("docker stop emulator && docker rm emulator", shell=True)
+        subprocess.run("docker stop emulator".split())
+        subprocess.run("docker rm emulator".split())
 
     def test_get_config_endpoint(self):
         response = requests.get("http://172.17.0.1:8081/api/config/diode")
@@ -56,10 +57,15 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
 
     def test_power_off_endpoint(self):
-        launch_emulator.start_emulator(self.config_filepath)
+        requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
         TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
         requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
         TestHelpers.wait_for_closed_comms_ports("172.17.0.1", 40001, "zvu")
+
+    def test_power_off_endpoint_when_emulator_off_returns_200(self):
+        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", 40001, "zvu")
+        response = requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
+        self.assertEqual(200, response.status_code)
 
     def test_power_off_removes_emulator_container(self):
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")

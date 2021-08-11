@@ -77,5 +77,13 @@ class Interface:
 
     @classmethod
     def _power_off_diode(cls):
-        return {"status": {0: "completed"}.get(
-            subprocess.run("docker stop emulator && docker rm emulator", shell=True).returncode, "failed")}
+        return {"status": {True: "completed"}.get(cls._remove_container(), "failed")}
+
+    @classmethod
+    def _remove_container(cls):
+        stop_process = subprocess.run("docker stop emulator".split(), stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+        stop_process_success = (b"No such container: emulator" in stop_process.stdout) or (stop_process.returncode == 0)
+        remove_process = subprocess.run("docker rm emulator".split(), stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
+        remove_process_success = (b"No such container: emulator" in stop_process.stdout) or (remove_process.returncode == 0)
+        return stop_process_success & remove_process_success
+
