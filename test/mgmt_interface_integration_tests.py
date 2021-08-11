@@ -8,7 +8,6 @@ import requests
 import json
 import threading
 from test_helpers import TestHelpers
-import launch_emulator
 from Emulator import launch_management_interface
 
 
