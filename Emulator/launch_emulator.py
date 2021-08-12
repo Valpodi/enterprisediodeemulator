@@ -12,10 +12,10 @@ def start_emulator(port_config_path, is_import=False):
         port_map = json.load(file)["routingTable"]
     with open("Emulator/config/diode_type.json", "w") as diode_type_file:
         if is_import:
-            diode_type = "import"
+            diode_type_file.write(json.dumps({"f2 type": "import"}))
         else:
-            diode_type = "basic"
-        diode_type_file.write(json.dumps({"f2 type": diode_type}))
+            diode_type_file.write(json.dumps({"f2 type": "basic"}))
+
     ingress_ports = [port["ingressPort"] for port in port_map]
     ports_cmd = "".join([f"-p {port}:{port}/udp " for port in ingress_ports])
     return subprocess.run(
