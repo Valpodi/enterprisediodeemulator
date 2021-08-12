@@ -62,13 +62,15 @@ class EndToEndEmulatorTests(unittest.TestCase):
         subprocess.run("docker stop management_interface".split())
         cls.interface_server_thread.join()
 
-    def test_non_sisl_data_received_matches_data_sent(self):
+    def test_sisl_data_received_matches_data_sent(self):
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
         TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
         self.assertRaises(socket.timeout, TestHelpers.wait_for_action, lambda: (self.test_udp_listener.recv() != b"\x00", 0), "Non-empty packets received exceeded maximum")
-        self.test_udp_sender.send(b"1234", "172.17.0.1", 40001)
 
-        self.assertEqual(self.test_udp_listener.recv(), b"1234")
+        data = TestHelpers.get_example_control_header() + b'{name: !str "helpful_name", flag: !bool "false", count: !int "3"}'
+        self.test_udp_sender.send(data, "172.17.0.1", 40001)
+        self.assertEqual(self.test_udp_listener.recv(), data)
+
         requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
         TestHelpers.wait_for_closed_comms_ports("172.17.0.1", 40001, "zvu")
 

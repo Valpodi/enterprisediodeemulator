@@ -7,15 +7,9 @@ import argparse
 import os
 
 
-def start_emulator(port_config_path, is_import=False):
+def start_emulator(port_config_path):
     with open(port_config_path) as config_file:
         port_map = json.load(config_file)["routingTable"]
-    with open("Emulator/config/diode_type.json", "w") as diode_type_file:
-        if is_import:
-            diode_type_file.write(json.dumps({"f2 type": "import"}))
-        else:
-            diode_type_file.write(json.dumps({"f2 type": "basic"}))
-
     ingress_ports = [port["ingressPort"] for port in port_map]
     ports_cmd = "".join([f"-p {port}:{port}/udp " for port in ingress_ports])
     return subprocess.run(
@@ -25,7 +19,5 @@ def start_emulator(port_config_path, is_import=False):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--portConfig', help="path to portConfig file", default="Emulator/config/portConfig.json")
-    parser.add_argument('-i', '--importDiode', help="launch the emulator as the import variant", action="store_true")
     port_config = parser.parse_args().portConfig
-    import_flag = parser.parse_args().importDiode
-    start_emulator(port_config, import_flag)
+    start_emulator(port_config)
