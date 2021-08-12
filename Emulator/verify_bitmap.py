@@ -4,5 +4,9 @@
 
 class VerifyBitmap:
     @staticmethod
-    def validate():
-        return True
+    def validate(bitmap):
+        return VerifyBitmap._verify_bitmap_type(bitmap)
+
+    @staticmethod
+    def _verify_bitmap_type(bitmap):
+        return bitmap[:2] == b"BM"
