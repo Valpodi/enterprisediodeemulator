@@ -19,8 +19,7 @@ You will also have to set the mtu to 9000 on the host's 10G network interface(s)
 
 
 ### Configuring the UDP port forwarding mapping:
-Inside the config folder you will find a file named [portConfig.json](Emulator/config/portConfig.json). In this file, in the routingTable block,
-are the mappings of the source ports to destination IP addresses.
+In [portConfig.json](Emulator/config/portConfig.json) the routingTable block contains the mappings of the source ports to destination IP addresses.
 
     "routingTable": [{
             "ingressPort": {{ Ingress Port }},
@@ -31,6 +30,14 @@ are the mappings of the source ports to destination IP addresses.
 
 Please note that while the emulator can use DNS name resolution for the destination IP address,
 the diode will only support IP addresses.
+
+### Configuring the diode variant
+The emulator variant is configured using [diode_type.json](Emulator/config/diode_type.json). Supported options are "basic" and "import".
+It should have the format:
+    
+    {"f2 type": {{ Variant}}}
+
+This file must be configured correctly before the emulator image has been built.  
 
 ### Building the emulator
 Build the emulator and interface docker containers with:
@@ -85,15 +92,11 @@ In particular, updating the config file should be performed through the appropri
 
 To run the emulator on your local machine the egressIpAddress in the config file should be set to the docker bridge network gateway IP address 172.17.0.1.
 
-#### Basic Diode ####
+See [Configuring the diode variant](#configuring-the-diode-variant) for instructions to set the diode variant.
+
 Run the python launch script:
 
 `python3 Emulator/launch_emulator.py -p [PATH_TO_CONFIG_FILE]`
-
-#### Import Diode ####
-Run the python launch script:
-
-`python3 Emulator/launch_emulator.py -p [PATH_TO_CONFIG_FILE] --importDiode`
 
 You can test the emulator by listening on a destination ip address and sending udp at the mapped source port.
 
