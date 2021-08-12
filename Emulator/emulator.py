@@ -4,9 +4,9 @@
 import json
 import argparse
 import asyncio
-import os
 import pysisl
 from pysisl import parser_error
+
 
 class ProxyEndpoint(asyncio.DatagramProtocol):
 
