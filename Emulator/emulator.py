@@ -139,7 +139,7 @@ class Emulator:
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--portConfig', help="path to portConfig file")
-    port_config_path = parser.parse_args().portConfig or "/usr/src/app/config/portConfig.json"
+    port_config_path = parser.parse_args().portConfig or "/usr/src/app/config/port_config.json"
     with open(port_config_path) as file:
         json_map = json.load(file)
     Emulator().run(json_map)

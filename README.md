@@ -19,7 +19,7 @@ You will also have to set the mtu to 9000 on the host's 10G network interface(s)
 
 
 ### Configuring the UDP port forwarding mapping:
-In [portConfig.json](Emulator/config/portConfig.json) the routingTable block contains the mappings of the source ports to destination IP addresses.
+In [port_config.json](Emulator/config/port_config.json) the routingTable block contains the mappings of the source ports to destination IP addresses.
 
     "routingTable": [{
             "ingressPort": {{ Ingress Port }},
@@ -35,7 +35,7 @@ the diode will only support IP addresses.
 The emulator variant is configured using [diode_type.json](Emulator/config/diode_type.json). Supported options are "basic" and "import".
 It should have the format:
     
-    {"f2 type": {{ Variant}}}
+    {"f2 type": {{ Variant }}}
 
 This file must be configured correctly before the emulator image has been built.  
 

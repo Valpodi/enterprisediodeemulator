@@ -76,10 +76,10 @@ class TestHelpers:
 
     @staticmethod
     def save_port_config():
-        with open('Emulator/config/portConfig.json', 'r') as config_file:
+        with open('Emulator/config/port_config.json', 'r') as config_file:
             return json.loads(config_file.read())
 
     @staticmethod
     def reset_port_config_file(valid_port_config):
-        with open('Emulator/config/portConfig.json', 'w') as config_file:
+        with open('Emulator/config/port_config.json', 'w') as config_file:
             json.dump(valid_port_config, config_file, indent=4)

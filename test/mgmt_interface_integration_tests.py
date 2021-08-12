@@ -14,7 +14,7 @@ from Emulator import launch_management_interface
 class MgmtInterfaceIntegrationTests(unittest.TestCase):
     interface_server_thread = None
     valid_port_config = None
-    config_filepath = 'Emulator/config/portConfig.json'
+    config_filepath = 'Emulator/config/port_config.json'
 
     @classmethod
     def setUpClass(cls):

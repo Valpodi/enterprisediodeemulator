@@ -12,7 +12,7 @@ from verify_config import VerifyConfig
 
 class Interface:
     config_file = None
-    config_filepath = 'Emulator/config/portConfig.json'
+    config_filepath = 'Emulator/config/port_config.json'
     schema_filepath = '/usr/src/app/openapi/schema.json'
 
     @classmethod
