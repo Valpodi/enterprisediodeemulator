@@ -6,6 +6,7 @@ import argparse
 import asyncio
 import pysisl
 from pysisl import parser_error
+from verify_bitmap import VerifyBitmap
 
 
 class ProxyEndpoint(asyncio.DatagramProtocol):
@@ -67,7 +68,7 @@ class ImportDestinationEndpoint(asyncio.DatagramProtocol):
             return
         header, data = self.extract_control_header(self.data)
 
-        if not self.check_for_bitmap(data):
+        if not VerifyBitmap.validate(data):
             data = self.wrap_non_sisl_data(data)
 
         if self.check_for_wrapped_data(data):
@@ -97,9 +98,6 @@ class ImportDestinationEndpoint(asyncio.DatagramProtocol):
 
     def check_for_wrapped_data(self, data):
         return data[:4] == b"\xd1\xdf\x5f\xff"
-
-    def check_for_bitmap(self, data):
-        return data[:2] == b"BM"
 
     def wrap_non_sisl_data(self, data):
         data_string = data.decode('utf-8')
