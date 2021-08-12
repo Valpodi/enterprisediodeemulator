@@ -10,6 +10,10 @@ class VerifyBitmapTests(unittest.TestCase):
         bitmap_sample = b'BM6\x03\x00\x00\x00\x00\x00\x00\x00\x00\x10\x12\x00\x00\xa0\x0f\x00\x00\x01\x00\x18\x00\x00\x00\x00\x00\x00\x03\x00\x00'
         self.assertTrue(VerifyBitmap.validate(bitmap_sample))
 
+    def test_bitmap_validate_throws_with_invalid_header(self):
+        bitmap_sample = b'BC6\x03\x00\x00\x00\x00\x00\x00\x00\x00\x10\x12\x00\x00\xa0\x0f\x00\x00\x01\x00\x18\x00\x00\x00\x00\x00\x00\x03\x00\x00'
+        self.assertFalse(VerifyBitmap.validate(bitmap_sample))
+
 
 if __name__ == '__main__':
     unittest.main()
