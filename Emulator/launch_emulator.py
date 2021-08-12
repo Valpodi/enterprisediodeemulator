@@ -8,8 +8,8 @@ import os
 
 
 def start_emulator(port_config_path, is_import=False):
-    with open(port_config_path) as file:
-        port_map = json.load(file)["routingTable"]
+    with open(port_config_path) as config_file:
+        port_map = json.load(config_file)["routingTable"]
     with open("Emulator/config/diode_type.json", "w") as diode_type_file:
         if is_import:
             diode_type_file.write(json.dumps({"f2 type": "import"}))

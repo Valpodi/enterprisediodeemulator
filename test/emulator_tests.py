@@ -3,36 +3,8 @@
 
 import string
 import unittest
-import socket
 import random
-from test_helpers import TestHelpers
-
-
-class TestSender:
-    def __init__(self):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.data = b""
-
-    def send(self, data, ip, port):
-        self.sock.sendto(data, (ip, port))
-
-    def close(self):
-        self.sock.close()
-
-
-class TestReceiver:
-    def __init__(self, ip, port):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.sock.bind((ip, port))
-        self.sock.settimeout(5)
-        self.data = b""
-
-    def recv(self):
-        data, addr = self.sock.recvfrom(9000)
-        return data
-
-    def close(self):
-        self.sock.close()
+from test_helpers import TestHelpers, TestSender, TestReceiver
 
 
 class EmulatorTests(unittest.TestCase):

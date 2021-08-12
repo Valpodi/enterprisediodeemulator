@@ -8,32 +8,7 @@ import threading
 import requests
 import socket
 import json
-from test_helpers import TestHelpers
-
-
-class TestSender:
-    def __init__(self):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-    def send(self, data, ip, port):
-        self.sock.sendto(data, (ip, port))
-
-    def close(self):
-        self.sock.close()
-
-
-class TestReceiver:
-    def __init__(self, ip, port):
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.sock.bind((ip, port))
-        self.sock.settimeout(1)
-
-    def recv(self):
-        data, addr = self.sock.recvfrom(9000)
-        return data
-
-    def close(self):
-        self.sock.close()
+from test_helpers import TestHelpers, TestSender, TestReceiver
 
 
 class EndToEndEmulatorTests(unittest.TestCase):
@@ -86,7 +61,6 @@ class EndToEndEmulatorTests(unittest.TestCase):
         TestHelpers.reset_port_config_file(cls.valid_port_config)
         subprocess.run("docker stop management_interface".split())
         cls.interface_server_thread.join()
-
 
     def test_data_received_matches_data_sent(self):
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
