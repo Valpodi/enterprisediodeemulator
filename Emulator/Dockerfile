@@ -1,6 +1,6 @@
 FROM python:3.8-slim-buster
 
-RUN pip3 install pysisl construct
+RUN pip3 install pysisl
 
 COPY rootfs_template /
 COPY openapi/ /usr/src/app/openapi/
