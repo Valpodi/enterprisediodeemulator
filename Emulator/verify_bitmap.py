@@ -29,4 +29,6 @@ class VerifyBitmap:
                                 "Bitmap Width" / construct.Int32ub,
                                 "Bitmap Height" / construct.Int32ub,
                                 "Colour Plane Count" / construct.Const(b'\x01\x00'),
-                                "Compression Method" / construct.Const(b'\x00\x00\x00\x00'))
+                                "Compression Method" / construct.Int32ub,
+                                "Color Used" / construct.Int32ub,
+                                "Important Color" / construct.Int32ub)
