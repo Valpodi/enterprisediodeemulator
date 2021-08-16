@@ -20,8 +20,9 @@ class VerifyBitmap:
 
     @staticmethod
     def _bitmap_header_bytes():
-        return construct.Struct("Type" / construct.Const(b'BM'),
+        return construct.Struct("Type" / construct.Const(b'\x42\x4D'),
                                 "BF Size" / construct.Int32ub,
                                 "Reserved 1" / construct.Const(b'\x00\x00'),
                                 "Reserved 2" / construct.Const(b'\x00\x00'),
-                                "BF Size" / construct.Int32ub)
+                                "Pixel Array Offset" / construct.Int32ub,
+                                "Header Size" / construct.Const(b'\x28\x00\x00\x00'))
