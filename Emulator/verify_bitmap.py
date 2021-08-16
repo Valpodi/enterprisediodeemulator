@@ -25,4 +25,6 @@ class VerifyBitmap:
                                 "Reserved 1" / construct.Const(b'\x00\x00'),
                                 "Reserved 2" / construct.Const(b'\x00\x00'),
                                 "Pixel Array Offset" / construct.Int32ub,
-                                "Header Size" / construct.Const(b'\x28\x00\x00\x00'))
+                                "Header Size" / construct.Const(b'\x28\x00\x00\x00'),
+                                "Bitmap Width" / construct.Int32ub,
+                                "Bitmap Height" / construct.Int32ub)
