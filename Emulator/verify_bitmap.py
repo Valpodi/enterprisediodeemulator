@@ -23,4 +23,5 @@ class VerifyBitmap:
         return construct.Struct("Type" / construct.Const(b'BM'),
                                 "BF Size" / construct.Int32ub,
                                 "Reserved 1" / construct.Const(b'\x00\x00'),
-                                "Reserved 2" / construct.Const(b'\x00\x00'))
+                                "Reserved 2" / construct.Const(b'\x00\x00'),
+                                "BF Size" / construct.Int32ub)
