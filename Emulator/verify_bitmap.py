@@ -27,4 +27,5 @@ class VerifyBitmap:
                                 "Pixel Array Offset" / construct.Int32ub,
                                 "Header Size" / construct.Const(b'\x28\x00\x00\x00'),
                                 "Bitmap Width" / construct.Int32ub,
-                                "Bitmap Height" / construct.Int32ub)
+                                "Bitmap Height" / construct.Int32ub,
+                                "Colour Plane Count" / construct.Const(b'\x01\x00'))
