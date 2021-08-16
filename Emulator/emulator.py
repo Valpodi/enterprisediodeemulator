@@ -68,7 +68,7 @@ class ImportDestinationEndpoint(asyncio.DatagramProtocol):
             return
         header, data = self.extract_control_header(self.data)
 
-        if not VerifyBitmap().validate(data):
+        if not VerifyBitmap.validate(data):
             data = self.wrap_non_sisl_data(data)
 
         if self.check_for_wrapped_data(data):
