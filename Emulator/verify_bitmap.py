@@ -28,4 +28,5 @@ class VerifyBitmap:
                                 "Header Size" / construct.Const(b'\x28\x00\x00\x00'),
                                 "Bitmap Width" / construct.Int32ub,
                                 "Bitmap Height" / construct.Int32ub,
-                                "Colour Plane Count" / construct.Const(b'\x01\x00'))
+                                "Colour Plane Count" / construct.Const(b'\x01\x00'),
+                                "Compression Method" / construct.Const(b'\x00\x00\x00\x00'))
