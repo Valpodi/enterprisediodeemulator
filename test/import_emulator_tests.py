@@ -58,16 +58,16 @@ class EmulatorTests(unittest.TestCase):
         self.test_udp_listener_2.close()
 
     def test_sisl_received_not_wrapped(self):
-        input = TestHelpers.get_example_control_header() + self.bitmap_header + b'{name: !str "helpful_name", flag: !bool "false", count: !int "3"}'
+        input = TestHelpers.get_example_control_header() + b'{name: !str "helpful_name", flag: !bool "false", count: !int "3"}'
         self.test_udp_sender.send(input, "emulator_diode_emulator_1", 40001)
         response = TestHelpers.wait_for_action(lambda: TestHelpers.read_udp_msg(self.test_udp_listener.sock, expected_output=input), "receive udp")
         self.assertTrue(response, input)
 
-    # def test_non_sisl_is_wrapped(self):
-    #     input = TestHelpers.get_example_control_header() + self.bitmap_header + b'hello'
-    #     self.test_udp_sender.send(input, "emulator_diode_emulator_1", 40001)
-    #     response = TestHelpers.wait_for_action(lambda: TestHelpers.read_udp_msg(self.test_udp_listener.sock, expected_output=b"\xd1\xdf\x5f\xff"), "receive udp")
-    #     self.assertEqual(response[64:68], b"\xd1\xdf\x5f\xff")
+    def test_non_sisl_is_wrapped(self):
+        input = TestHelpers.get_example_control_header() + b'hello'
+        self.test_udp_sender.send(input, "emulator_diode_emulator_1", 40001)
+        response = TestHelpers.wait_for_action(lambda: TestHelpers.read_udp_msg(self.test_udp_listener.sock, expected_output=b"\xd1\xdf\x5f\xff"), "receive udp")
+        self.assertEqual(response[64:68], b"\xd1\xdf\x5f\xff")
 
     def test_bitmap_not_wrapped(self):
         bitmap_sample = self.bitmap_header + b'\x03\x00\x00\x00\x00\x00\x00\x00\x00\x10\x12\x00\x00\xa0\x0f\x00\x00\x01\x00\x18\x00\x00\x00\x00\x00\x00\x03\x00\x00'
