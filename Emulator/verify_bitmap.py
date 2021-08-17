@@ -38,8 +38,9 @@ class VerifyBitmap:
 
     @staticmethod
     def _check_bitmap_size(data):
-        header_size = sum(struct.unpack("4B", VerifyBitmap._get_bitmap_header_field_by_name(data, "Header_Size")))
-        return VerifyBitmap._get_bitmap_header_field_by_name(data, "BF_Size") == len(data[header_size:])
+        header_size_bytes = VerifyBitmap._get_bitmap_header_field_by_name(data, "Header_Size")
+        header_size_int = int(header_size_bytes.hex(), base=16)
+        return VerifyBitmap._get_bitmap_header_field_by_name(data, "BF_Size") == len(data[header_size_int:])
 
     @staticmethod
     def _get_bitmap_header_field_by_name(data, field):
