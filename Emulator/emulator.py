@@ -71,7 +71,7 @@ class ImportDestinationEndpoint(asyncio.DatagramProtocol):
         self.transport.sendto(to_send)
 
     def _construct_payload(self, data, header):
-        if VerifyBitmap.validate(data):
+        if self._is_bmp(data):
             to_send = header + (48 * b"\x00") + data
         elif self._is_sisl(data):
             to_send = header + (48 * b"\x00") + data
@@ -79,6 +79,9 @@ class ImportDestinationEndpoint(asyncio.DatagramProtocol):
             wrapped_data = pysisl.wraps(data)
             to_send = header + wrapped_data
         return to_send
+
+    def _is_bmp(self, data):
+        return VerifyBitmap.validate(data)
 
     def _is_sisl(self, data):
         data_string = data.decode('utf-8')
