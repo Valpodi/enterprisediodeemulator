@@ -34,18 +34,19 @@ class TestReceiver:
 
 
 class EmulatorTests(unittest.TestCase):
-    bitmap_header = b'\x42\x4D' \
-                    b'\x3A\x00\x00\x00' \
-                    b'\x00\x00' \
-                    b'\x00\x00' \
-                    b'\x36\x00\x00\x00' \
-                    b'\x28\x00\x00\x00' \
-                    b'\x10\x00\x00\x00' \
-                    b'\x10\x00\x00\x00' \
-                    b'\x01\x00' \
-                    b'\x00\x00\x00\x00' \
-                    b'\x00\x00\x00\x00' \
-                    b'\x00\x00\x00\x00'
+    bitmap_header_as_dict = dict(Type=b'\x4D\x42',
+                                 BF_Size=b'\x00\x00\x00\x00',
+                                 Reserved_1=b'\x00\x00',
+                                 Reserved_2=b'\x00\x00',
+                                 Pixel_Array_Offset=b'\x00\x00\x00\x00',
+                                 Header_Size=b'\x00\x00\x00\x28',
+                                 Bitmap_Width=b'\x00\x00\x00\x10',
+                                 Bitmap_Height=b'\x00\x00\x00\x10',
+                                 Colour_Plane_Count=b'\x00\x01',
+                                 Compression_Method=b'\x00\x00\x00\x00',
+                                 Color_Used=b'\x00\x00\x00\x00',
+                                 Important_Color=b'\x00\x00\x00\x00'
+                                 )
 
     def setUp(self):
         self.test_udp_sender = TestSender()
@@ -70,17 +71,20 @@ class EmulatorTests(unittest.TestCase):
         self.assertEqual(response[64:68], b"\xd1\xdf\x5f\xff")
 
     def test_bitmap_not_wrapped(self):
-        bitmap_sample = self.bitmap_header + b'\x03\x00\x00\x00\x00\x00\x00\x00\x00\x10\x12\x00\x00\xa0\x0f\x00\x00\x01\x00\x18\x00\x00\x00\x00\x00\x00\x03\x00\x00'
+        bitmap_header = self.bitmap_header_as_dict
+        bitmap_header["BF_Size"] = b'\x00\x00\x00\x1D'
+        bitmap_sample = b"".join(bitmap_header.values()) + b'\x03\x00\x00\x00\x00\x00\x00\x00\x00\x10\x12\x00\x00\xa0\x0f\x00\x00\x01\x00\x18\x00\x00\x00\x00\x00\x00\x03\x00\x00'
+
         input = TestHelpers.get_example_control_header() + bitmap_sample
         self.test_udp_sender.send(input, "emulator_diode_emulator_1", 40001)
         response = TestHelpers.wait_for_action(lambda: TestHelpers.read_udp_msg(self.test_udp_listener.sock, expected_output=input), "receive udp")
         self.assertEqual(response, input)
 
-    def test_send_with_valid_control_header_is_received(self):
-        input = TestHelpers.get_example_control_header() + self.bitmap_header + b"{}"
+    def test_send_valid_sisl_with_valid_control_header_is_received(self):
+        input = TestHelpers.get_example_control_header() + b"{}"
         self.test_udp_sender.send(input, "emulator_diode_emulator_1", 40001)
         response = TestHelpers.wait_for_action(lambda: TestHelpers.read_udp_msg(self.test_udp_listener.sock, expected_output=input), "receive udp")
-        self.assertEqual(len(response), 154)
+        self.assertEqual(len(response), 114)
 
     def test_frame_dropped_if_invalid_header(self):
         input = TestHelpers.get_bad_example_control_header() + b'hello'
