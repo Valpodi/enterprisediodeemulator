@@ -71,9 +71,7 @@ class ImportDestinationEndpoint(asyncio.DatagramProtocol):
         self.transport.sendto(to_send)
 
     def _construct_payload(self, data, header):
-        if self._is_bmp(data):
-            to_send = header + (48 * b"\x00") + data
-        elif self._is_sisl(data):
+        if self._is_bmp(data) or self._is_sisl(data):
             to_send = header + (48 * b"\x00") + data
         else:
             wrapped_data = pysisl.wraps(data)
