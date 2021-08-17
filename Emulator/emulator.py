@@ -67,15 +67,26 @@ class ImportDestinationEndpoint(asyncio.DatagramProtocol):
             print("Control header invalid, frame dropped")
             return
         header, data = self.extract_control_header(self.data)
-
-        if not VerifyBitmap.validate(data):
-            data = self.wrap_non_sisl_data(data)
-
-        if self.check_for_wrapped_data(data):
-            to_send = header + data
-        else:
-            to_send = header + (48 * b"\x00") + data
+        to_send = self._construct_payload(data, header)
         self.transport.sendto(to_send)
+
+    def _construct_payload(self, data, header):
+        if VerifyBitmap.validate(data):
+            to_send = header + (48 * b"\x00") + data
+        elif self._is_sisl(data):
+            to_send = header + (48 * b"\x00") + data
+        else:
+            wrapped_data = pysisl.wraps(data)
+            to_send = header + wrapped_data
+        return to_send
+
+    def _is_sisl(self, data):
+        data_string = data.decode('utf-8')
+        try:
+            pysisl.loads(data_string)
+            return True
+        except parser_error.ParserError:
+            return False
 
     @staticmethod
     def check_for_valid_control_header(data):
@@ -98,19 +109,6 @@ class ImportDestinationEndpoint(asyncio.DatagramProtocol):
 
     def check_for_wrapped_data(self, data):
         return data[:4] == b"\xd1\xdf\x5f\xff"
-
-    def wrap_non_sisl_data(self, data):
-        data_string = data.decode('utf-8')
-        try:
-            pysisl.loads(data_string)
-        except parser_error.ParserError:
-            data = pysisl.wraps(data)
-        return self.encode_to_bytes(data)
-
-    def encode_to_bytes(self, data):
-        if type(data) == str:
-            data = bytes(data, 'utf-8')
-        return data
 
 
 async def start_proxy(bind, port, remote_host, remote_port):
