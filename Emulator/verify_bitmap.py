@@ -23,17 +23,17 @@ class VerifyBitmap:
     @staticmethod
     def _bitmap_header_bytes():
         return construct.Struct("Type" / construct.Const(b'\x42\x4D'),
-                                "BF Size" / construct.Int32ub,
-                                "Reserved 1" / construct.Const(b'\x00\x00'),
-                                "Reserved 2" / construct.Const(b'\x00\x00'),
-                                "Pixel Array Offset" / construct.Int32ub,
-                                "Header Size" / construct.Const(b'\x28\x00\x00\x00'),
-                                "Bitmap Width" / construct.Int32ub,
-                                "Bitmap Height" / construct.Int32ub,
-                                "Colour Plane Count" / construct.Const(b'\x01\x00'),
-                                "Compression Method" / construct.Int32ub,
-                                "Color Used" / construct.Int32ub,
-                                "Important Color" / construct.Int32ub)
+                                "BF_Size" / construct.Int32ub,
+                                "Reserved_1" / construct.Const(b'\x00\x00'),
+                                "Reserved_2" / construct.Const(b'\x00\x00'),
+                                "Pixel_Array_Offset" / construct.Int32ub,
+                                "Header_Size" / construct.Const(b'\x28\x00\x00\x00'),
+                                "Bitmap_Width" / construct.Int32ub,
+                                "Bitmap_Height" / construct.Int32ub,
+                                "Colour_Plane_Count" / construct.Const(b'\x01\x00'),
+                                "Compression_Method" / construct.Int32ub,
+                                "Color_Used" / construct.Int32ub,
+                                "Important_Color" / construct.Int32ub)
 
 
 class InvalidBitmapHeaderError(Exception):
