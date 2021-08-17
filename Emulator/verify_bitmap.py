@@ -7,16 +7,18 @@ import construct
 class VerifyBitmap:
     @staticmethod
     def validate(bitmap):
-        return VerifyBitmap._check_valid_bitmap_header(bitmap)
+        try:
+            VerifyBitmap._check_valid_bitmap_header(bitmap)
+            return True
+        except InvalidBitmapHeaderError:
+            return False
 
     @staticmethod
     def _check_valid_bitmap_header(data):
         try:
             VerifyBitmap._bitmap_header_bytes().parse(data)
-            return True
-        except construct.core.ConstructError as e:
-            print(e)
-            return False
+        except construct.core.ConstructError:
+            raise InvalidBitmapHeaderError("Invalid bitmap header")
 
     @staticmethod
     def _bitmap_header_bytes():
@@ -32,3 +34,7 @@ class VerifyBitmap:
                                 "Compression Method" / construct.Int32ub,
                                 "Color Used" / construct.Int32ub,
                                 "Important Color" / construct.Int32ub)
+
+
+class InvalidBitmapHeaderError(Exception):
+    pass
