@@ -17,8 +17,7 @@ class VerifyControlHeader:
     @staticmethod
     def _check_valid_control_header(data):
         try:
-            struct = VerifyControlHeader._control_header_bytes()
-            struct.parse(data)
+            VerifyControlHeader._control_header_bytes().parse(data)
         except construct.core.ConstructError:
             raise InvalidControlHeaderError("Invalid bitmap header")
 

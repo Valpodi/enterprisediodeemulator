@@ -65,6 +65,12 @@ class VerifyBitmapTests(unittest.TestCase):
         bitmap_sample = b"".join(header.values()) + b'hello'
         self.assertTrue(VerifyBitmap.validate(bitmap_sample))
 
+    def test_bitmap_validate_returns_false_with_invalid_compression_method(self):
+        invalid_compression_method_header = copy.deepcopy(self.bitmap_header_as_dict)
+        invalid_compression_method_header["Compression_Method"] = b'\x07\x00\x00\x00'
+        bitmap_sample = b"".join(invalid_compression_method_header.values())
+        self.assertFalse(VerifyBitmap.validate(bitmap_sample))
+
 
 if __name__ == '__main__':
     SUITE = unittest.TestLoader().loadTestsFromTestCase(VerifyBitmapTests)

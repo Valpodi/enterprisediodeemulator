@@ -2,7 +2,6 @@
 # For licence terms see LICENCE.md file
 
 import construct
-import struct
 
 
 class VerifyBitmap:
@@ -10,7 +9,7 @@ class VerifyBitmap:
     def validate(bitmap):
         try:
             VerifyBitmap._check_valid_bitmap_header(bitmap)
-            return VerifyBitmap._check_bitmap_size(bitmap)
+            return VerifyBitmap._check_bitmap_size(bitmap) and VerifyBitmap._check_compression_method(bitmap)
         except InvalidBitmapHeaderError:
             return False
 
@@ -45,6 +44,10 @@ class VerifyBitmap:
     @staticmethod
     def _get_bitmap_header_field_by_name(data, field):
         return VerifyBitmap._bitmap_header_bytes().parse(data).search(field)
+
+    @staticmethod
+    def _check_compression_method(data):
+        return VerifyBitmap._get_bitmap_header_field_by_name(data, "Compression_Method") <= 6
 
 
 class InvalidBitmapHeaderError(Exception):
