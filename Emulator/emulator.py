@@ -7,7 +7,7 @@ import asyncio
 import pysisl
 from pysisl import parser_error
 from verify_bitmap import VerifyBitmap
-
+from verify_control_header import VerifyControlHeader
 
 class ProxyEndpoint(asyncio.DatagramProtocol):
 
@@ -57,16 +57,16 @@ class ImportDestinationEndpoint(asyncio.DatagramProtocol):
     def __init__(self, proxy, addr, data):
         self.proxy = proxy
         self.addr = addr
-        self.data = data
+        self.frame = data
 
         super().__init__()
 
     def connection_made(self, transport):
         self.transport = transport
-        if not self.check_for_valid_control_header(self.data):
+        if not self.check_for_valid_control_header():
             print("Control header invalid, frame dropped")
             return
-        header, data = self.extract_control_header(self.data)
+        header, data = self.extract_control_header()
         to_send = self._construct_payload(data, header)
         self.transport.sendto(to_send)
 
@@ -89,27 +89,11 @@ class ImportDestinationEndpoint(asyncio.DatagramProtocol):
         except parser_error.ParserError:
             return False
 
-    @staticmethod
-    def check_for_valid_control_header(data):
-        if not len(data) >= 112:
-            print(f"Failed on size: {len(data)} \n {data}")
-            return False
-        if data[8] > 1:
-            print(f"Failed on EOF: {data[8]}")
-            return False
-        if not int.from_bytes(data[3:7], byteorder='little') >= 1:
-            print("Failed on frame count")
-            return False
-        if not data[9:112] == (103 * b"\x00"):
-            print(f"Failed on padding: {len(data[9:112])}")
-            return False
-        return True
+    def check_for_valid_control_header(self):
+        return VerifyControlHeader.validate(self.frame)
 
-    def extract_control_header(self, data):
-        return data[:64], data[112:]
-
-    def check_for_wrapped_data(self, data):
-        return data[:4] == b"\xd1\xdf\x5f\xff"
+    def extract_control_header(self):
+        return self.frame[:64], self.frame[112:]
 
 
 async def start_proxy(bind, port, remote_host, remote_port):

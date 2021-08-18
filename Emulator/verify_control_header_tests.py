@@ -7,7 +7,8 @@ from verify_control_header import VerifyControlHeader
 
 
 class VerifyControlHeaderTests(unittest.TestCase):
-    control_header_as_dict = dict(Frame_Count=b'\x00\x00\x00\x00',
+    control_header_as_dict = dict(Session_Id=b'\x01\x00\x00\x00',
+                                  Frame_Count=b'\x01\x00\x00\x00',
                                   EOF=b'\x00',
                                   Padding=103*b'\x00'
                                   )
