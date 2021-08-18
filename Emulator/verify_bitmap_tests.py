@@ -7,15 +7,15 @@ from verify_bitmap import VerifyBitmap
 
 
 class VerifyBitmapTests(unittest.TestCase):
-    bitmap_header_as_dict = dict(Type=b'\x4D\x42',
+    bitmap_header_as_dict = dict(Type=b'\x42\x4D',
                                  BF_Size=b'\x00\x00\x00\x00',
                                  Reserved_1=b'\x00\x00',
                                  Reserved_2=b'\x00\x00',
                                  Pixel_Array_Offset=b'\x00\x00\x00\x00',
-                                 Header_Size=b'\x00\x00\x00\x28',
+                                 Header_Size=b'\x28\x00\x00\x00',
                                  Bitmap_Width=b'\x10\x00\x00\x00',
                                  Bitmap_Height=b'\x10\x00\x00\x00',
-                                 Colour_Plane_Count=b'\x00\x01',
+                                 Colour_Plane_Count=b'\x01\x00',
                                  Compression_Method=b'\x00\x00\x00\x00',
                                  Color_Used=b'\x00\x00\x00\x00',
                                  Important_Color=b'\x00\x00\x00\x00'
@@ -33,13 +33,13 @@ class VerifyBitmapTests(unittest.TestCase):
 
     def test_bitmap_validate_returns_false_with_invalid_reserved_1_bytes(self):
         invalid_reserved_1_header = copy.deepcopy(self.bitmap_header_as_dict)
-        invalid_reserved_1_header["Reserved_1"] = b'\x3A\x00\x00\x00'
+        invalid_reserved_1_header["Reserved_1"] = b'\x3A\x00'
         bitmap_sample = b"".join(invalid_reserved_1_header.values())
         self.assertFalse(VerifyBitmap.validate(bitmap_sample))
 
     def test_bitmap_validate_returns_false_with_invalid_pixel_array_offset_bytes(self):
         invalid_pixel_array_offset_bytes_header = copy.deepcopy(self.bitmap_header_as_dict)
-        invalid_pixel_array_offset_bytes_header["Pixel_Array_Offset"] = b'\x36\x00\x00'
+        invalid_pixel_array_offset_bytes_header["Pixel_Array_Offset"] = b'\x36\x00'
         bitmap_sample = b"".join(invalid_pixel_array_offset_bytes_header.values())
         self.assertFalse(VerifyBitmap.validate(bitmap_sample))
 
@@ -61,7 +61,7 @@ class VerifyBitmapTests(unittest.TestCase):
 
     def test_bitmap_validate_returns_true_with_non_empty_bitmap_data(self):
         header = copy.deepcopy(self.bitmap_header_as_dict)
-        header["BF_Size"] = b'\x00\x00\x00\x05'
+        header["BF_Size"] = b'\x05\x00\x00\x00'
         bitmap_sample = b"".join(header.values()) + b'hello'
         self.assertTrue(VerifyBitmap.validate(bitmap_sample))
 
