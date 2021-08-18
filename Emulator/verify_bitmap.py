@@ -23,15 +23,20 @@ class VerifyBitmap:
     @staticmethod
     def _bitmap_header_bytes():
         return construct.Struct("Type" / construct.Const(b'\x42\x4D'),
-                                "BF_Size" / construct.Int32ul,
+                                "BF_Size" / construct.Int32ul,  # File Header (14) + DIB Header (40)
                                 "Reserved_1" / construct.Const(b'\x00\x00'),
                                 "Reserved_2" / construct.Const(b'\x00\x00'),
                                 "Pixel_Array_Offset" / construct.Int32ul,
+
                                 "Header_Size" / construct.Const(b'\x28\x00\x00\x00'),
                                 "Bitmap_Width" / construct.Int32ul,
                                 "Bitmap_Height" / construct.Int32ul,
                                 "Colour_Plane_Count" / construct.Const(b'\x01\x00'),
+                                "Bits_Per_Pixel"/ construct.Int16ul,
                                 "Compression_Method" / construct.Const(b'\x00\x00\x00\x00'),
+                                "Bitmap_Size_In_Bytes" / construct.Int32ul,
+                                "Horizontal_Resolution_In_Pixels_Per_Meter" / construct.Int32ul,
+                                "Vertical_Resolution_In_Pixels_Per_Meter" / construct.Int32ul,
                                 "Color_Used" / construct.Const(b'\x00\x00\x00\x00'),
                                 "Important_Color" / construct.Const(b'\x00\x00\x00\x00'))
 
@@ -41,9 +46,7 @@ class VerifyBitmap:
 
     @staticmethod
     def _check_bitmap_size(data):
-        header_size_bytes = VerifyBitmap._get_bitmap_header_field_by_name(data, "Header_Size")
-        header_size_int = int.from_bytes(header_size_bytes, byteorder='little')
-        return VerifyBitmap._get_bitmap_header_field_by_name(data, "BF_Size") == len(data[header_size_int:])
+        return VerifyBitmap._get_bitmap_header_field_by_name(data, "BF_Size") == len(data)
 
 
 class InvalidBitmapHeaderError(Exception):

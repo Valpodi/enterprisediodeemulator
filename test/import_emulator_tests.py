@@ -35,17 +35,22 @@ class TestReceiver:
 
 class EmulatorTests(unittest.TestCase):
     bitmap_header_as_dict = dict(Type=b'\x42\x4D',
-                                 BF_Size=b'\x00\x00\x00\x00',
+                                 BF_Size=b'\x36\x00\x00\x00',
                                  Reserved_1=b'\x00\x00',
                                  Reserved_2=b'\x00\x00',
                                  Pixel_Array_Offset=b'\x00\x00\x00\x00',
+
                                  Header_Size=b'\x28\x00\x00\x00',
                                  Bitmap_Width=b'\x10\x00\x00\x00',
                                  Bitmap_Height=b'\x10\x00\x00\x00',
                                  Colour_Plane_Count=b'\x01\x00',
+                                 Bits_Per_Pixel=b'\x00\x00',
                                  Compression_Method=b'\x00\x00\x00\x00',
+                                 Bitmap_Size_In_Bytes=b'\x00\x00\x00\x00',
+                                 Horizontal_Resolution_In_Pixels_Per_Meter=b'\x00\x00\x00\x00',
+                                 Vertical_Resolution_In_Pixels_Per_Meter=b'\x00\x00\x00\x00',
                                  Color_Used=b'\x00\x00\x00\x00',
-                                 Important_Color=b'\x00\x00\x00\x00'
+                                 Important_Color=b'\x00\x00\x00\x00',
                                  )
 
     def setUp(self):
@@ -72,7 +77,7 @@ class EmulatorTests(unittest.TestCase):
 
     def test_bitmap_not_wrapped(self):
         bitmap_header = self.bitmap_header_as_dict
-        bitmap_header["BF_Size"] = b'\x1D\x00\x00\x00'
+        bitmap_header["BF_Size"] = b'\x53\x00\x00\x00'
         bitmap_sample = b"".join(bitmap_header.values()) + b'\x03\x00\x00\x00\x00\x00\x00\x00\x00\x10\x12\x00\x00\xa0\x0f\x00\x00\x01\x00\x18\x00\x00\x00\x00\x00\x00\x03\x00\x00'
 
         input = TestHelpers.get_example_control_header() + bitmap_sample
