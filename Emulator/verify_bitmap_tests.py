@@ -31,45 +31,15 @@ class VerifyBitmapTests(unittest.TestCase):
         bitmap_sample = b"".join(invalid_type_header.values())
         self.assertFalse(VerifyBitmap.validate(bitmap_sample))
 
-    def test_bitmap_validate_returns_false_with_invalid_reserved_1_bytes(self):
-        invalid_reserved_1_header = copy.deepcopy(self.bitmap_header_as_dict)
-        invalid_reserved_1_header["Reserved_1"] = b'\x3A\x00'
-        bitmap_sample = b"".join(invalid_reserved_1_header.values())
-        self.assertFalse(VerifyBitmap.validate(bitmap_sample))
-
-    def test_bitmap_validate_returns_false_with_invalid_pixel_array_offset_bytes(self):
-        invalid_pixel_array_offset_bytes_header = copy.deepcopy(self.bitmap_header_as_dict)
-        invalid_pixel_array_offset_bytes_header["Pixel_Array_Offset"] = b'\x36\x00'
-        bitmap_sample = b"".join(invalid_pixel_array_offset_bytes_header.values())
-        self.assertFalse(VerifyBitmap.validate(bitmap_sample))
-
-    def test_bitmap_validate_returns_false_with_invalid_header_size(self):
-        invalid_header_size_header = copy.deepcopy(self.bitmap_header_as_dict)
-        invalid_header_size_header["Header_Size"] = b'\x18\x00\x00\x00'
-        bitmap_sample = b"".join(invalid_header_size_header.values())
-        self.assertFalse(VerifyBitmap.validate(bitmap_sample))
-
-    def test_bitmap_validate_returns_false_with_invalid_colour_plane_count(self):
-        invalid_colour_plane_count_header = copy.deepcopy(self.bitmap_header_as_dict)
-        invalid_colour_plane_count_header["Colour_Plane_Count"] = b'\x00\x00'
-        bitmap_sample = b"".join(invalid_colour_plane_count_header.values())
-        self.assertFalse(VerifyBitmap.validate(bitmap_sample))
-
     def test_bitmap_validate_returns_false_with_header_file_size_not_equal_to_data_length(self):
         bitmap_sample = b"".join(self.bitmap_header_as_dict.values()) + b'hello'
         self.assertFalse(VerifyBitmap.validate(bitmap_sample))
 
-    def test_bitmap_validate_returns_true_with_non_empty_bitmap_data(self):
+    def test_bitmap_validate_returns_true_with_header_file_size_equal_to_data_length(self):
         header = copy.deepcopy(self.bitmap_header_as_dict)
         header["BF_Size"] = b'\x05\x00\x00\x00'
         bitmap_sample = b"".join(header.values()) + b'hello'
         self.assertTrue(VerifyBitmap.validate(bitmap_sample))
-
-    def test_bitmap_validate_returns_false_with_invalid_compression_method(self):
-        invalid_compression_method_header = copy.deepcopy(self.bitmap_header_as_dict)
-        invalid_compression_method_header["Compression_Method"] = b'\x07\x00\x00\x00'
-        bitmap_sample = b"".join(invalid_compression_method_header.values())
-        self.assertFalse(VerifyBitmap.validate(bitmap_sample))
 
 
 if __name__ == '__main__':
