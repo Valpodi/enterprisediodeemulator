@@ -9,6 +9,7 @@ from pysisl import parser_error
 from verify_bitmap import VerifyBitmap
 from verify_control_header import VerifyControlHeader
 
+
 class ProxyEndpoint(asyncio.DatagramProtocol):
 
     def __init__(self, remote_address):
@@ -78,10 +79,12 @@ class ImportDestinationEndpoint(asyncio.DatagramProtocol):
             to_send = header + wrapped_data
         return to_send
 
-    def _is_bmp(self, data):
+    @staticmethod
+    def _is_bmp(data):
         return VerifyBitmap.validate(data)
 
-    def _is_sisl(self, data):
+    @staticmethod
+    def _is_sisl(data):
         data_string = data.decode('utf-8')
         try:
             pysisl.loads(data_string)
