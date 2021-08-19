@@ -11,7 +11,7 @@ class VerifyBitmapTests(unittest.TestCase):
                                  BF_Size=b'\x36\x00\x00\x00',
                                  Reserved_1=b'\x00\x00',
                                  Reserved_2=b'\x00\x00',
-                                 Pixel_Array_Offset=b'\x00\x00\x00\x00',
+                                 Pixel_Array_Offset=b'\x36\x00\x00\x00',
 
                                  Header_Size=b'\x28\x00\x00\x00',
                                  Bitmap_Width=b'\x10\x00\x00\x00',
