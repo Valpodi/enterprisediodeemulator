@@ -17,7 +17,7 @@ class VerifyBitmapTests(unittest.TestCase):
                                  Bitmap_Width=b'\x10\x00\x00\x00',
                                  Bitmap_Height=b'\x10\x00\x00\x00',
                                  Colour_Plane_Count=b'\x01\x00',
-                                 Bits_Per_Pixel=b'\x00\x00',
+                                 Bits_Per_Pixel=b'\x20\x00',
                                  Compression_Method=b'\x00\x00\x00\x00',
                                  Bitmap_Size_In_Bytes=b'\x00\x00\x00\x00',
                                  Horizontal_Resolution_In_Pixels_Per_Meter=b'\x00\x00\x00\x00',
@@ -39,6 +39,12 @@ class VerifyBitmapTests(unittest.TestCase):
         header["BF_Size"] = b'\x3B\x00\x00\x00'
         bitmap_sample = b"".join(header.values()) + b'hello'
         self.assertTrue(VerifyBitmap.validate(bitmap_sample))
+
+    def test_bitmap_validate_returns_false_with_invalid_bits_per_pixel(self):
+        header = copy.deepcopy(self.bitmap_header_as_dict)
+        header["Bits_Per_Pixel"] = b'\x19\x00'
+        bitmap_sample = b"".join(header.values())
+        self.assertFalse(VerifyBitmap.validate(bitmap_sample))
 
 
 if __name__ == '__main__':

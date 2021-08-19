@@ -9,7 +9,7 @@ class VerifyBitmap:
     def validate(bitmap):
         try:
             VerifyBitmap._check_valid_bitmap_header(bitmap)
-            return VerifyBitmap._check_bitmap_size(bitmap)
+            return VerifyBitmap._check_bitmap_size(bitmap) and VerifyBitmap._check_bits_per_pixel(bitmap)
         except InvalidBitmapHeaderError:
             return False
 
@@ -32,7 +32,7 @@ class VerifyBitmap:
                                 "Bitmap_Width" / construct.Int32ul,
                                 "Bitmap_Height" / construct.Int32ul,
                                 "Colour_Plane_Count" / construct.Const(b'\x01\x00'),
-                                "Bits_Per_Pixel"/ construct.Int16ul,
+                                "Bits_Per_Pixel" / construct.Int16ul,
                                 "Compression_Method" / construct.Const(b'\x00\x00\x00\x00'),
                                 "Bitmap_Size_In_Bytes" / construct.Int32ul,
                                 "Horizontal_Resolution_In_Pixels_Per_Meter" / construct.Int32ul,
@@ -41,12 +41,16 @@ class VerifyBitmap:
                                 "Important_Color" / construct.Const(b'\x00\x00\x00\x00'))
 
     @staticmethod
+    def _check_bitmap_size(data):
+        return VerifyBitmap._get_bitmap_header_field_by_name(data, "BF_Size") == len(data)
+
+    @staticmethod
     def _get_bitmap_header_field_by_name(data, field):
         return VerifyBitmap._bitmap_header_bytes().parse(data).search(field)
 
     @staticmethod
-    def _check_bitmap_size(data):
-        return VerifyBitmap._get_bitmap_header_field_by_name(data, "BF_Size") == len(data)
+    def _check_bits_per_pixel(data):
+        return VerifyBitmap._get_bitmap_header_field_by_name(data, "Bits_Per_Pixel") in [16, 24, 32]
 
 
 class InvalidBitmapHeaderError(Exception):

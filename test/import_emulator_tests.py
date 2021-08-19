@@ -44,7 +44,7 @@ class EmulatorTests(unittest.TestCase):
                                  Bitmap_Width=b'\x10\x00\x00\x00',
                                  Bitmap_Height=b'\x10\x00\x00\x00',
                                  Colour_Plane_Count=b'\x01\x00',
-                                 Bits_Per_Pixel=b'\x00\x00',
+                                 Bits_Per_Pixel=b'\x20\x00',
                                  Compression_Method=b'\x00\x00\x00\x00',
                                  Bitmap_Size_In_Bytes=b'\x00\x00\x00\x00',
                                  Horizontal_Resolution_In_Pixels_Per_Meter=b'\x00\x00\x00\x00',
