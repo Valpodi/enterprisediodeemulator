@@ -19,7 +19,7 @@ class VerifyControlHeaderTests(unittest.TestCase):
 
     def test_control_header_returns_false_with_invalid_frame_count(self):
         invalid_frame_count_header = copy.deepcopy(self.control_header_as_dict)
-        invalid_frame_count_header["Frame_Count"] = b'\x00\x00'
+        invalid_frame_count_header["Frame_Count"] = b'\x00\x00\x00\x00'
         data_sample = b"".join(invalid_frame_count_header.values())
         self.assertFalse(VerifyControlHeader.validate(data_sample))
 

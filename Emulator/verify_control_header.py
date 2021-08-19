@@ -9,10 +9,11 @@ class VerifyControlHeader:
     def validate(frame):
         try:
             VerifyControlHeader._check_valid_control_header(frame)
+            VerifyControlHeader._check_EOF(frame)
+            VerifyControlHeader._check_frame_count(frame)
+            return True
         except InvalidControlHeaderError:
             return False
-
-        return VerifyControlHeader._check_EOF(frame) and VerifyControlHeader._check_frame_count(frame)
 
     @staticmethod
     def _check_valid_control_header(data):
@@ -31,12 +32,14 @@ class VerifyControlHeader:
     @staticmethod
     def _check_EOF(data):
         eof_byte = VerifyControlHeader._get_bitmap_header_field_by_name(data, "EOF")
-        return eof_byte == 0 or eof_byte == 1
+        if eof_byte not in [0, 1]:
+            raise InvalidControlHeaderError("Invalid EOF flag")
 
     @staticmethod
     def _check_frame_count(data):
         frame_count = VerifyControlHeader._get_bitmap_header_field_by_name(data, "Frame_Count")
-        return frame_count > 0
+        if not frame_count > 0:
+            raise InvalidControlHeaderError("Frame Count cannot be 0")
 
     @staticmethod
     def _get_bitmap_header_field_by_name(data, field):
