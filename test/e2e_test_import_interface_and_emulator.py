@@ -67,7 +67,7 @@ class EndToEndEmulatorTests(unittest.TestCase):
         TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
         self.assertRaises(socket.timeout, TestHelpers.wait_for_action, lambda: (self.test_udp_listener.recv() != b"\x00", 0), "Non-empty packets received exceeded maximum")
 
-        data = TestHelpers.get_example_control_header() + b'{name: !str "helpful_name", flag: !bool "false", count: !int "3"}'
+        data = TestHelpers.get_valid_control_header() + b'{name: !str "helpful_name", flag: !bool "false", count: !int "3"}'
         self.test_udp_sender.send(data, "172.17.0.1", 40001)
         self.assertEqual(self.test_udp_listener.recv(), data)
 

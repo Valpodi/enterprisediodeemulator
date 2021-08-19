@@ -67,14 +67,14 @@ class EmulatorTests(unittest.TestCase):
         self.test_udp_listener_2.close()
 
     def test_sisl_received_not_wrapped(self):
-        input_data = TestHelpers.get_example_control_header() + b'{name: !str "helpful_name", flag: !bool "false", count: !int "3"}'
+        input_data = TestHelpers.get_valid_control_header() + b'{name: !str "helpful_name", flag: !bool "false", count: !int "3"}'
         self.test_udp_sender.send(input_data, "emulator_diode_emulator_1", 40001)
         response = TestHelpers.wait_for_action(
             lambda: TestHelpers.read_udp_msg(self.test_udp_listener.sock, expected_output=input_data), "receive udp")
         self.assertTrue(response, input_data)
 
     def test_non_sisl_is_wrapped(self):
-        input_data = TestHelpers.get_example_control_header() + b'hello'
+        input_data = TestHelpers.get_valid_control_header() + b'hello'
         self.test_udp_sender.send(input_data, "emulator_diode_emulator_1", 40001)
         response = TestHelpers.wait_for_action(
             lambda: TestHelpers.read_udp_msg(self.test_udp_listener.sock, expected_output=b"\xd1\xdf\x5f\xff"),
@@ -88,21 +88,22 @@ class EmulatorTests(unittest.TestCase):
         bitmap_header["BF_Size"] = b'\x3A\x00\x00\x00'
 
         bitmap_sample = b"".join(bitmap_header.values()) + b'jive'
-        input_data = TestHelpers.get_example_control_header() + bitmap_sample
+        input_data = TestHelpers.get_valid_control_header() + bitmap_sample
         self.test_udp_sender.send(input_data, "emulator_diode_emulator_1", 40001)
         response = TestHelpers.wait_for_action(
             lambda: TestHelpers.read_udp_msg(self.test_udp_listener.sock, expected_output=input_data), "receive udp")
         self.assertEqual(response, input_data)
 
     def test_send_valid_sisl_with_valid_control_header_is_received(self):
-        input_data = TestHelpers.get_example_control_header() + b"{}"
+        input_data = TestHelpers.get_valid_control_header() + b"{}"
         self.test_udp_sender.send(input_data, "emulator_diode_emulator_1", 40001)
         response = TestHelpers.wait_for_action(
             lambda: TestHelpers.read_udp_msg(self.test_udp_listener.sock, expected_output=input_data), "receive udp")
         self.assertEqual(len(response), 114)
 
     def test_frame_dropped_if_invalid_header(self):
-        input_data = TestHelpers.get_bad_example_control_header() + b'hello'
+        input_data = TestHelpers.get_invalid_control_header() + b"{}"
+        self.test_udp_sender.send(input_data, "emulator_diode_emulator_1", 40001)
         self.assertRaises(socket.timeout,
                           TestHelpers.wait_for_action,
                           lambda: TestHelpers.read_udp_msg(self.test_udp_listener.sock, expected_output=input_data),
@@ -110,6 +111,7 @@ class EmulatorTests(unittest.TestCase):
 
     def test_frame_dropped_if_no_header(self):
         input_data = b'hello'
+        self.test_udp_sender.send(input_data, "emulator_diode_emulator_1", 40001)
         self.assertRaises(socket.timeout,
                           TestHelpers.wait_for_action,
                           lambda: TestHelpers.read_udp_msg(self.test_udp_listener.sock, expected_output=input_data),
