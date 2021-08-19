@@ -9,7 +9,7 @@ class VerifyBitmap:
     def validate(bitmap):
         try:
             VerifyBitmap._check_valid_bitmap_header(bitmap)
-            return VerifyBitmap._check_bitmap_size(bitmap) and VerifyBitmap._check_bits_per_pixel(bitmap)
+            return VerifyBitmap._check_bitmap_size(bitmap) and VerifyBitmap._check_bits_per_pixel(bitmap) and VerifyBitmap._check_bitmap_dimensions(bitmap)
         except InvalidBitmapHeaderError:
             return False
 
@@ -51,6 +51,18 @@ class VerifyBitmap:
     @staticmethod
     def _check_bits_per_pixel(data):
         return VerifyBitmap._get_bitmap_header_field_by_name(data, "Bits_Per_Pixel") in [16, 24, 32]
+
+    @staticmethod
+    def _check_bitmap_dimensions(data):
+        width_pixels = VerifyBitmap._get_bitmap_header_field_by_name(data, "Bitmap_Width")
+        height_pixels = VerifyBitmap._get_bitmap_header_field_by_name(data, "Bitmap_Height")
+        bits_per_pixel = VerifyBitmap._get_bitmap_header_field_by_name(data, "Bits_Per_Pixel")
+        header_and_pixel_array_size_bytes = VerifyBitmap._get_bitmap_header_field_by_name(data, "BF_Size")
+
+        array_dimensions_bytes = (width_pixels * height_pixels * bits_per_pixel) / 8
+        header_size_bytes = 54
+        return header_and_pixel_array_size_bytes == (array_dimensions_bytes + header_size_bytes)
+
 
 
 class InvalidBitmapHeaderError(Exception):

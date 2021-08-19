@@ -3,6 +3,7 @@
 
 import unittest
 import socket
+import copy
 from test_helpers import TestHelpers
 
 
@@ -41,14 +42,14 @@ class EmulatorTests(unittest.TestCase):
                                  Pixel_Array_Offset=b'\x36\x00\x00\x00',
 
                                  Header_Size=b'\x28\x00\x00\x00',
-                                 Bitmap_Width=b'\x10\x00\x00\x00',
-                                 Bitmap_Height=b'\x10\x00\x00\x00',
+                                 Bitmap_Width=b'\x00\x00\x00\x00',
+                                 Bitmap_Height=b'\x00\x00\x00\x00',
                                  Colour_Plane_Count=b'\x01\x00',
                                  Bits_Per_Pixel=b'\x20\x00',
                                  Compression_Method=b'\x00\x00\x00\x00',
-                                 Bitmap_Size_In_Bytes=b'\x00\x00\x00\x00',
-                                 Horizontal_Resolution_In_Pixels_Per_Meter=b'\x00\x00\x00\x00',
-                                 Vertical_Resolution_In_Pixels_Per_Meter=b'\x00\x00\x00\x00',
+                                 Bitmap_Size_In_Bytes=b'\x00\x00\x00\x00',  # not checked
+                                 Horizontal_Resolution_In_Pixels_Per_Meter=b'\x00\x00\x00\x00',  # not checked
+                                 Vertical_Resolution_In_Pixels_Per_Meter=b'\x00\x00\x00\x00',  # not checked
                                  Color_Used=b'\x00\x00\x00\x00',
                                  Important_Color=b'\x00\x00\x00\x00',
                                  )
@@ -76,10 +77,12 @@ class EmulatorTests(unittest.TestCase):
         self.assertEqual(response[64:68], b"\xd1\xdf\x5f\xff")
 
     def test_bitmap_not_wrapped(self):
-        bitmap_header = self.bitmap_header_as_dict
-        bitmap_header["BF_Size"] = b'\x53\x00\x00\x00'
-        bitmap_sample = b"".join(bitmap_header.values()) + b'\x03\x00\x00\x00\x00\x00\x00\x00\x00\x10\x12\x00\x00\xa0\x0f\x00\x00\x01\x00\x18\x00\x00\x00\x00\x00\x00\x03\x00\x00'
+        bitmap_header = copy.deepcopy(self.bitmap_header_as_dict)
+        bitmap_header["Bitmap_Width"] = b'\x01\x00\x00\x00'
+        bitmap_header["Bitmap_Height"] = b'\x01\x00\x00\x00'
+        bitmap_header["BF_Size"] = b'\x3A\x00\x00\x00'
 
+        bitmap_sample = b"".join(bitmap_header.values()) + b'jive'
         input = TestHelpers.get_example_control_header() + bitmap_sample
         self.test_udp_sender.send(input, "emulator_diode_emulator_1", 40001)
         response = TestHelpers.wait_for_action(lambda: TestHelpers.read_udp_msg(self.test_udp_listener.sock, expected_output=input), "receive udp")
