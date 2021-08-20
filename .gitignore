@@ -1,3 +1,3 @@
-test/*.xml
+test/results/
 .idea/
 *__pycache__*

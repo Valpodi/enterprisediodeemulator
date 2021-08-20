@@ -7,7 +7,6 @@ import os
 
 
 def write_diode_type(diode_variant):
-    print(os.getcwd())
     with open("Emulator/config/diode_type.json", "w") as diode_type_file:
         diode_type_file.write(json.dumps({"f2 type": diode_variant}))
 
