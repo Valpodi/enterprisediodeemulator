@@ -60,4 +60,18 @@ paths:
         200:
           description: ""
           content: {}
-
+  /status/version:
+    get:
+      summary: Platform Status information
+      operationId: management_interface.ManagementInterface.do_get_status_version
+      responses:
+        200:
+          description: ""
+  /status/latest:
+    get:
+      summary: Obtain the latest statistics, counters and status information from
+        the board
+      operationId: management_interface.ManagementInterface.do_get_status_latest
+      responses:
+        200:
+          description: ""

@@ -92,7 +92,11 @@ class ManagementInterface:
         return stop_process_success & remove_process_success
 
     @classmethod
-    def not_implemented(cls):
+    def do_get_status_version(cls):
+        return Response("Not implemented", 200)
+
+    @classmethod
+    def do_get_status_latest(cls):
         return Response("Not implemented", 200)
 
 
