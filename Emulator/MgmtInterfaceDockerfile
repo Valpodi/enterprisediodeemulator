@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y docker.io
 RUN pip3 install connexion
 
 COPY Emulator/http_server.py /usr/src/app/http_server.py
-COPY Emulator/mgmt_interface.py /usr/src/app/mgmt_interface.py
+COPY Emulator/management_interface.py /usr/src/app/management_interface.py
 COPY Emulator/verify_config.py /usr/src/app/verify_config.py
 COPY Emulator/openapi/ /usr/src/app/openapi/
 COPY Emulator/launch_emulator.py /usr/src/app/launch_emulator.py

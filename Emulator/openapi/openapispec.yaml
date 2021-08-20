@@ -9,7 +9,7 @@ paths:
   /config/diode:
     get:
       summary: download diode config
-      operationId: mgmt_interface.Interface.do_config_get
+      operationId: management_interface.ManagementInterface.do_config_get
       responses:
         200:
           description: diode config available
@@ -19,7 +19,7 @@ paths:
                 type: object
     put:
       summary: Upload diode config
-      operationId: mgmt_interface.Interface.do_config_update
+      operationId: management_interface.ManagementInterface.do_config_update
       requestBody:
         content:
           application/json:
@@ -36,7 +36,7 @@ paths:
   /config/diode/schema:
     get:
       summary: download diode config schema
-      operationId: mgmt_interface.Interface.get_config_schema
+      operationId: management_interface.ManagementInterface.get_config_schema
       responses:
         200:
           description: diode config schema available
@@ -47,7 +47,7 @@ paths:
   /command/diode/power/on:
     post:
       summary: Turn diode on
-      operationId: mgmt_interface.Interface.do_power_on_procedure
+      operationId: management_interface.ManagementInterface.do_power_on_procedure
       responses:
         200:
           description: ""

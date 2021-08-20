@@ -3,50 +3,50 @@
 
 import unittest
 import json
-from mgmt_interface import Interface, DiodePowerCycleError
+from management_interface import ManagementInterface, DiodePowerCycleError
 
 
 class MgmtInterfaceTests(unittest.TestCase):
     def test_do_config_get_returns_config_file(self):
-        Interface._file_exists = lambda filepath: True
-        Interface._get_file_content = lambda filepath: {
+        ManagementInterface._file_exists = lambda filepath: True
+        ManagementInterface._get_file_content = lambda filepath: {
             "ingress": {},
             "egress": {},
             "routingTable": []
         }
-        response = Interface().do_config_get()
+        response = ManagementInterface().do_config_get()
 
         self.assertEqual({"ingress": {}, "egress": {}, "routingTable": []}, json.loads(response.get_data()))
         self.assertEqual(200, response.status_code)
 
     def test_diode_power_on_returns_status_completed(self):
-        Interface._file_exists = lambda filepath: True
-        Interface._power_on_diode = lambda: {"Status": "Diode powered on"}
-        Interface._remove_container = lambda: True
-        response = Interface.do_power_on_procedure()
+        ManagementInterface._file_exists = lambda filepath: True
+        ManagementInterface._power_on_diode = lambda: {"Status": "Diode powered on"}
+        ManagementInterface._remove_container = lambda: True
+        response = ManagementInterface.do_power_on_procedure()
 
         self.assertEqual("Diode powered on", json.loads(response.get_data())["Status"])
         self.assertEqual(200, response.status_code)
 
     def test_diode_power_on_raises_error_when_emulator_cannot_be_powercyled(self):
-        Interface._remove_container = lambda: False
-        self.assertRaises(DiodePowerCycleError, Interface.do_power_on_procedure)
+        ManagementInterface._remove_container = lambda: False
+        self.assertRaises(DiodePowerCycleError, ManagementInterface.do_power_on_procedure)
 
     def test_diode_power_off_returns_status_completed(self):
-        Interface._power_off_diode = lambda: {"Status": "completed"}
-        response = Interface.do_power_off_procedure()
+        ManagementInterface._power_off_diode = lambda: {"Status": "completed"}
+        response = ManagementInterface.do_power_off_procedure()
 
         self.assertEqual(b"", response.get_data())
         self.assertEqual(200, response.status_code)
 
     def test_diode_get_schema_returns_config_schema(self):
-        Interface._file_exists = lambda filepath: True
+        ManagementInterface._file_exists = lambda filepath: True
         schema = {"properties": {"ingress": {"type": "object"},
                                  "egress": {"type": "object"},
                                  "routingTable": {"type": "array"}},
                   "required": ["ingress", "egress", "routingTable"]}
-        Interface._get_file_content = lambda filepath: schema
-        response = Interface.get_config_schema()
+        ManagementInterface._get_file_content = lambda filepath: schema
+        response = ManagementInterface.get_config_schema()
 
         self.assertEqual(schema, json.loads(response.get_data()))
         self.assertEqual(200, response.status_code)

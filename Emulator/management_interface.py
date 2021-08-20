@@ -10,7 +10,7 @@ import launch_emulator
 from verify_config import VerifyConfig
 
 
-class Interface:
+class ManagementInterface:
     config_file = None
     config_filepath = 'Emulator/config/port_config.json'
     schema_filepath = '/usr/src/app/openapi/schema.json'
@@ -90,6 +90,10 @@ class Interface:
         remove_process = subprocess.run("docker rm emulator".split(), stderr=subprocess.STDOUT, stdout=subprocess.PIPE)
         remove_process_success = (b"No such container: emulator" in stop_process.stdout) or (remove_process.returncode == 0)
         return stop_process_success & remove_process_success
+
+    @classmethod
+    def not_implemented(cls):
+        return Response("Not implemented", 200)
 
 
 class DiodePowerCycleError(Exception):
