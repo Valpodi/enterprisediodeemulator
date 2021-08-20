@@ -75,3 +75,35 @@ paths:
       responses:
         200:
           description: ""
+  /config/mgmt/settings/syslog:
+    post:
+      summary: configure target syslog address
+      operationId: management_interface.ManagementInterface.do_configure_syslog
+      responses:
+        200:
+          description: ""
+        500:
+          description: ""
+  /config/mgmt/settings/ssh:
+    post:
+      summary: Enable/Disable ssh access
+      operationId: management_interface.ManagementInterface.set_ssh_access
+      responses:
+        200:
+          description: ""
+  /config/mgmt/settings/ssl:
+    put:
+      summary: Set the management interface private ssl certificates.
+      operationId: management_interface.ManagementInterface.update_ssl_certs
+      responses:
+        200:
+          description: ""
+  /config/mgmt/settings/ip:
+    post:
+      summary: Set the management interface ip address settings
+      operationId: management_interface.ManagementInterface.update_ip_settings
+      responses:
+        200:
+          description: ""
+
+

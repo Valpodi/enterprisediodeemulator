@@ -99,6 +99,22 @@ class ManagementInterface:
     def do_get_status_latest(cls):
         return Response("Not implemented", 200)
 
+    @classmethod
+    def do_configure_syslog(cls):
+        return Response("Not implemented", 200)
+
+    @classmethod
+    def set_ssh_access(cls):
+        return Response("Not implemented", 200)
+
+    @classmethod
+    def update_ssl_certs(cls):
+        return Response("Not implemented", 200)
+
+    @classmethod
+    def update_ip_settings(cls):
+        return Response("Not implemented", 200)
+
 
 class DiodePowerCycleError(Exception):
     pass
