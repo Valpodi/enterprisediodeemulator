@@ -55,7 +55,7 @@ paths:
   /command/diode/power/off:
     post:
       summary: Turn diode off
-      operationId: mgmt_interface.Interface.do_power_off_procedure
+      operationId: management_interface.ManagementInterface.do_power_off_procedure
       responses:
         200:
           description: ""
