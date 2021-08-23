@@ -7,21 +7,18 @@ import construct
 class VerifyBitmap:
     @staticmethod
     def validate(bitmap):
-        try:
-            VerifyBitmap._check_valid_bitmap_header(bitmap)
-            VerifyBitmap._check_bitmap_size(bitmap)
-            VerifyBitmap._check_bits_per_pixel(bitmap)
-            VerifyBitmap._check_bitmap_dimensions(bitmap)
-            return True
-        except InvalidBitmapHeaderError:
-            return False
+        return VerifyBitmap._check_valid_bitmap_header(bitmap) and \
+               VerifyBitmap._check_bitmap_size(bitmap) and \
+               VerifyBitmap._check_bits_per_pixel(bitmap) and \
+               VerifyBitmap._check_bitmap_dimensions(bitmap)
 
     @staticmethod
     def _check_valid_bitmap_header(data):
         try:
             VerifyBitmap._bitmap_header_bytes().parse(data)
+            return True
         except construct.core.ConstructError:
-            raise InvalidBitmapHeaderError("Invalid bitmap header")
+            return False
 
     @staticmethod
     def _bitmap_header_bytes():
@@ -45,8 +42,7 @@ class VerifyBitmap:
 
     @staticmethod
     def _check_bitmap_size(data):
-        if not VerifyBitmap._get_bitmap_header_field_by_name(data, "BF_Size") == len(data):
-            raise InvalidBitmapHeaderError("Bitmap file size does not match header.")
+        return VerifyBitmap._get_bitmap_header_field_by_name(data, "BF_Size") == len(data)
 
     @staticmethod
     def _get_bitmap_header_field_by_name(data, field):
@@ -54,8 +50,7 @@ class VerifyBitmap:
 
     @staticmethod
     def _check_bits_per_pixel(data):
-        if not VerifyBitmap._get_bitmap_header_field_by_name(data, "Bits_Per_Pixel") in [16, 24, 32]:
-            raise InvalidBitmapHeaderError("Invalid bits per pixel field in header.")
+        return VerifyBitmap._get_bitmap_header_field_by_name(data, "Bits_Per_Pixel") in [16, 24, 32]
 
     @staticmethod
     def _check_bitmap_dimensions(data):
@@ -66,9 +61,4 @@ class VerifyBitmap:
 
         array_dimensions_bytes = (width_pixels * height_pixels * bits_per_pixel) / 8
         header_size_bytes = 54
-        if not header_and_pixel_array_size_bytes == (array_dimensions_bytes + header_size_bytes):
-            raise InvalidBitmapHeaderError("Bitmap width and height do not match file size.")
-
-
-class InvalidBitmapHeaderError(Exception):
-    pass
+        return header_and_pixel_array_size_bytes == (array_dimensions_bytes + header_size_bytes)
