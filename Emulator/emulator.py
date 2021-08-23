@@ -93,7 +93,7 @@ class ImportDestinationEndpoint(asyncio.DatagramProtocol):
             return False
 
     def check_for_valid_control_header(self):
-        return VerifyControlHeader.validate(self.frame)
+        return VerifyControlHeader().validate(self.frame)
 
     def extract_control_header(self):
         return self.frame[:64], self.frame[112:]
