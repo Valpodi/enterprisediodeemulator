@@ -5,6 +5,8 @@ import copy
 import unittest
 import subprocess
 import threading
+
+import pysisl
 import requests
 import socket
 import json
@@ -70,6 +72,24 @@ class EndToEndEmulatorTests(unittest.TestCase):
         data = TestHelpers.get_valid_control_header() + b'{name: !str "helpful_name", flag: !bool "false", count: !int "3"}'
         self.test_udp_sender.send(data, "172.17.0.1", 40001)
         self.assertEqual(self.test_udp_listener.recv(), data)
+
+        requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
+        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", 40001, "zvu")
+
+    def test_not_sisl_data_is_wrapped(self):
+        requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
+        self.assertRaises(socket.timeout, TestHelpers.wait_for_action, lambda: (self.test_udp_listener.recv() != b"\x00", 0), "Non-empty packets received exceeded maximum")
+
+        data = TestHelpers.get_valid_control_header() + b'not_sisl'
+        self.test_udp_sender.send(data, "172.17.0.1", 40001)
+        received = self.test_udp_listener.recv()
+        self.assertNotEqual(received, data)
+
+        sent_control_header_length = 64
+        received_unwrapped = pysisl.unwraps(received[sent_control_header_length:])
+        control_header_length = 112
+        self.assertEqual(received_unwrapped, data[control_header_length:])
 
         requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
         TestHelpers.wait_for_closed_comms_ports("172.17.0.1", 40001, "zvu")
