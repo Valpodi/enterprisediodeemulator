@@ -81,7 +81,7 @@ class ImportDestinationEndpoint(asyncio.DatagramProtocol):
 
     @staticmethod
     def _is_bmp(data):
-        return VerifyBitmap.validate(data)
+        return VerifyBitmap().validate(data)
 
     @staticmethod
     def _is_sisl(data):

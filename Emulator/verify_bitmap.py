@@ -5,17 +5,17 @@ import construct
 
 
 class VerifyBitmap:
-    @staticmethod
-    def validate(bitmap):
-        return VerifyBitmap._check_valid_bitmap_header(bitmap) and \
-               VerifyBitmap._check_bitmap_size(bitmap) and \
-               VerifyBitmap._check_bits_per_pixel(bitmap) and \
-               VerifyBitmap._check_bitmap_dimensions(bitmap)
+    accepted_bits_per_pixel = [16, 24, 32]
 
-    @staticmethod
-    def _check_valid_bitmap_header(data):
+    def validate(self, bitmap):
+        return self._check_valid_bitmap_header(bitmap) and \
+               self._check_bitmap_size(bitmap) and \
+               self._check_bits_per_pixel() and \
+               self._check_bitmap_dimensions()
+
+    def _check_valid_bitmap_header(self, data):
         try:
-            VerifyBitmap._bitmap_header_bytes().parse(data)
+            self.header = self._bitmap_header_bytes().parse(data)
             return True
         except construct.core.ConstructError:
             return False
@@ -40,24 +40,20 @@ class VerifyBitmap:
                                 "Color_Used" / construct.Const(b'\x00\x00\x00\x00'),
                                 "Important_Color" / construct.Const(b'\x00\x00\x00\x00'))
 
-    @staticmethod
-    def _check_bitmap_size(data):
-        return VerifyBitmap._get_bitmap_header_field_by_name(data, "BF_Size") == len(data)
+    def _check_bitmap_size(self, data):
+        return self._get_bitmap_header_field_by_name("BF_Size") == len(data)
 
-    @staticmethod
-    def _get_bitmap_header_field_by_name(data, field):
-        return VerifyBitmap._bitmap_header_bytes().parse(data).search(field)
+    def _get_bitmap_header_field_by_name(self, field):
+        return self.header.search(field)
 
-    @staticmethod
-    def _check_bits_per_pixel(data):
-        return VerifyBitmap._get_bitmap_header_field_by_name(data, "Bits_Per_Pixel") in [16, 24, 32]
+    def _check_bits_per_pixel(self):
+        return self._get_bitmap_header_field_by_name("Bits_Per_Pixel") in self.accepted_bits_per_pixel
 
-    @staticmethod
-    def _check_bitmap_dimensions(data):
-        width_pixels = VerifyBitmap._get_bitmap_header_field_by_name(data, "Bitmap_Width")
-        height_pixels = VerifyBitmap._get_bitmap_header_field_by_name(data, "Bitmap_Height")
-        bits_per_pixel = VerifyBitmap._get_bitmap_header_field_by_name(data, "Bits_Per_Pixel")
-        header_and_pixel_array_size_bytes = VerifyBitmap._get_bitmap_header_field_by_name(data, "BF_Size")
+    def _check_bitmap_dimensions(self):
+        width_pixels = self._get_bitmap_header_field_by_name("Bitmap_Width")
+        height_pixels = self._get_bitmap_header_field_by_name("Bitmap_Height")
+        bits_per_pixel = self._get_bitmap_header_field_by_name("Bits_Per_Pixel")
+        header_and_pixel_array_size_bytes = self._get_bitmap_header_field_by_name("BF_Size")
 
         array_dimensions_bytes = (width_pixels * height_pixels * bits_per_pixel) / 8
         header_size_bytes = 54

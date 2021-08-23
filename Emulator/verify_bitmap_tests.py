@@ -28,11 +28,11 @@ class VerifyBitmapTests(unittest.TestCase):
 
     def test_bitmap_contains_valid_header(self):
         bitmap_sample = b"".join(self.bitmap_header_as_dict.values())
-        self.assertTrue(VerifyBitmap.validate(bitmap_sample))
+        self.assertTrue(VerifyBitmap().validate(bitmap_sample))
 
     def test_bitmap_validate_returns_false_with_header_file_size_not_equal_to_data_length(self):
         bitmap_sample = b"".join(self.bitmap_header_as_dict.values()) + b'jive'
-        self.assertFalse(VerifyBitmap.validate(bitmap_sample))
+        self.assertFalse(VerifyBitmap().validate(bitmap_sample))
 
     def test_bitmap_validate_returns_true_with_header_file_size_equal_to_data_length(self):
         header = copy.deepcopy(self.bitmap_header_as_dict)
@@ -40,13 +40,13 @@ class VerifyBitmapTests(unittest.TestCase):
         header["Bitmap_Height"] = b'\x01\x00\x00\x00'
         header["BF_Size"] = b'\x3A\x00\x00\x00'
         bitmap_sample = b"".join(header.values()) + b'jive'
-        self.assertTrue(VerifyBitmap.validate(bitmap_sample))
+        self.assertTrue(VerifyBitmap().validate(bitmap_sample))
 
     def test_bitmap_validate_returns_false_with_invalid_bits_per_pixel(self):
         header = copy.deepcopy(self.bitmap_header_as_dict)
         header["Bits_Per_Pixel"] = b'\x19\x00'
         bitmap_sample = b"".join(header.values())
-        self.assertFalse(VerifyBitmap.validate(bitmap_sample))
+        self.assertFalse(VerifyBitmap().validate(bitmap_sample))
 
     def test_bitmap_validate_returns_false_with_invalid_bitmap_dimensions(self):
         header = copy.deepcopy(self.bitmap_header_as_dict)
@@ -55,7 +55,7 @@ class VerifyBitmapTests(unittest.TestCase):
         header["Bitmap_Height"] = b'\x01\x00\x00\x00'
 
         bitmap_sample = b"".join(header.values()) + b'jive'
-        self.assertFalse(VerifyBitmap.validate(bitmap_sample))
+        self.assertFalse(VerifyBitmap().validate(bitmap_sample))
 
     def test_bitmap_validate_returns_true_with_valid_bitmap_dimensions(self):
         header = copy.deepcopy(self.bitmap_header_as_dict)
@@ -64,7 +64,7 @@ class VerifyBitmapTests(unittest.TestCase):
         header["BF_Size"] = b'\x3A\x00\x00\x00'
 
         bitmap_sample = b"".join(header.values()) + b'jive'
-        self.assertTrue(VerifyBitmap.validate(bitmap_sample))
+        self.assertTrue(VerifyBitmap().validate(bitmap_sample))
 
 
 if __name__ == '__main__':
