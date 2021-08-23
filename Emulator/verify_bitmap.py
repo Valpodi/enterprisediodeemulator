@@ -8,6 +8,7 @@ import construct
 class VerifyBitmap:
     accepted_bits_per_pixel = [16, 24, 32]
     file_and_dib_header_size_in_bytes = 54
+    header = None
 
     def validate(self, bitmap):
         return self._check_valid_bitmap_header(bitmap) and \
@@ -30,20 +31,20 @@ class VerifyBitmap:
                                 "Reserved_2" / construct.Const(b'\x00\x00'),
                                 "Pixel_Array_Offset" / construct.Const(b'\x36\x00\x00\x00'),
 
-                                "Header_Size" / construct.Const(b'\x28\x00\x00\x00'),
+                                "Header_Size" / construct.Const(b'\x28\x00\x00\x00'),  # DIB Header
                                 "Bitmap_Width" / construct.Int32ul,
                                 "Bitmap_Height" / construct.Int32ul,
                                 "Colour_Plane_Count" / construct.Const(b'\x01\x00'),
                                 "Bits_Per_Pixel" / construct.Int16ul,
                                 "Compression_Method" / construct.Const(b'\x00\x00\x00\x00'),
-                                "Bitmap_Size_In_Bytes" / construct.Int32ul,
+                                "Bitmap_Size_In_Bytes" / construct.Int32ul,  # Pixel Array
                                 "Horizontal_Resolution_In_Pixels_Per_Meter" / construct.Int32ul,
                                 "Vertical_Resolution_In_Pixels_Per_Meter" / construct.Int32ul,
                                 "Color_Used" / construct.Const(b'\x00\x00\x00\x00'),
                                 "Important_Color" / construct.Const(b'\x00\x00\x00\x00'))
 
-    def _check_bitmap_size(self, data):
-        return self._get_bitmap_header_field_by_name("BF_Size") == len(data)
+    def _check_bitmap_size(self, bitmap_header_and_array):
+        return self._get_bitmap_header_field_by_name("BF_Size") == len(bitmap_header_and_array)
 
     def _get_bitmap_header_field_by_name(self, field):
         return self.header.search(field)
