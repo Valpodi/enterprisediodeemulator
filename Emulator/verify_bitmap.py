@@ -1,11 +1,13 @@
 # Copyright PA Knowledge Ltd 2021
 # For licence terms see LICENCE.md file
+import math
 
 import construct
 
 
 class VerifyBitmap:
     accepted_bits_per_pixel = [16, 24, 32]
+    file_and_dib_header_size_in_bytes = 54
 
     def validate(self, bitmap):
         return self._check_valid_bitmap_header(bitmap) and \
@@ -52,9 +54,8 @@ class VerifyBitmap:
     def _check_bitmap_dimensions(self):
         width_pixels = self._get_bitmap_header_field_by_name("Bitmap_Width")
         height_pixels = self._get_bitmap_header_field_by_name("Bitmap_Height")
-        bits_per_pixel = self._get_bitmap_header_field_by_name("Bits_Per_Pixel")
+        bytes_per_pixel = self._get_bitmap_header_field_by_name("Bits_Per_Pixel") / 8
         header_and_pixel_array_size_bytes = self._get_bitmap_header_field_by_name("BF_Size")
 
-        array_dimensions_bytes = (width_pixels * height_pixels * bits_per_pixel) / 8
-        header_size_bytes = 54
-        return header_and_pixel_array_size_bytes == (array_dimensions_bytes + header_size_bytes)
+        array_dimensions_bytes = width_pixels * height_pixels * bytes_per_pixel
+        return header_and_pixel_array_size_bytes == (array_dimensions_bytes + self.file_and_dib_header_size_in_bytes)
