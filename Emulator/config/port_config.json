@@ -44,13 +44,13 @@
     "routingTable": [
         {
             "ingressPort": 40001,
-            "egressIpAddress": "emulator_tester_1",
+            "egressIpAddress": "172.17.0.1",
             "egressSrcPort": 50001,
             "egressDestPort": 50001
         },
         {
             "ingressPort": 41024,
-            "egressIpAddress": "emulator_tester_1",
+            "egressIpAddress": "172.17.0.1",
             "egressSrcPort": 51024,
             "egressDestPort": 51024
         }
