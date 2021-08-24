@@ -18,10 +18,7 @@ class EmulatorSpanTooLargeTest(unittest.TestCase):
         subprocess.run("docker rm emulator".split())
 
     def test_start_emulator_with_port_span_too_large_throws_error(self):
-        subprocess.call("python3 launch_emulator.py -p test/portSpanTooLarge.json".split())
-        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", 40000, "zvu", attempts=10)
-        logs = subprocess.check_output("docker logs emulator".split(), stderr=subprocess.STDOUT)
-        self.assertTrue("Config validation failed: Ingress portSpan must be less than 2048." in logs.decode())
+        self.assertTrue("Config validation failed: Ingress portSpan must be less than 2048." in subprocess.run("python3 Emulator/launch_emulator.py -p test/portSpanTooLarge.json".split(), stderr=subprocess.STDOUT, stdout=subprocess.PIPE).stdout.decode())
 
 
 if __name__ == '__main__':

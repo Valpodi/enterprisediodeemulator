@@ -72,7 +72,8 @@ class ManagementInterface:
 
     @classmethod
     def _power_on_diode(cls):
-        return {"Status": {0: "Diode powered on"}.get(launch_emulator.start_emulator(cls.config_filepath))}
+        is_import_diode=os.environ.get("IMPORTDIODE")
+        return {"Status": {0: "Diode powered on"}.get(launch_emulator.start_emulator(cls.config_filepath, is_import_diode))}
 
     @classmethod
     def do_power_off_procedure(cls):

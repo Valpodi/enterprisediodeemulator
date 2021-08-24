@@ -14,6 +14,8 @@ services:
     build:
       context: ../Emulator
       dockerfile: Dockerfile
+    environment:
+      - IMPORTDIODE=${IMPORT_DIODE}
     volumes:
       - ../Emulator/config/:/usr/src/app/config/
     entrypoint: "python3 -u /usr/src/app/emulator.py"

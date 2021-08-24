@@ -12,7 +12,7 @@ class VerifyConfig:
         self.schema = self._get_schema() if schema is None else schema
         self.max_config_bytes = max_config_bytes
 
-    def validate(self, config,):
+    def validate(self, config):
         VerifyConfig._verify_non_empty_config_file(config)
         self._verify_config_less_than_max_length(config)
         self._verify_config_with_schema(config)

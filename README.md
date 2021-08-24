@@ -32,22 +32,21 @@ Please note that while the emulator can use DNS name resolution for the destinat
 the diode will only support IP addresses.
 
 ### Configuring the diode variant
-The emulator variant is configured using [diode_type.json](Emulator/config/diode_type.json). Supported options are "basic" and "import".
-It should have the format:
-    
-    {"f2 type": {{ Variant }}}
+By default the emulator is configured as the basic diode. 
+The emulator can be configured as the import variant by using the import diode flag (`--importDiode` or `-i`) when running the management interface or emulator script.
 
-This file must be configured correctly before the emulator image has been built.  
+Note that though the port config is validated when using the emulator directly for ease of use, 
+but the enterprise diode itself will not validate the port config, as this is expected to be done by the management interface API.
 
 ### Building the emulator
-Build the emulator and interface docker containers with:
+Build the emulator and management interface docker containers with:
 
 `./scripts/buildInterfaceAndEmulator.sh`
 
 ### Management interface
 The management interface uses a REST API to interact with the diode emulator. 
-The interface server host will be localhost by default.
-To launch the interface, run the script:
+The management interface server host will be localhost by default.
+To launch the management interface, run the script:
 
 `python3 Emulator/launch_management_interface.py -p [INTERFACE_PORT]`
 

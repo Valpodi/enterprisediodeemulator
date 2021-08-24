@@ -5,11 +5,14 @@ import copy
 import unittest
 import subprocess
 import threading
-
 import pysisl
 import requests
 import socket
 import json
+
+from pysisl import parser_error
+
+from Emulator.verify_bitmap import VerifyBitmap
 from test_helpers import TestHelpers, TestSender, TestReceiver
 
 
@@ -37,7 +40,7 @@ class EndToEndEmulatorTests(unittest.TestCase):
 
     @classmethod
     def start_interface_server(cls):
-        subprocess.Popen('python3 Emulator/launch_management_interface.py --interfacePort 8081'.split())
+        subprocess.Popen('python3 Emulator/launch_management_interface.py --interfacePort 8081 --importDiode'.split())
 
     @classmethod
     def update_port_config(cls):

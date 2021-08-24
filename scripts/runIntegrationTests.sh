@@ -11,23 +11,22 @@ function cleanup()
 
 ./scripts/buildInterfaceAndEmulator.sh
 
-python3 test/write_diode_type.py -t basic
 pushd test
 export RESULT_FILENAME="emulator_test_results.xml"
 export PYTHON_SCRIPT="/tmp/emulator_tests.py"
+export IMPORT_DIODE=False
 docker-compose -p emulator up --exit-code-from tester --build
 docker-compose -p emulator down
 popd
 
-python3 test/write_diode_type.py -t import
 pushd test
 export RESULT_FILENAME="import_emulator_test_results.xml"
 export PYTHON_SCRIPT="/tmp/import_emulator_tests.py"
+export IMPORT_DIODE=True
 docker-compose -p emulator up --exit-code-from tester --build
 docker-compose -p emulator down
 popd
 
-python3 test/write_diode_type.py -t basic
 ./scripts/buildInterfaceAndEmulator.sh
 python3 -m nose --with-xunit --xunit-file=test/results/verify_config_unit_test_results.xml Emulator/verify_config_tests.py
 python3 -m nose --with-xunit --xunit-file=test/results/verify_bitmap_unit_test_results.xml Emulator/verify_bitmap_tests.py
@@ -35,11 +34,9 @@ python3 -m nose --with-xunit --xunit-file=test/results/verify_control_header_uni
 python3 -m nose --with-xunit --xunit-file=test/results/interface_unit_test_results.xml Emulator/management_interface_tests.py
 python3 -m nose --with-xunit --xunit-file=test/results/interface_integration_test_results.xml test/management_interface_integration_tests.py
 
-#python3 -m nose --with-xunit --xunit-file=test/results/emulator_port_span_test_results.xml test/emulator_port_span_test.py
-python3 test/write_diode_type.py -t basic
+python3 -m nose --with-xunit --xunit-file=test/results/emulator_port_span_test_results.xml test/emulator_port_span_test.py
+
 python3 -m nose --with-xunit --xunit-file=test/results/e2e_test_results.xml test/e2e_test_interface_and_emulator.py
 
-python3 test/write_diode_type.py -t import
 ./scripts/buildInterfaceAndEmulator.sh
 python3 -m nose --with-xunit --xunit-file=test/results/e2e_test_import_results.xml test/e2e_test_import_interface_and_emulator.py
-python3 test/write_diode_type.py -t basic

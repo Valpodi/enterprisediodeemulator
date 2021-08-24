@@ -4,6 +4,7 @@
 import json
 import argparse
 import asyncio
+import os
 import pysisl
 from pysisl import parser_error
 from verify_bitmap import VerifyBitmap
@@ -15,13 +16,11 @@ class ProxyEndpoint(asyncio.DatagramProtocol):
     def __init__(self, remote_address):
         self.remote_address = remote_address
         self.remotes = {}
-        self.diode_type_filepath = "/usr/src/app/config/diode_type.json"
-        self.diode_type = self.get_diode_type()
+        self.is_import_diode = self.get_diode_type()
         super().__init__()
 
     def get_diode_type(self):
-        with open(self.diode_type_filepath) as diode_type_file:
-            return json.load(diode_type_file)["f2 type"]
+        return os.environ.get("IMPORTDIODE") == "True"
 
     def connection_made(self, transport):
         self.transport = transport
@@ -31,7 +30,7 @@ class ProxyEndpoint(asyncio.DatagramProtocol):
             self.remotes[addr].transport.sendto(data)
             return
         loop = asyncio.get_event_loop()
-        if self.diode_type == "import":
+        if self.is_import_diode:
             coroutine = loop.create_datagram_endpoint(
                 lambda: ImportDestinationEndpoint(self, addr, data), remote_addr=self.remote_address)
         else:
