@@ -1,10 +1,10 @@
 # Oakdoor 10G Enterprise Diode Emulator
-The emulator mimics the UDP port forwarding and frame inspection capability of the Oakdoor 10G Enterprise Diode. At present, the Basic Diode and Import Diode variants are supported by the emulator.:
+The emulator mimics the management interface, UDP port forwarding and frame inspection capability of the Oakdoor 10G Enterprise Diode. At present, the Basic Diode and Import Diode variants are supported by the emulator.:
   - Basic: 1 way transfer of UDP traffic with UDP port forwarding.
-  - Import: 1 way transfer of UDP traffic with UDP port forwarding and packet inspection. UDP packets must meet the Enterprise Diode frame format (header + SISL/bitmap). Bitmap and SISL inspection have also been implemented by the emulator. Non conformant frames are rendered inert with the Cloaked Dagger wrapping technique.
+  - Import: 1 way transfer of UDP traffic with UDP port forwarding and packet inspection (including bitmap and SISL inspection). UDP packets must meet the Enterprise Diode frame format (header + SISL/bitmap). Non conformant frames are rendered inert with the Cloaked Dagger wrapping technique.
 
 ### Requirements:
-In order to launch the emulator you will need to install docker & python3, and the python json module. See section below for build and launch instructions.
+In order to launch the emulator you will need to install docker & python3, and the python json module. See the section below for build and launch instructions.
 
 To build the docker containers behind a firewall, proxy information can be added to the docker container by adding the appropriate files to the `rootfs_template` folder. For example, to add a PyPI mirror, create a custom pip.conf file and place here: `rootfs_template/etc/pip.conf`.
 
@@ -32,11 +32,10 @@ Please note that while the emulator can use DNS name resolution for the destinat
 the diode will only support IP addresses.
 
 ### Configuring the diode variant
-By default the emulator is configured as the basic diode. 
+By default, the emulator is configured as the basic diode. 
 The emulator can be configured as the import variant by using the import diode flag (`--importDiode` or `-i`) when running the management interface or emulator script.
 
-Note that though the port config is validated when using the emulator directly for ease of use, 
-but the enterprise diode itself will not validate the port config, as this is expected to be done by the management interface API.
+Note that though the port config is validated when using the [launch_emulator script](Emulator/launch_emulator.py) directly for ease of use, the enterprise diode itself will not validate the port config, as this is expected to be done by the management interface API.
 
 ### Building the emulator
 Build the emulator and management interface docker containers with:
