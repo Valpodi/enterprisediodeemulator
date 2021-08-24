@@ -3,7 +3,7 @@ The emulator mimics the management interface, UDP port forwarding and frame insp
   - Basic: 1 way transfer of UDP traffic with UDP port forwarding.
   - Import: 1 way transfer of UDP traffic with UDP port forwarding and packet inspection (including bitmap and SISL inspection). UDP packets must meet the Enterprise Diode frame format (header + SISL/bitmap). Non conformant frames are rendered inert with the Cloaked Dagger wrapping technique.
 
-### Requirements:
+### Requirements
 In order to launch the emulator you will need to install docker & python3, and the python json module. See the section below for build and launch instructions.
 
 To build the docker containers behind a firewall, proxy information can be added to the docker container by adding the appropriate files to the `rootfs_template` folder. For example, to add a PyPI mirror, create a custom pip.conf file and place here: `rootfs_template/etc/pip.conf`.
@@ -18,7 +18,7 @@ You will also have to set the mtu to 9000 on the host's 10G network interface(s)
 `ifconfig [INTERFACE_NAME] mtu 9000 up`
 
 
-### Configuring the UDP port forwarding mapping:
+### Configuring the UDP port forwarding mapping
 In [port_config.json](Emulator/config/port_config.json) the routingTable block contains the mappings of the source ports to destination IP addresses.
 
     "routingTable": [{
