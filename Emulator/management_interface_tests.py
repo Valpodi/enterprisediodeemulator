@@ -14,7 +14,7 @@ class MgmtInterfaceTests(unittest.TestCase):
             "egress": {},
             "routingTable": []
         }
-        response = ManagementInterface().do_config_get()
+        response = ManagementInterface().get_config_information()
 
         self.assertEqual({"ingress": {}, "egress": {}, "routingTable": []}, json.loads(response.get_data()))
         self.assertEqual(200, response.status_code)
@@ -23,18 +23,18 @@ class MgmtInterfaceTests(unittest.TestCase):
         ManagementInterface._file_exists = lambda filepath: True
         ManagementInterface._power_on_diode = lambda: {"Status": "Diode powered on"}
         ManagementInterface._remove_container = lambda: True
-        response = ManagementInterface.do_power_on_procedure()
+        response = ManagementInterface.do_power_on()
 
         self.assertEqual("Diode powered on", json.loads(response.get_data())["Status"])
         self.assertEqual(200, response.status_code)
 
     def test_diode_power_on_raises_error_when_emulator_cannot_be_powercyled(self):
         ManagementInterface._remove_container = lambda: False
-        self.assertRaises(DiodePowerCycleError, ManagementInterface.do_power_on_procedure)
+        self.assertRaises(DiodePowerCycleError, ManagementInterface.do_power_on)
 
     def test_diode_power_off_returns_status_completed(self):
         ManagementInterface._power_off_diode = lambda: {"Status": "completed"}
-        response = ManagementInterface.do_power_off_procedure()
+        response = ManagementInterface.do_power_off()
 
         self.assertEqual(b"", response.get_data())
         self.assertEqual(200, response.status_code)

@@ -8,17 +8,20 @@ servers:
 paths:
   /config/diode:
     get:
-      summary: download diode config
-      operationId: management_interface.ManagementInterface.do_config_get
+      summary: Download the diode config.
+      operationId: management_interface.ManagementInterface.get_config_information
       responses:
         200:
-          description: diode config available
+          description: Diode config available.
           content:
             application/json:
               schema:
                 type: object
+        500:
+          description: Diode config could not be found.
+          content: { }
     put:
-      summary: Upload diode config
+      summary: Update the diode config.
       operationId: management_interface.ManagementInterface.do_config_update
       requestBody:
         content:
@@ -35,11 +38,11 @@ paths:
           content: {}
   /config/diode/schema:
     get:
-      summary: download diode config schema
+      summary: Download diode config schema
       operationId: management_interface.ManagementInterface.get_config_schema
       responses:
         200:
-          description: diode config schema available
+          description: Diode config schema available.
           content:
             application/json:
               schema:
@@ -47,63 +50,125 @@ paths:
   /command/diode/power/on:
     post:
       summary: Turn diode on
-      operationId: management_interface.ManagementInterface.do_power_on_procedure
+      operationId: management_interface.ManagementInterface.do_power_on
       responses:
         200:
-          description: ""
+          description: Diode powered on successfully.
+          content: {}
+        500:
+          description: Diode could not be powered on.
           content: {}
   /command/diode/power/off:
     post:
       summary: Turn diode off
-      operationId: management_interface.ManagementInterface.do_power_off_procedure
+      operationId: management_interface.ManagementInterface.do_power_off
       responses:
         200:
-          description: ""
-          content: {}
+          description: Diode powered off successfully.
+          content: { }
+        500:
+          description: Diode could not be powered off.
+          content: { }
   /status/version:
     get:
-      summary: Platform Status information
-      operationId: management_interface.ManagementInterface.do_get_status_version
+      summary: Download version information for the platform
+      operationId: management_interface.ManagementInterface.get_versioning_information
       responses:
         200:
-          description: ""
-  /status/latest:
+          description: Version information available.
+          content:
+            application/json:
+              schema:
+                type: object
+        500:
+          description: Version information unavailable.
+          content: { }
+  /status:
     get:
       summary: Obtain the latest statistics, counters and status information from
         the board
-      operationId: management_interface.ManagementInterface.do_get_status_latest
+      operationId: management_interface.ManagementInterface.get_status_information
       responses:
         200:
-          description: ""
-  /config/mgmt/settings/syslog:
-    post:
-      summary: configure target syslog address
-      operationId: management_interface.ManagementInterface.do_configure_syslog
-      responses:
-        200:
-          description: ""
+          description: Status information available.
+          content:
+            application/json:
+              schema:
+                type: object
         500:
-          description: ""
-  /config/mgmt/settings/ssh:
-    post:
-      summary: Enable/Disable ssh access
-      operationId: management_interface.ManagementInterface.set_ssh_access
+          description: Status information unavailable.
+          content: { }
+
+  /config/mgmt/settings/syslog:
+    get:
+      summary: Not yet implemented, use SSH to configure. Download current syslog address.
+      operationId: management_interface.ManagementInterface.get_syslog_address
       responses:
         200:
-          description: ""
+          description: Syslog address available.
+          content: { }
+    post:
+      summary: Not yet implemented, use SSH to configure. Update target syslog address.
+      operationId: management_interface.ManagementInterface.update_syslog_address
+      responses:
+        200:
+          description: Target syslog address updated.
+          content: { }
+        500:
+          description: Target syslog address could not be updated.
+          content: { }
+  /config/mgmt/settings/ssh:
+    get:
+      summary: Not yet implemented, use SSH to configure. Download current SSH access settings.
+      operationId: management_interface.ManagementInterface.get_ssh_settings
+      responses:
+        200:
+          description: SSH access settings available.
+          content:
+            application/json:
+              schema:
+                type: object
+    post:
+      summary: Not yet implemented, use SSH to configure. Update current SSH access settings.
+      operationId: management_interface.ManagementInterface.update_ssh_settings
+      responses:
+        200:
+          description: Enabled/Disabled SSH access.
+          content:
+            application/json:
+              schema:
+                type: object
   /config/mgmt/settings/ssl:
     put:
-      summary: Set the management interface private ssl certificates.
-      operationId: management_interface.ManagementInterface.update_ssl_certs
+      summary: Not yet implemented, use SSH to configure. Update the management interface private SSL certificates.
+      operationId: management_interface.ManagementInterface.update_ssl_certificates
       responses:
         200:
-          description: ""
+          description: Management interface private SSL certificates successfully updated.
+          content:
+            application/json:
+              schema:
+                type: object
   /config/mgmt/settings/ip:
+    get:
+      summary: Not yet implemented, use SSH to configure. Download management interface IP address settings.
+      operationId: management_interface.ManagementInterface.get_ip_settings
+      responses:
+        200:
+          description: Management interface IP address settings avilable.
+          content:
+            application/json:
+              schema:
+                type: object
     post:
-      summary: Set the management interface ip address settings
+      summary: Not yet implemented, use SSH to configure. Update the management interface IP address settings.
       operationId: management_interface.ManagementInterface.update_ip_settings
       responses:
         200:
-          description: ""
+          description: Management interface IP address settings successfully updated.
+          content:
+            application/json:
+              schema:
+                type: object
 
 

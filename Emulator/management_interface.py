@@ -16,7 +16,7 @@ class ManagementInterface:
     schema_filepath = '/usr/src/app/openapi/schema.json'
 
     @classmethod
-    def do_config_get(cls):
+    def get_config_information(cls):
         if cls._file_exists(cls.config_filepath):
             data = cls._get_file_content(cls.config_filepath)
         else:
@@ -60,7 +60,7 @@ class ManagementInterface:
             json.dump(cls.config_file, config_file)
 
     @classmethod
-    def do_power_on_procedure(cls):
+    def do_power_on(cls):
         if not cls._remove_container():
             raise DiodePowerCycleError("ERROR: unable to power on the diode.")
 
@@ -76,7 +76,7 @@ class ManagementInterface:
         return {"Status": {0: "Diode powered on"}.get(launch_emulator.start_emulator(cls.config_filepath, is_import_diode))}
 
     @classmethod
-    def do_power_off_procedure(cls):
+    def do_power_off(cls):
         cls._power_off_diode()
         return Response("", 200)
 
@@ -93,27 +93,39 @@ class ManagementInterface:
         return stop_process_success & remove_process_success
 
     @classmethod
-    def do_get_status_version(cls):
+    def get_versioning_information(cls):
         return Response("Not implemented", 200)
 
     @classmethod
-    def do_get_status_latest(cls):
+    def get_status_information(cls):
         return Response("Not implemented", 200)
 
     @classmethod
-    def do_configure_syslog(cls):
-        return Response("Not implemented", 200)
-
-    @classmethod
-    def set_ssh_access(cls):
-        return Response("Not implemented", 200)
-
-    @classmethod
-    def update_ssl_certs(cls):
+    def get_ip_settings(cls):
         return Response("Not implemented", 200)
 
     @classmethod
     def update_ip_settings(cls):
+        return Response("Not implemented", 200)
+
+    @classmethod
+    def get_syslog_address(cls):
+        return Response("Not implemented", 200)
+
+    @classmethod
+    def update_syslog_address(cls):
+        return Response("Not implemented", 200)
+
+    @classmethod
+    def get_ssh_settings(cls):
+        return Response("Not implemented", 200)
+
+    @classmethod
+    def update_ssh_settings(cls):
+        return Response("Not implemented", 200)
+
+    @classmethod
+    def update_ssl_certificates(cls):
         return Response("Not implemented", 200)
 
 
