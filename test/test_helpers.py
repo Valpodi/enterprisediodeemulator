@@ -86,7 +86,7 @@ class TestHelpers:
         return b"".join(invalid_control_header.values())
 
     @staticmethod
-    def save_port_config():
+    def read_port_config():
         with open('Emulator/config/port_config.json', 'r') as config_file:
             return json.loads(config_file.read())
 

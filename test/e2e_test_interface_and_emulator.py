@@ -19,7 +19,7 @@ class EndToEndEmulatorTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.start_interface_server_in_thread()
-        cls.valid_port_config = TestHelpers.save_port_config()
+        cls.valid_port_config = TestHelpers.read_port_config()
         cls.update_port_config()
         try:
             TestHelpers.wait_for_open_comms_ports("172.17.0.1", 8081, "zv")

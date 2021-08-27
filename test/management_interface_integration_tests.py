@@ -15,11 +15,15 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
     interface_server_thread = None
     valid_port_config = None
     config_filepath = 'Emulator/config/port_config.json'
+    ingress_port1 = None
+    ingress_port2 = None
 
     @classmethod
     def setUpClass(cls):
         cls.start_interface_server()
-        cls.valid_port_config = TestHelpers.save_port_config()
+        cls.valid_port_config = TestHelpers.read_port_config()
+        cls.ingress_port1 = cls.valid_port_config["routingTable"][0]["ingressPort"]
+        cls.ingress_port2 = cls.valid_port_config["routingTable"][1]["ingressPort"]
         try:
             TestHelpers.wait_for_open_comms_ports("172.17.0.1", 8081, "zv")
         except TimeoutError as ex:
@@ -53,49 +57,49 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         self.assertEqual(expected, json.loads(response.text))
 
     def test_power_on_endpoint(self):
-        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", 40001, "zvu")
+        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
 
     def test_power_on_endpoint_when_emulator_already_on_returns_200(self):
-        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", 40001, "zvu")
+        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
         response = requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
         self.assertEqual("Diode powered on", json.loads(response.text)["Status"])
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
 
     def test_power_off_endpoint(self):
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
         requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
-        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", 40001, "zvu")
+        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
 
     def test_power_off_endpoint_when_emulator_off_returns_200(self):
-        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", 40001, "zvu")
+        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
         response = requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
         self.assertEqual(200, response.status_code)
 
     def test_power_off_removes_emulator_container(self):
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
         requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
-        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", 40001, "zvu")
+        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
 
     def test_update_config_endpoint(self):
         with open(self.config_filepath, 'r') as config_file:
             new_config = json.loads(config_file.read())
-            new_config["routingTable"][0]["ingressPort"] = 40002
+            new_config["routingTable"][0]["ingressPort"] = self.ingress_port2
 
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
 
         requests.put("http://172.17.0.1:8081/api/config/diode",
                      json=new_config,
                      headers={"Content-Type": "application/json"})
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40002, "zvu")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port2, "zvu")
 
     def test_update_config_endpoint_returns_400_when_schema_check_fails(self):
         with open(self.config_filepath, 'r') as config_file:
@@ -104,7 +108,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
             del new_config["ingress"]["ethernetPorts"]
 
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
 
         response = requests.put("http://172.17.0.1:8081/api/config/diode",
                                 json=new_config,
