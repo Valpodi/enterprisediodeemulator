@@ -46,7 +46,7 @@ class ManagementInterface:
         try:
             cls._validate_config()
         except ConfigError as exc:
-            return Response(f"{exc}", 412)
+            return Response(f"{exc}", 400)
         cls._power_off_diode()
         cls._update_config()
         cls._power_on_diode()

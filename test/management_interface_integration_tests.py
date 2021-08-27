@@ -97,7 +97,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
                      headers={"Content-Type": "application/json"})
         TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40002, "zvu")
 
-    def test_update_config_endpoint_returns_412_when_schema_check_fails(self):
+    def test_update_config_endpoint_returns_400_when_schema_check_fails(self):
         with open(self.config_filepath, 'r') as config_file:
             new_config = json.loads(config_file.read())
             new_config["ingress"]["useDHCP"] = True
@@ -109,7 +109,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         response = requests.put("http://172.17.0.1:8081/api/config/diode",
                                 json=new_config,
                                 headers={"Content-Type": "application/json"})
-        self.assertEqual(412, response.status_code)
+        self.assertEqual(400, response.status_code)
         self.assertEqual("'ethernetPorts' is a required property", response.text)
 
     def test_missing_config_file_with_get_config_endpoint(self):
