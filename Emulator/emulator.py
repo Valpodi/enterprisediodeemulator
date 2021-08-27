@@ -19,9 +19,11 @@ class ProxyEndpoint(asyncio.DatagramProtocol):
         self.is_import_diode = self.get_diode_type()
         super().__init__()
 
-    def get_diode_type(self):
+    @staticmethod
+    def get_diode_type():
         return os.environ.get("IMPORTDIODE") == "True"
 
+    @staticmethod
     def connection_made(self, transport):
         self.transport = transport
 

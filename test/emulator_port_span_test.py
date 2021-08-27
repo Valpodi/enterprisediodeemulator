@@ -4,8 +4,6 @@
 import subprocess
 import unittest
 
-from test_helpers import TestHelpers
-
 
 class EmulatorSpanTooLargeTest(unittest.TestCase):
 

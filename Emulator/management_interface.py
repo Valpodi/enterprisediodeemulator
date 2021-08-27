@@ -7,7 +7,7 @@ from flask import Response
 import json
 import subprocess
 import launch_emulator
-from verify_config import VerifyConfig
+from verify_config import VerifyConfig, ConfigErrorFailedSchemaVerification
 
 
 class ManagementInterface:
@@ -43,7 +43,10 @@ class ManagementInterface:
     @classmethod
     def do_config_update(cls):
         cls.config_file = connexion.request.get_json()
-        cls._validate_config()
+        try:
+            cls._validate_config()
+        except ConfigErrorFailedSchemaVerification as exc:
+            return Response(f"{exc}", 412)
         cls._power_off_diode()
         cls._update_config()
         cls._power_on_diode()
@@ -72,7 +75,7 @@ class ManagementInterface:
 
     @classmethod
     def _power_on_diode(cls):
-        is_import_diode=os.environ.get("IMPORTDIODE")
+        is_import_diode = os.environ.get("IMPORTDIODE")
         return {"Status": {0: "Diode powered on"}.get(launch_emulator.start_emulator(cls.config_filepath, is_import_diode))}
 
     @classmethod
