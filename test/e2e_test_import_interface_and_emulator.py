@@ -54,12 +54,17 @@ class EndToEndEmulatorTests(unittest.TestCase):
         self.test_udp_sender = TestSender()
         self.test_udp_listener = TestReceiver("0.0.0.0", 50001)
         TestHelpers.wait_for_open_comms_ports("172.17.0.1", 50001, "zvu")
+        requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
+        self.assertRaises(socket.timeout, TestHelpers.wait_for_action, lambda: (self.test_udp_listener.recv() != b"\x00", 0), "Non-empty packets received exceeded maximum")
 
     def tearDown(self):
         self.test_udp_sender.close()
         self.test_udp_listener.close()
         subprocess.run("docker stop emulator".split())
         subprocess.run("docker rm emulator".split())
+        requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
+        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", 40001, "zvu")
 
     @classmethod
     def tearDownClass(cls):
@@ -68,22 +73,11 @@ class EndToEndEmulatorTests(unittest.TestCase):
         cls.interface_server_thread.join()
 
     def test_sisl_data_received_matches_data_sent(self):
-        requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
-        self.assertRaises(socket.timeout, TestHelpers.wait_for_action, lambda: (self.test_udp_listener.recv() != b"\x00", 0), "Non-empty packets received exceeded maximum")
-
         data = TestHelpers.get_valid_control_header() + b'{name: !str "helpful_name", flag: !bool "false", count: !int "3"}'
         self.test_udp_sender.send(data, "172.17.0.1", 40001)
         self.assertEqual(self.test_udp_listener.recv(), data)
 
-        requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
-        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", 40001, "zvu")
-
     def test_not_sisl_data_is_wrapped(self):
-        requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
-        self.assertRaises(socket.timeout, TestHelpers.wait_for_action, lambda: (self.test_udp_listener.recv() != b"\x00", 0), "Non-empty packets received exceeded maximum")
-
         data = TestHelpers.get_valid_control_header() + b'not_sisl'
         self.test_udp_sender.send(data, "172.17.0.1", 40001)
         received = self.test_udp_listener.recv()
@@ -93,9 +87,6 @@ class EndToEndEmulatorTests(unittest.TestCase):
         received_unwrapped = pysisl.unwraps(received[sent_control_header_length:])
         control_header_length = 112
         self.assertEqual(received_unwrapped, data[control_header_length:])
-
-        requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
-        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", 40001, "zvu")
 
 
 if __name__ == '__main__':

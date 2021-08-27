@@ -30,7 +30,8 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
     @classmethod
     def start_interface_server(cls):
         is_import_diode = "False"
-        cls.interface_server_thread = threading.Thread(target=launch_management_interface.start_interface, args=(8081, is_import_diode))
+        cls.interface_server_thread = threading.Thread(target=launch_management_interface.start_interface,
+                                                       args=(8081, is_import_diode))
         cls.interface_server_thread.start()
 
     @classmethod
