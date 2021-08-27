@@ -53,9 +53,9 @@ class EndToEndEmulatorTests(unittest.TestCase):
     def setUp(self):
         self.test_udp_sender = TestSender()
         self.test_udp_listener = TestReceiver("0.0.0.0", 50001)
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 50001, "zvu")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 50001)
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001, "zvu")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001)
         self.assertRaises(socket.timeout, TestHelpers.wait_for_action, lambda: (self.test_udp_listener.recv() != b"\x00", 0), "Non-empty packets received exceeded maximum")
 
     def tearDown(self):
@@ -64,7 +64,7 @@ class EndToEndEmulatorTests(unittest.TestCase):
         subprocess.run("docker stop emulator".split())
         subprocess.run("docker rm emulator".split())
         requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
-        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", 40001, "zvu")
+        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", 40001)
 
     @classmethod
     def tearDownClass(cls):

@@ -57,36 +57,36 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         self.assertEqual(expected, json.loads(response.text))
 
     def test_power_on_endpoint(self):
-        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
+        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", self.ingress_port1)
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1)
 
     def test_power_on_endpoint_when_emulator_already_on_returns_200(self):
-        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
+        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", self.ingress_port1)
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1)
         response = requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
         self.assertEqual("Diode powered on", json.loads(response.text)["Status"])
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1)
 
     def test_power_off_endpoint(self):
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1)
         requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
-        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
+        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", self.ingress_port1)
 
     def test_power_off_endpoint_when_emulator_off_returns_200(self):
-        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
+        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", self.ingress_port1)
         response = requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
         self.assertEqual(200, response.status_code)
 
     def test_power_off_removes_emulator_container(self):
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1)
         requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
-        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
+        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", self.ingress_port1)
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1)
 
     def test_update_config_endpoint(self):
         with open(self.config_filepath, 'r') as config_file:
@@ -94,12 +94,12 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
             new_config["routingTable"][0]["ingressPort"] = self.ingress_port2
 
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1)
 
         requests.put("http://172.17.0.1:8081/api/config/diode",
                      json=new_config,
                      headers={"Content-Type": "application/json"})
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port2, "zvu")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port2)
 
     def test_update_config_endpoint_returns_400_when_schema_check_fails(self):
         with open(self.config_filepath, 'r') as config_file:
@@ -108,7 +108,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
             del new_config["ingress"]["ethernetPorts"]
 
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1, "zvu")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1)
 
         response = requests.put("http://172.17.0.1:8081/api/config/diode",
                                 json=new_config,

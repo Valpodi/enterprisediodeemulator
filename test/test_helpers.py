@@ -54,12 +54,12 @@ class TestHelpers:
                 return msg
 
     @staticmethod
-    def wait_for_open_comms_ports(address, port, options, attempts=5):
+    def wait_for_open_comms_ports(address, port, options="zvu", attempts=5):
         return TestHelpers.wait_for_action(lambda: TestHelpers.ping_port(address, port, options),
                                            f"port {port} should be open", attempts=attempts)
 
     @staticmethod
-    def wait_for_closed_comms_ports(address, port, options, attempts=5):
+    def wait_for_closed_comms_ports(address, port, options="zvu", attempts=5):
         return TestHelpers.wait_for_action(lambda: TestHelpers.ping_port(address, port, options, 1),
                                            f"port {port} should be closed", attempts=attempts)
 

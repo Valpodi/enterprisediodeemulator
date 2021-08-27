@@ -32,7 +32,7 @@ class EmulatorTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         subprocess.run("python3 Emulator/launch_emulator.py --importDiode".split())
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 41024, "zvu")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 41024)
 
     def setUp(self):
         self.test_udp_sender = TestSender()
