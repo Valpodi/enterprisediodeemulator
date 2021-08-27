@@ -55,21 +55,25 @@ class VerifyConfig:
             raise ConfigErrorIngressPortsNotUnique("Config validation failed: Ingress ports must be unique.")
 
 
-class ConfigErrorEmptyFile(Exception):
+class ConfigError(Exception):
     pass
 
 
-class ConfigErrorFileSizeTooLarge(Exception):
+class ConfigErrorEmptyFile(ConfigError):
     pass
 
 
-class ConfigErrorFailedSchemaVerification(Exception):
+class ConfigErrorFileSizeTooLarge(ConfigError):
     pass
 
 
-class ConfigErrorInvalidPortSpan(Exception):
+class ConfigErrorFailedSchemaVerification(ConfigError):
     pass
 
 
-class ConfigErrorIngressPortsNotUnique(Exception):
+class ConfigErrorInvalidPortSpan(ConfigError):
+    pass
+
+
+class ConfigErrorIngressPortsNotUnique(ConfigError):
     pass

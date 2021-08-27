@@ -7,7 +7,7 @@ from flask import Response
 import json
 import subprocess
 import launch_emulator
-from verify_config import VerifyConfig, ConfigErrorFailedSchemaVerification
+from verify_config import VerifyConfig, ConfigError
 
 
 class ManagementInterface:
@@ -45,7 +45,7 @@ class ManagementInterface:
         cls.config_file = connexion.request.get_json()
         try:
             cls._validate_config()
-        except ConfigErrorFailedSchemaVerification as exc:
+        except ConfigError as exc:
             return Response(f"{exc}", 412)
         cls._power_off_diode()
         cls._update_config()
