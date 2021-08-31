@@ -10,9 +10,6 @@ import requests
 import socket
 import json
 
-from pysisl import parser_error
-
-from Emulator.verify_bitmap import VerifyBitmap
 from test_helpers import TestHelpers, TestSender, TestReceiver
 
 
@@ -20,6 +17,8 @@ class EndToEndEmulatorTests(unittest.TestCase):
     interface_server_thread = None
     valid_port_config = None
     config_filepath = 'Emulator/config/port_config.json'
+    test_udp_sender = None
+    test_udp_listener = None
 
     @classmethod
     def setUpClass(cls):
@@ -32,6 +31,11 @@ class EndToEndEmulatorTests(unittest.TestCase):
             print(f"Exception during setUpClass: {ex}")
             cls.tearDownClass()
             raise
+        cls.test_udp_sender = TestSender()
+        cls.test_udp_listener = TestReceiver("0.0.0.0", 50001)
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 50001)
+        requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
+        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001)
 
     @classmethod
     def start_interface_server_in_thread(cls):
@@ -51,23 +55,19 @@ class EndToEndEmulatorTests(unittest.TestCase):
             json.dump(new_port_config, config_file, indent=4)
 
     def setUp(self):
-        self.test_udp_sender = TestSender()
-        self.test_udp_listener = TestReceiver("0.0.0.0", 50001)
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 50001)
-        requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
-        TestHelpers.wait_for_open_comms_ports("172.17.0.1", 40001)
-        self.assertRaises(socket.timeout, TestHelpers.wait_for_action, lambda: (self.test_udp_listener.recv() != b"\x00", 0), "Non-empty packets received exceeded maximum")
+        self.clear_netcat_buffer()
 
-    def tearDown(self):
-        self.test_udp_sender.close()
-        self.test_udp_listener.close()
-        subprocess.run("docker stop emulator".split())
-        subprocess.run("docker rm emulator".split())
-        requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
-        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", 40001)
+    def clear_netcat_buffer(self):
+        self.assertRaises(socket.timeout, TestHelpers.wait_for_action,
+                          lambda: (self.test_udp_listener.recv() != b"\x00", 0),
+                          "Non-empty packets received exceeded maximum")
 
     @classmethod
     def tearDownClass(cls):
+        cls.test_udp_sender.close()
+        cls.test_udp_listener.close()
+        requests.post("http://172.17.0.1:8081/api/command/diode/power/off")
+        TestHelpers.wait_for_closed_comms_ports("172.17.0.1", 40001)
         TestHelpers.reset_port_config_file(cls.valid_port_config)
         subprocess.run("docker stop management_interface".split())
         cls.interface_server_thread.join()
