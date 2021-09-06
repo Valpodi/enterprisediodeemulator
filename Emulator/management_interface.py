@@ -21,7 +21,7 @@ class ManagementInterface:
         if cls._file_exists(cls.config_filepath):
             data = cls._get_file_content(cls.config_filepath)
         else:
-            data = {"Status": "Config file does not exist"}
+            data = {"Status": "Config file doesn't exist"}
         return Response(json.dumps(data), 200)
 
     @staticmethod
