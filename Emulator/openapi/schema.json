@@ -16,7 +16,7 @@
           "ping",
           "useDHCP",
           "mtu",
-          "ethernetPorts"
+          "adapters"
         ]
       },
       "else": {
@@ -27,39 +27,68 @@
         ]
       },
       "properties": {
-        "ethernetPorts": {
-          "items": {
-            "properties": {
-              "gw": {
-                "format": "ipv4",
-                "type": "string"
+        "adapters": {
+          "properties": {
+            "primary": {
+              "properties": {
+                "gateway": {
+                  "format": "ipv4",
+                  "type": "string"
+                },
+                "ip": {
+                  "format": "ipv4",
+                  "type": "string"
+                },
+                "log": {
+                  "format": "ipv4",
+                  "type": "string"
+                },
+                "netmask": {
+                  "format": "ipv4",
+                  "type": "string"
+                },
+                "ntp": {
+                  "format": "ipv4",
+                  "type": "string"
+                }
               },
-              "ip": {
-                "format": "ipv4",
-                "type": "string"
-              },
-              "log": {
-                "format": "ipv4",
-                "type": "string"
-              },
-              "nm": {
-                "format": "ipv4",
-                "type": "string"
-              },
-              "ntp": {
-                "format": "ipv4",
-                "type": "string"
-              }
+              "required": [
+                "ip",
+                "netmask"
+              ],
+              "type": "object"
             },
-            "required": [
-              "ip",
-              "nm"
-            ],
-            "type": "object"
+            "secondary": {
+              "properties": {
+                "gateway": {
+                  "format": "ipv4",
+                  "type": "string"
+                },
+                "ip": {
+                  "format": "ipv4",
+                  "type": "string"
+                },
+                "log": {
+                  "format": "ipv4",
+                  "type": "string"
+                },
+                "netmask": {
+                  "format": "ipv4",
+                  "type": "string"
+                },
+                "ntp": {
+                  "format": "ipv4",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "ip",
+                "netmask"
+              ],
+              "type": "object"
+            }
           },
-          "maxItems": 2,
-          "minItems": 2,
-          "type": "array"
+          "type": "object"
         },
         "mtu": {
           "maximum": 9000,
@@ -78,7 +107,6 @@
         "ping",
         "mtu"
       ],
-
       "type": "object"
     },
     "ingress": {
@@ -98,7 +126,7 @@
           "ping",
           "useDHCP",
           "mtu",
-          "ethernetPorts"
+          "adapters"
         ]
       },
       "else": {
@@ -109,39 +137,68 @@
         ]
       },
       "properties": {
-        "ethernetPorts": {
-          "items": {
-            "properties": {
-              "gw": {
-                "format": "ipv4",
-                "type": "string"
+        "adapters": {
+          "properties": {
+            "primary": {
+              "properties": {
+                "gateway": {
+                  "format": "ipv4",
+                  "type": "string"
+                },
+                "ip": {
+                  "format": "ipv4",
+                  "type": "string"
+                },
+                "log": {
+                  "format": "ipv4",
+                  "type": "string"
+                },
+                "netmask": {
+                  "format": "ipv4",
+                  "type": "string"
+                },
+                "ntp": {
+                  "format": "ipv4",
+                  "type": "string"
+                }
               },
-              "ip": {
-                "format": "ipv4",
-                "type": "string"
+              "required": [
+                "ip",
+                "netmask"
+              ],
+              "type": "object"
               },
-              "log": {
-                "format": "ipv4",
-                "type": "string"
+            "secondary": {
+              "properties": {
+                "gateway": {
+                  "format": "ipv4",
+                  "type": "string"
+                },
+                "ip": {
+                  "format": "ipv4",
+                  "type": "string"
+                },
+                "log": {
+                  "format": "ipv4",
+                  "type": "string"
+                },
+                "netmask": {
+                  "format": "ipv4",
+                  "type": "string"
+                },
+                "ntp": {
+                  "format": "ipv4",
+                  "type": "string"
+                }
               },
-              "nm": {
-                "format": "ipv4",
-                "type": "string"
-              },
-              "ntp": {
-                "format": "ipv4",
-                "type": "string"
-              }
-            },
-            "required": [
-              "ip",
-              "nm"
-            ],
-            "type": "object"
+              "required": [
+                "ip",
+                "netmask"
+              ],
+              "type": "object"
+            }
           },
-          "maxItems": 2,
-          "minItems": 2,
-          "type": "array"
+          "type": "object"
         },
         "mtu": {
           "maximum": 9000,
@@ -160,7 +217,6 @@
         "ping",
         "mtu"
       ],
-
       "type": "object"
     },
     "routingTable": {

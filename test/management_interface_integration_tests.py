@@ -105,7 +105,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
         with open(self.config_filepath, 'r') as config_file:
             new_config = json.loads(config_file.read())
             new_config["ingress"]["useDHCP"] = True
-            del new_config["ingress"]["ethernetPorts"]
+            del new_config["ingress"]["adapters"]
 
         requests.post("http://172.17.0.1:8081/api/command/diode/power/on")
         TestHelpers.wait_for_open_comms_ports("172.17.0.1", self.ingress_port1)
@@ -114,7 +114,7 @@ class MgmtInterfaceIntegrationTests(unittest.TestCase):
                                 json=new_config,
                                 headers={"Content-Type": "application/json"})
         self.assertEqual(400, response.status_code)
-        self.assertEqual("'ethernetPorts' is a required property", response.text)
+        self.assertEqual("'adapters' is a required property", response.text)
 
     def test_missing_config_file_with_get_config_endpoint(self):
         os.remove(self.config_filepath)
