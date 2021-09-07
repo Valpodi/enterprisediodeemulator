@@ -31,7 +31,7 @@
           "properties": {
             "primary": {
               "properties": {
-                "gateway": {
+                "gw": {
                   "format": "ipv4",
                   "type": "string"
                 },
@@ -43,7 +43,7 @@
                   "format": "ipv4",
                   "type": "string"
                 },
-                "netmask": {
+                "nm": {
                   "format": "ipv4",
                   "type": "string"
                 },
@@ -54,13 +54,13 @@
               },
               "required": [
                 "ip",
-                "netmask"
+                "nm"
               ],
               "type": "object"
             },
             "secondary": {
               "properties": {
-                "gateway": {
+                "gw": {
                   "format": "ipv4",
                   "type": "string"
                 },
@@ -72,7 +72,7 @@
                   "format": "ipv4",
                   "type": "string"
                 },
-                "netmask": {
+                "nm": {
                   "format": "ipv4",
                   "type": "string"
                 },
@@ -83,7 +83,7 @@
               },
               "required": [
                 "ip",
-                "netmask"
+                "nm"
               ],
               "type": "object"
             }
@@ -141,7 +141,7 @@
           "properties": {
             "primary": {
               "properties": {
-                "gateway": {
+                "gw": {
                   "format": "ipv4",
                   "type": "string"
                 },
@@ -153,7 +153,7 @@
                   "format": "ipv4",
                   "type": "string"
                 },
-                "netmask": {
+                "nm": {
                   "format": "ipv4",
                   "type": "string"
                 },
@@ -164,13 +164,13 @@
               },
               "required": [
                 "ip",
-                "netmask"
+                "nm"
               ],
               "type": "object"
               },
             "secondary": {
               "properties": {
-                "gateway": {
+                "gw": {
                   "format": "ipv4",
                   "type": "string"
                 },
@@ -182,7 +182,7 @@
                   "format": "ipv4",
                   "type": "string"
                 },
-                "netmask": {
+                "nm": {
                   "format": "ipv4",
                   "type": "string"
                 },
@@ -193,7 +193,7 @@
               },
               "required": [
                 "ip",
-                "netmask"
+                "nm"
               ],
               "type": "object"
             }
