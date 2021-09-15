@@ -20,6 +20,9 @@ paths:
         500:
           description: Diode config could not be found.
           content: { }
+        503:
+          description: Server busy processing previous request. Sequential access only is supported.
+          content: { }
     put:
       summary: Update the diode config.
       operationId: management_interface.ManagementInterface.do_config_update
@@ -36,6 +39,9 @@ paths:
         500:
           description: Diode config update failed.
           content: {}
+        503:
+          description: Server busy processing previous request. Sequential access only is supported.
+          content: { }
   /config/diode/schema:
     get:
       summary: Download diode config schema
@@ -47,6 +53,9 @@ paths:
             application/json:
               schema:
                 type: object
+        503:
+          description: Server busy processing previous request. Sequential access only is supported.
+          content: { }
   /command/diode/power/on:
     post:
       summary: Turn diode on
@@ -58,6 +67,9 @@ paths:
         500:
           description: Diode could not be powered on.
           content: {}
+        503:
+          description: Server busy processing previous request. Sequential access only is supported.
+          content: { }
   /command/diode/power/off:
     post:
       summary: Turn diode off
@@ -68,6 +80,9 @@ paths:
           content: { }
         500:
           description: Diode could not be powered off.
+          content: { }
+        503:
+          description: Server busy processing previous request. Sequential access only is supported.
           content: { }
   /status/version:
     get:
@@ -82,6 +97,9 @@ paths:
                 type: object
         500:
           description: Version information unavailable.
+          content: { }
+        503:
+          description: Server busy processing previous request. Sequential access only is supported.
           content: { }
   /status:
     get:
@@ -98,6 +116,9 @@ paths:
         500:
           description: Status information unavailable.
           content: { }
+        503:
+          description: Server busy processing previous request. Sequential access only is supported.
+          content: { }
 
   /config/mgmt/settings/syslog:
     get:
@@ -106,6 +127,9 @@ paths:
       responses:
         200:
           description: Syslog address available.
+          content: { }
+        503:
+          description: Server busy processing previous request. Sequential access only is supported.
           content: { }
     post:
       summary: Not yet implemented, use SSH to configure. Update target syslog address.
@@ -116,6 +140,9 @@ paths:
           content: { }
         500:
           description: Target syslog address could not be updated.
+          content: { }
+        503:
+          description: Server busy processing previous request. Sequential access only is supported.
           content: { }
   /config/mgmt/settings/ssh:
     get:
@@ -128,6 +155,9 @@ paths:
             application/json:
               schema:
                 type: object
+        503:
+          description: Server busy processing previous request. Sequential access only is supported.
+          content: { }
     post:
       summary: Not yet implemented, use SSH to configure. Update current SSH access settings.
       operationId: management_interface.ManagementInterface.update_ssh_settings
@@ -138,6 +168,9 @@ paths:
             application/json:
               schema:
                 type: object
+        503:
+          description: Server busy processing previous request. Sequential access only is supported.
+          content: { }
   /config/mgmt/settings/ssl:
     put:
       summary: Not yet implemented, use SSH to configure. Update the management interface private SSL certificates.
@@ -149,6 +182,9 @@ paths:
             application/json:
               schema:
                 type: object
+        503:
+          description: Server busy processing previous request. Sequential access only is supported.
+          content: { }
   /config/mgmt/settings/ip:
     get:
       summary: Not yet implemented, use SSH to configure. Download management interface IP address settings.
@@ -160,6 +196,9 @@ paths:
             application/json:
               schema:
                 type: object
+        503:
+          description: Server busy processing previous request. Sequential access only is supported.
+          content: { }
     post:
       summary: Not yet implemented, use SSH to configure. Update the management interface IP address settings.
       operationId: management_interface.ManagementInterface.update_ip_settings
@@ -170,5 +209,8 @@ paths:
             application/json:
               schema:
                 type: object
+        503:
+          description: Server busy processing previous request. Sequential access only is supported.
+          content: { }
 
 
